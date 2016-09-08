@@ -259,7 +259,6 @@ class Summary_model extends CI_Model
         );
         $available_proposals = !$this->is_emsl_staff ? $this->eus->get_proposals_for_user($this->user_id) : false;
 
-        // echo $this->db->last_query();
         if($query && $query->num_rows() > 0){
             foreach($query->result() as $row){
                 if($row->category == 'instrument'){
