@@ -63,9 +63,11 @@ class Reporting_model extends CI_Model
             'min(t.stime) as upload_datetime'
         );
         $this->db->select($select_array)->group_by('i.transaction');
+        $this->db->where('group_type','instrument');
         $this->db->from(ITEM_CACHE." i")->where_in('i.transaction',$transaction_list);
         $this->db->join('transactions t','t.transaction = i.transaction');
         $query = $this->db->get();
+        // echo $this->db->last_query();
         $results = array();
         if($query && $query->num_rows() > 0){
             foreach($query->result_array() as $row){
