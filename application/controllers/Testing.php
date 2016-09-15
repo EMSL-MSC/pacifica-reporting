@@ -23,16 +23,16 @@ class Testing extends Baseline_controller
         $this->local_resources_folder = $this->config->item('local_resources_folder');
     }
 
-  /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-  /* Testing functionality                                     */
-  /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-  public function test_get_proposals($proposal_name_fragment, $active = 'active')
-  {
-      $results = $this->eus->get_proposals_by_name($proposal_name_fragment, $active);
-      echo '<pre>';
-      var_dump($results);
-      echo '</pre>';
-  }
+    /**
+    * Testing functionality
+    */
+    public function test_get_proposals($proposal_name_fragment, $active = 'active')
+    {
+        $results = $this->eus->get_proposals_by_name($proposal_name_fragment, $active);
+        echo '<pre>';
+        var_dump($results);
+        echo '</pre>';
+    }
 
     public function test_get_uploads_for_user($eus_person_id, $start_date = false, $end_date = false)
     {
@@ -99,33 +99,17 @@ class Testing extends Baseline_controller
         $end_time = '2015-11-13 23:59:59';
 
 
-        $results = $this->summary->get_transactions_for_user_list($eus_person_id_list,$start_time,$end_time);
+        $results = $this->summary->get_transactions_for_user_list($eus_person_id_list, $start_time, $end_time);
         echo '<pre>';
         var_dump($results);
         echo '</pre>';
     }
 
-    public function test_get_user_info_myemsl(){
+    public function test_get_user_info_myemsl()
+    {
         $ui = $this->myemsl->get_user_info();
         print json_encode($ui);
     }
-
-    // public function test_get_latest($object_type, $object_id)
-    // {
-    //     $results = $this->rep->latest_available_data($object_type, $object_id);
-    //     echo '<pre>';
-    //     var_dump($results);
-    //     echo '</pre>';
-    // }
-
-    // public function test_get_earliest_latest($object_type, $object_id)
-    // {
-    //     $object_id_list = explode('-', $object_id_list);
-    //     $results = $this->rep->earliest_latest_data($object_type, $object_id_list);
-    //     echo '<pre>';
-    //     var_dump($results);
-    //     echo '</pre>';
-    // }
 
     public function test_get_earliest_latest_list($object_type, $group_id, $time_basis)
     {
@@ -158,9 +142,9 @@ class Testing extends Baseline_controller
     public function test_get_files_from_group_list()
     {
         $group_list = array(338690, 394300, 10081, 391971, 34124, 1142, 1004, 1005, 34072,
-                          1000001, 34134,    34105,    34180,    34176,    1032,    34076,    1000010,
-                          34110,    34132,    34078,    0,    34000,    1000011,    1176,    1002, 1003,
-                          34135, 1145, 34075, 34218, 34121, 34136, 34181, 431561, );
+                            1000001, 34134, 34105, 34180, 34176, 1032, 34076, 1000010,
+                            34110, 34132, 34078, 0, 34000, 1000011, 1176, 1002, 1003,
+                            34135, 1145, 34075, 34218, 34121, 34136, 34181, 431561, );
         $start_time = '2015-09-01 00:00:00';
         $end_time = '2015-11-13 23:59:59';
 
@@ -170,23 +154,15 @@ class Testing extends Baseline_controller
     public function test_get_transaction_info()
     {
         $transaction_list = array(
-      1895, 1894, 1893, 1888,//,1887,1886,1885,1884,1880,
-      // 1879,1878,1877,1876,1875,1874,1873,1872,1871,
-      // 1870,1869,1868,1867,1866,1865,1864,1862,1861
-    );
+        1895, 1894, 1893, 1888,//,1887,1886,1885,1884,1880,
+        // 1879,1878,1877,1876,1875,1874,1873,1872,1871,
+        // 1870,1869,1868,1867,1866,1865,1864,1862,1861
+        );
         $results = $this->rep->detailed_transaction_list($transaction_list);
         echo '<pre>';
         var_dump($results);
         echo '</pre>';
     }
 
-    // public function test_is_data_available(){
-    //     $selector = array(2551071,2550881,2550882);
-    //     $results = $this->rep->is_data_available($selector);
-    //     echo '<pre>';
-    //     var_dump($results);
-    //     echo '</pre>';
-    // }
-    //
 
 }

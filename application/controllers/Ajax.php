@@ -1,5 +1,14 @@
 <?php
 
+/** ----------------------------------------------------------------------------
+ *
+ * Ajax Controller
+ *
+ *  API functionality for Ajax calls from UI
+ *
+ * ----------------------------------------------------------------------------
+ */
+
 defined('BASEPATH') or exit('No direct script access allowed');
 require_once 'Baseline_controller.php';
 
@@ -17,33 +26,32 @@ class Ajax extends Baseline_controller
         $this->load->model('Group_info_model', 'gm');
         $this->load->model('Summary_model', 'summary');
         $this->load->library('EUS', '', 'eus');
-    // $this->load->helper(array('network','file_info','inflector','time','item','search_term','cookie'));
+        // $this->load->helper(array('network','file_info','inflector','time','item','search_term','cookie'));
         $this->load->helper(array('network','search_term','inflector'));
         $this->accepted_object_types = array('instrument', 'user', 'proposal');
         $this->accepted_time_basis_types = array('submit_time', 'create_time', 'modified_time');
         $this->local_resources_folder = $this->config->item('local_resources_folder');
     }
 
-/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-/* API functionality for Ajax calls from UI                  */
-/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-    public function make_new_group($object_type){
+
+    public function make_new_group($object_type)
+    {
         if ($this->input->post()) {
               $group_name = $this->input->post('group_name');
         } elseif ($this->input->is_ajax_request() || $this->input->raw_input_stream) {
             $post_info = json_decode($this->input->raw_input_stream, true);
             // $post_info = $post_info[0];
             $group_name = array_key_exists('group_name', $post_info) ? $post_info['group_name'] : false;
-            }
+        }
             $group_info = $this->gm->make_new_group($object_type, $this->user_id, $group_name);
-            if ($group_info && is_array($group_info)) {
-                send_json_array($group_info);
-            } else {
-                $this->output->set_status_header(500, "Could not make a new group called '{$group_name}'");
+        if ($group_info && is_array($group_info)) {
+            send_json_array($group_info);
+        } else {
+            $this->output->set_status_header(500, "Could not make a new group called '{$group_name}'");
 
-              return;
-      }
-  }
+            return;
+        }
+    }
 
     public function change_group_name($group_id)
     {
@@ -69,14 +77,14 @@ class Ajax extends Baseline_controller
         }
         if ($new_group_name) {
             //check for authorization
-      if ($this->user_id != $group_info['person_id']) {
-          $this->output->set_status_header(401, 'You are not allowed to alter this group');
+            if ($this->user_id != $group_info['person_id']) {
+                $this->output->set_status_header(401, 'You are not allowed to alter this group');
 
-          return;
-      }
+                return;
+            }
             if ($new_group_name == $group_info['group_name']) {
                 //no change to name
-        $this->output->set_status_header(400, 'Group name is unchanged');
+                $this->output->set_status_header(400, 'Group name is unchanged');
 
                 return;
             }
@@ -115,17 +123,17 @@ class Ajax extends Baseline_controller
         } elseif ($this->input->is_ajax_request() || $this->input->raw_input_stream) {
             $HTTP_RAW_POST_DATA = file_get_contents('php://input');
             $post_info = json_decode($HTTP_RAW_POST_DATA, true);
-      // $post_info = $post_info[0];
-      $option_type = array_key_exists('option_type', $post_info) ? $post_info['option_type'] : false;
+            // $post_info = $post_info[0];
+            $option_type = array_key_exists('option_type', $post_info) ? $post_info['option_type'] : false;
             $option_value = array_key_exists('option_value', $post_info) ? $post_info['option_value'] : false;
         }
         if (!$option_type || !$option_value) {
             $missing_types = array();
             $message = "Group option update information was incomplete (missing '";
-      //$message .= !$option_type ? " 'option_type' "
-      if (!$option_type) {
-          $missing_types[] = 'option_type';
-      }
+            //$message .= !$option_type ? " 'option_type' "
+            if (!$option_type) {
+                $missing_types[] = 'option_type';
+            }
             if (!$option_value) {
                 $missing_types[] = 'option_value';
             }
@@ -168,23 +176,23 @@ class Ajax extends Baseline_controller
         $earliest_available_date = new DateTime($valid_date_range['earliest']);
 
         $valid_range = array(
-      'earliest' => $earliest_available_date->format('Y-m-d H:i:s'),
-      'latest' => $latest_available_date->format('Y-m-d H:i:s'),
-      'earliest_available_object' => $earliest_available_date,
-      'latest_available_object' => $latest_available_date,
-    );
+            'earliest' => $earliest_available_date->format('Y-m-d H:i:s'),
+            'latest' => $latest_available_date->format('Y-m-d H:i:s'),
+            'earliest_available_object' => $earliest_available_date,
+            'latest_available_object' => $latest_available_date,
+        );
         $my_times = array_merge($my_times, $valid_range);
 
         $this->page_data['placeholder_info'][$group_id] = array(
-      'group_id' => $group_id,
-      'object_type' => $object_type,
-      'options_list' => $options_list,
-      'group_name' => $group_info['group_name'],
-      'item_list' => $group_info['item_list'],
-      'time_basis' => $time_basis,
-      'time_range' => $time_range,
-      'times' => $my_times,
-    );
+            'group_id' => $group_id,
+            'object_type' => $object_type,
+            'options_list' => $options_list,
+            'group_name' => $group_info['group_name'],
+            'item_list' => $group_info['item_list'],
+            'time_basis' => $time_basis,
+            'time_range' => $time_range,
+            'times' => $my_times,
+        );
         if (!array_key_exists('my_groups', $this->page_data)) {
             $this->page_data['my_groups'] = array($group_id => $group_info);
         } else {
