@@ -32,7 +32,7 @@ class EUS
             'dbprefix' => 'eus.',
             'pconnect' => true,
             'db_debug' => true,
-            'cache_on' => false,
+            'cache_on' => FALSE,
             'cachedir' => '',
             );
             $this->CI->load->database($db_config);
@@ -41,7 +41,7 @@ class EUS
 
     // private function
 
-    public function get_ers_instruments_list($unused_only = false, $filter = '')
+    public function get_ers_instruments_list($unused_only = FALSE, $filter = '')
     {
         $DB_ers = $this->CI->load->database('eus_for_myemsl', true);
 
@@ -102,7 +102,7 @@ class EUS
         $query = $DB_ers->select($select_array)->get(USERS_TABLE);
 
         $results_array = array(
-            'success' => false,
+            'success' => FALSE,
             'message' => "No EUS users found using the filter '*{$filter}*'",
               'names' => array()
         );
@@ -146,7 +146,7 @@ class EUS
         $DB_ers = $this->CI->load->database('eus_for_myemsl', true);
 
         $result_array = array(
-        'success' => false,
+        'success' => FALSE,
         'message' => '',
         'instruments' => array(),
         );
@@ -160,7 +160,7 @@ class EUS
         );
         $DB_ers->where($where_array);
 
-        $prop_exists = $DB_ers->count_all_results(PROPOSALS_TABLE) > 0 ? true : false;
+        $prop_exists = $DB_ers->count_all_results(PROPOSALS_TABLE) > 0 ? true : FALSE;
 
         if (!$prop_exists) {
             $result_array['message'] = "No proposal with ID = {$eus_proposal_id} was found";
@@ -206,9 +206,9 @@ class EUS
         'active_sw' => 'Y',
         'instrument_id' => $eus_instrument_id,
         );
-        $inst_exists = $DB_ers->where($where_array)->count_all_results(INST_TABLE) > 0 ? true : false;
+        $inst_exists = $DB_ers->where($where_array)->count_all_results(INST_TABLE) > 0 ? true : FALSE;
 
-        $result_array = array('success' => false);
+        $result_array = array('success' => FALSE);
 
         if (!$inst_exists) {
             $result_array['message'] = 'No instrument with ID = '.$eus_instrument_id.' was found';
@@ -247,7 +247,7 @@ class EUS
 
     public function get_proposal_name($eus_proposal_id)
     {
-        $result = false;
+        $result = FALSE;
         $DB_ers = $this->CI->load->database('eus_for_myemsl', true);
         $query = $DB_ers->select('title as proposal_name')->get_where(PROPOSALS_TABLE, array('proposal_id' => strval($eus_proposal_id)), 1);
         if ($query && $query->num_rows() > 0) {
@@ -256,11 +256,11 @@ class EUS
         return $result;
     }
 
-    public function get_object_list($object_type, $search_terms = false, $my_objects = false)
+    public function get_object_list($object_type, $search_terms = FALSE, $my_objects = FALSE)
     {
         $DB_ers = $this->CI->load->database('eus_for_myemsl', true);
         $is_emsl_staff = $this->CI->is_emsl_staff;
-        $proposals_available = false;
+        $proposals_available = FALSE;
         if(!$is_emsl_staff) {
             $proposals_available = $this->get_proposals_for_user($this->CI->user_id);
         }
@@ -394,11 +394,11 @@ class EUS
 
         if ($query && $query->num_rows() > 0) {
             foreach ($query->result() as $row) {
-                $start_date = strtotime($row->start_date) ? date_create($row->start_date) : false;
-                $end_date = strtotime($row->end_date) ? date_create($row->end_date) : false;
+                $start_date = strtotime($row->start_date) ? date_create($row->start_date) : FALSE;
+                $end_date = strtotime($row->end_date) ? date_create($row->end_date) : FALSE;
 
-                $currently_active = $start_date && $start_date->getTimestamp() < time() ? true : false;
-                $currently_active = $currently_active && (!$end_date || $end_date->getTimestamp() >= time()) ? true : false;
+                $currently_active = $start_date && $start_date->getTimestamp() < time() ? true : FALSE;
+                $currently_active = $currently_active && (!$end_date OR $end_date->getTimestamp() >= time()) ? true : FALSE;
 
                 if ($is_active == 'active' && !$currently_active) {
                     continue;
@@ -430,10 +430,10 @@ class EUS
         return $results;
     }
 
-    // public function is_emsl_staff($eus_user_id = false){
+    // public function is_emsl_staff($eus_user_id = FALSE){
     //     $user_id = !$eus_user_id ? $this->CI->user_id : $eus_user_id;
     //     $DB_ers = $this->CI->load->database('eus_for_myemsl',true);
-    //     $is_staff = false;
+    //     $is_staff = FALSE;
     //     $select_array = array('person_id');
     //     $where_array = array(
     //         'emsl_employee' => 'Y',

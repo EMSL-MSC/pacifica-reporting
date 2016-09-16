@@ -12,7 +12,7 @@
  */
 
 
-defined('BASEPATH') or exit('No direct script access allowed');
+defined('BASEPATH') OR exit('No direct script access allowed');
 require_once 'Baseline_controller.php';
 
 /**
@@ -40,10 +40,10 @@ require_once 'Baseline_controller.php';
  */
 class Group extends Baseline_controller
 {
+    /**
+     * @var $last_update_time the timestamp when this file was last modified
+     */
     public $last_update_time;
-    public $accepted_object_types;
-    public $accepted_time_basis_types;
-    public $local_resources_folder;
 
 
     /**
@@ -117,21 +117,22 @@ class Group extends Baseline_controller
      */
     public function view(
         $object_type,
-        $time_range = false,
-        $start_date = false,
-        $end_date = false,
-        $time_basis = false
-    ) {
+        $time_range = FALSE,
+        $start_date = FALSE,
+        $end_date = FALSE,
+        $time_basis = FALSE
+    )
+    {
 
         $this->benchmark->mark('controller_view_start');
         $object_type           = singular($object_type);
-        $time_basis            = !empty($time_basis) ? $time_basis : 'modification_time';
+        $time_basis            = ! empty($time_basis) ? $time_basis : 'modification_time';
         $accepted_object_types = array(
                                   'instrument',
                                   'proposal',
                                   'user',
                                  );
-        if (!in_array($object_type, $accepted_object_types)) {
+        if ( ! in_array($object_type, $accepted_object_types)) {
             redirect('group/view/instrument');
         }
 
@@ -158,25 +159,26 @@ class Group extends Baseline_controller
 
         if (empty($my_groups)) {
             $this->page_data['content_view'] = 'object_types/select_some_groups_insert.html';
-        } else {
+        }
+        else {
             $this->page_data['my_groups'] = '';
             foreach ($my_groups as $group_id => $group_info) {
-                $my_start_date = false;
-                $my_end_date = false;
+                $my_start_date = FALSE;
+                $my_end_date = FALSE;
                 $options_list = $group_info['options_list'];
                 $my_start_date = strtotime($start_date) ? $start_date : $options_list['start_time'];
-                $my_start_date = $my_start_date != 0 ? $my_start_date : false;
+                $my_start_date = $my_start_date !== 0 ? $my_start_date : FALSE;
                 $my_end_date = strtotime($end_date) ? $end_date : $options_list['end_time'];
-                $my_end_date = $my_end_date != 0 ? $my_end_date : false;
+                $my_end_date = $my_end_date !== 0 ? $my_end_date : FALSE;
                 $time_basis = $options_list['time_basis'];
                 $time_range = $time_range ? $time_range : $options_list['time_range'];
 
-                if ($time_range && $time_range != $options_list['time_range'] && $time_range != 'custom') {
+                if ($time_range && $time_range !== $options_list['time_range'] && $time_range !== 'custom') {
                     $this->gm->change_group_option($group_id, 'time_range', $time_range);
                 }
 
-                $update_start = !$my_start_date ? true : false;
-                $update_end = !$my_end_date ? true : false;
+                $update_start = !$my_start_date ? TRUE : FALSE;
+                $update_end = !$my_end_date ? TRUE : FALSE;
                 $valid_date_range = $this->gm->earliest_latest_data_for_list(
                     $object_type, $group_info['item_list'], $time_basis
                 );
@@ -261,9 +263,10 @@ class Group extends Baseline_controller
     {
         if ($this->input->post()) {
             $transaction_list = $this->input->post();
-        } else if ($this->input->is_ajax_request() || file_get_contents('php://input')) {
-            $HTTP_RAW_POST_DATA = file_get_contents('php://input');
-            $transaction_list   = json_decode($HTTP_RAW_POST_DATA, true);
+        }
+        else if ($this->input->is_ajax_request() OR file_get_contents('php://input')) {
+            $http_raw_post_data = file_get_contents('php://input');
+            $transaction_list   = json_decode($http_raw_post_data, TRUE);
         }
 
         $results = $this->rep->detailed_transaction_list($transaction_list);
@@ -290,36 +293,60 @@ class Group extends Baseline_controller
      *
      *  @author Ken Auberry <kenneth.auberry@pnnl.gov>
      */
-    public function get_reporting_info_list($object_type, $group_id, $time_basis = false, $time_range = false, $start_date = false, $end_date = false, $with_timeline = true)
+    public function get_reporting_info_list($object_type, $group_id, $time_basis = FALSE, $time_range = FALSE, $start_date = FALSE, $end_date = FALSE, $with_timeline = TRUE)
     {
-        $this->get_reporting_info_list_base($object_type, $group_id, $time_basis, $time_range, $start_date, $end_date, true, false);
+        $this->_get_reporting_info_list_base($object_type, $group_id, $time_basis, $time_range, $start_date, $end_date, TRUE, FALSE);
 
     }
 
-
-    public function get_reporting_info_list_no_timeline($object_type, $group_id, $time_basis = false, $time_range = false, $start_date = false, $end_date = false)
+    /**
+     * [get_reporting_info_list_no_timeline description]
+     * @param  [type]  $object_type [description]
+     * @param  [type]  $group_id    [description]
+     * @param  boolean $time_basis  [description]
+     * @param  boolean $time_range  [description]
+     * @param  boolean $start_date  [description]
+     * @param  boolean $end_date    [description]
+     * @return  [type]  [description]
+     * @author Ken Auberry <kenneth.auberry@pnnl.gov>
+     */
+    public function get_reporting_info_list_no_timeline($object_type, $group_id, $time_basis = FALSE, $time_range = FALSE, $start_date = FALSE, $end_date = FALSE)
     {
-        $this->get_reporting_info_list_base($object_type, $group_id, $time_basis, $time_range, $start_date, $end_date, false, false);
+        $this->_get_reporting_info_list_base($object_type, $group_id, $time_basis, $time_range, $start_date, $end_date, FALSE, FALSE);
 
     }//end get_reporting_info_list_no_timeline()
 
-
-    private function get_reporting_info_list_base($object_type, $group_id, $time_basis, $time_range, $start_date = false, $end_date = false, $with_timeline = true, $full_object = false)
+    /**
+     * [_get_reporting_info_list_base description]
+     * @method _get_reporting_info_list_base
+     * @param  [type]  $object_type   [description]
+     * @param  [type]  $group_id      [description]
+     * @param  [type]  $time_basis    [description]
+     * @param  [type]  $time_range    [description]
+     * @param  boolean $start_date    [description]
+     * @param  boolean $end_date      [description]
+     * @param  boolean $with_timeline [description]
+     * @param  boolean $full_object   [description]
+     * @return [type] [description]
+     * @author Ken Auberry <kenneth.auberry@pnnl.gov>
+     */
+    private function _get_reporting_info_list_base($object_type, $group_id, $time_basis, $time_range, $start_date = FALSE, $end_date = FALSE, $with_timeline = TRUE, $full_object = FALSE)
     {
         $this->benchmark->mark('get_group_info_start');
         $group_info = $this->gm->get_group_info($group_id);
         $this->benchmark->mark('get_group_info_end');
         $item_list    = $group_info['item_list'];
         $options_list = $group_info['options_list'];
-        if ($time_range && $time_range != $options_list['time_range']) {
+        if ($time_range && $time_range !== $options_list['time_range']) {
             $this->gm->change_group_option($group_id, 'time_range', $time_range);
-        } else {
+        }
+        else {
             $time_range = $options_list['time_range'];
         }
 
         $time_basis = !$time_basis ? $options_list['time_basis'] : $time_basis;
-        $start_date = !$start_date || !strtotime($options_list['start_time']) ? $options_list['start_time'] : $start_date;
-        $end_date   = !$end_date || !strtotime($options_list['end_time']) ? $options_list['end_time'] : $end_date;
+        $start_date = !$start_date OR !strtotime($options_list['start_time']) ? $options_list['start_time'] : $start_date;
+        $end_date   = !$end_date OR !strtotime($options_list['end_time']) ? $options_list['end_time'] : $end_date;
 
         $object_id_list = array_values($item_list);
         $this->page_data['object_id_list']         = $object_id_list;
@@ -329,7 +356,7 @@ class Group extends Baseline_controller
 
         $this->benchmark->mark('get_earliest_latest_start');
         $available_time_range = $this->gm->earliest_latest_data_for_list($object_type, $object_id_list, $time_basis);
-        $latest_data          = is_array($available_time_range) && array_key_exists('latest', $available_time_range) ? $available_time_range['latest'] : false;
+        $latest_data          = is_array($available_time_range) && array_key_exists('latest', $available_time_range) ? $available_time_range['latest'] : FALSE;
         $this->benchmark->mark('get_earliest_latest_end');
 
         if (!$latest_data) {
@@ -346,8 +373,8 @@ class Group extends Baseline_controller
         $valid_et = strtotime($end_date);
 
         $this->benchmark->mark('time_range_verify_start');
-        if (!$valid_tr || ($valid_st && $valid_et)) {
-            if ($time_range == 'custom' || ($valid_st && $valid_et)) {
+        if (!$valid_tr OR ($valid_st && $valid_et)) {
+            if ($time_range === 'custom' OR ($valid_st && $valid_et)) {
                 $earliest_available_object = new DateTime($available_time_range['earliest']);
                 $latest_available_object   = new DateTime($available_time_range['latest']);
                 $start_date_object         = new DateTime($start_date);
@@ -374,14 +401,17 @@ class Group extends Baseline_controller
                           'latest_available_object'   => $latest_available_object,
                           'message'                   => '<p>Using '.$end_date_object->format('Y-m-d').' as the new origin time</p>',
                          );
-            } else {
+            }
+            else {
                 $time_range = '1 week';
                 $times      = time_range_to_date_pair($time_range, $available_time_range);
             }//end if
-        } else {
-            if (($valid_st || $valid_et) && !($valid_st && $valid_et)) {
+        }
+        else {
+            if (($valid_st OR $valid_et) && !($valid_st && $valid_et)) {
                 $times = time_range_to_date_pair($time_range, $available_time_range, $start_date, $end_date);
-            } else {
+            }
+            else {
                 $times = time_range_to_date_pair($time_range, $available_time_range);
             }
         }//end if
@@ -401,11 +431,12 @@ class Group extends Baseline_controller
 
         if ($with_timeline) {
             $this->load->view('object_types/group_body_insert.html', $this->page_data);
-        } else {
+        }
+        else {
             $this->load->view('object_types/group_pie_scripts_insert.html', $this->page_data);
         }
 
-    }//end get_reporting_info_list_base()
+    }//end _get_reporting_info_list_base()
 
 
     /**
@@ -421,14 +452,14 @@ class Group extends Baseline_controller
     public function get_group_timeline_data($object_type, $group_id, $start_date, $end_date)
     {
         if (!in_array($object_type, $this->accepted_object_types)) {
-            return false;
+            return FALSE;
         }
 
         $group_info = $this->gm->get_group_info($group_id);
 
         $object_list    = $group_info['item_list'];
         $retrieval_func = "summarize_uploads_by_{$object_type}_list";
-        $results        = $this->summary->$retrieval_func($object_list, $start_date, $end_date, true, $group_info['options_list']['time_basis']);
+        $results        = $this->summary->$retrieval_func($object_list, $start_date, $end_date, TRUE, $group_info['options_list']['time_basis']);
         $downselect     = $results['day_graph']['by_date'];
         $return_array   = array(
                            'file_volumes'       => array_values($downselect['file_volume_array']),

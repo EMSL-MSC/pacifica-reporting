@@ -53,12 +53,12 @@ function generate_bread_crumbs($path, $controller, $method){
 
 function is_file_on_tape($path){
   $on_tape = check_disk_stage($path,TRUE);
-  $on_tape = $on_tape == 0 ? true : false;
+  $on_tape = $on_tape == 0 ? true : FALSE;
   return $on_tape;
 }
 
 
-function check_disk_stage($path, $numeric = false){
+function check_disk_stage($path, $numeric = FALSE){
   //fake it out until I get real support
   if($numeric){
     return 0;

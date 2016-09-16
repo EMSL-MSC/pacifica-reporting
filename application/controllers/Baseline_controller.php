@@ -38,10 +38,10 @@ class Baseline_controller extends CI_Controller
             $message = "Could not find a user with an EUS Person ID of {$this->user_id}";
             show_error($message, 401, 'User Authorization Error');
         }
-        $this->username = $user_info['first_name'] != null ? $user_info['first_name'] : 'Anonymous Stranger';
+        $this->username = $user_info['first_name'] != NULL ? $user_info['first_name'] : 'Anonymous Stranger';
         $this->fullname = "{$this->username} {$user_info['last_name']}";
-        $this->is_emsl_staff = $user_info['emsl_employee'] == 'Y' ? true : false;
-        // $this->is_emsl_staff = false;
+        $this->is_emsl_staff = $user_info['emsl_employee'] == 'Y' ? TRUE : FALSE;
+        // $this->is_emsl_staff = FALSE;
         $this->site_color = $this->config->item('site_color');
 
         $this->email = $user_info['email_address'];
@@ -55,9 +55,8 @@ class Baseline_controller extends CI_Controller
         $this->page_data['infoData'] = array('current_credentials' => $this->user_id, 'full_name' => $this->fullname);
         $this->page_data['username'] = $this->username;
         $this->page_data['fullname'] = $this->fullname;
-        $this->page_data['load_prototype'] = false;
-        $this->page_data['load_jquery'] = true;
+        $this->page_data['load_prototype'] = FALSE;
+        $this->page_data['load_jquery'] = TRUE;
         $this->controller_name = $this->uri->rsegment(1);
     }
 }
-?>

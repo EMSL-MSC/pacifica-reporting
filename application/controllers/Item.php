@@ -22,7 +22,7 @@ class Item extends Baseline_controller
         $this->local_resources_folder = $this->config->item('local_resources_folder');
     }
 
-    public function view($object_type, $group_id, $time_range = '1-month', $start_date = false, $end_date = false)
+    public function view($object_type, $group_id, $time_range = '1-month', $start_date = FALSE, $end_date = FALSE)
     {
         $object_type = singular($object_type);
         $accepted_object_types = array('instrument', 'proposal', 'user');
@@ -102,24 +102,24 @@ class Item extends Baseline_controller
         $this->load->view('reporting_view.html', $this->page_data);
     }
 
-    public function get_reporting_info($object_type, $object_id, $time_range = '1-week', $start_date = false, $end_date = false, $with_timeline = true)
+    public function get_reporting_info($object_type, $object_id, $time_range = '1-week', $start_date = FALSE, $end_date = FALSE, $with_timeline = true)
     {
         $this->get_reporting_info_base($object_type, $object_id, $time_range, $start_date, $end_date, true);
     }
 
-    public function get_reporting_info_no_timeline($object_type, $object_id, $time_range = '1-week', $start_date = false, $end_date = false)
+    public function get_reporting_info_no_timeline($object_type, $object_id, $time_range = '1-week', $start_date = FALSE, $end_date = FALSE)
     {
-        $this->get_reporting_info_base($object_type, $object_id, $time_range, $start_date, $end_date, false);
+        $this->get_reporting_info_base($object_type, $object_id, $time_range, $start_date, $end_date, FALSE);
     }
 
     // Call to retrieve fill-in HTML for reporting block entries
-    private function get_reporting_info_base($object_type, $object_id, $time_range = '1-week', $start_date = false, $end_date = false, $with_timeline = true, $full_object = false)
+    private function get_reporting_info_base($object_type, $object_id, $time_range = '1-week', $start_date = FALSE, $end_date = FALSE, $with_timeline = true, $full_object = FALSE)
     {
         $this->page_data['object_id'] = $object_id;
         $this->page_data["{$object_type}_id"] = $object_id;
         $this->page_data['object_type'] = $object_type;
         $available_time_range = $this->rep->earliest_latest_data($object_type, $object_id);
-        $latest_data = is_array($available_time_range) && array_key_exists('latest', $available_time_range) ? $available_time_range['latest'] : false;
+        $latest_data = is_array($available_time_range) && array_key_exists('latest', $available_time_range) ? $available_time_range['latest'] : FALSE;
         if (!$latest_data) {
             //no data available for this object
             $this->page_data['results_message'] = 'No Data Available for this '.ucwords($object_type);
@@ -166,7 +166,7 @@ class Item extends Baseline_controller
                 $times = time_range_to_date_pair($time_range, $available_time_range);
             }
         } else { //time_range is apparently valid
-            if (($valid_st || $valid_et) && !($valid_st && $valid_et)) {
+            if (($valid_st OR $valid_et) && !($valid_st && $valid_et)) {
                 //looks like we want an offset time either start or finish
                 $times = time_range_to_date_pair($time_range, $available_time_range, $start_date, $end_date);
             } else {
@@ -194,7 +194,7 @@ class Item extends Baseline_controller
     {
         if (!in_array($object_type, $this->accepted_object_types)) {
             //return an error
-            return false;
+            return FALSE;
         }
 
         $retrieval_func = "summarize_uploads_by_{$object_type}";

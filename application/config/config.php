@@ -26,7 +26,7 @@ date_default_timezone_set('America/Los_Angeles');
 |
 */
 $protocol = isset($_SERVER["HTTPS"]) && $_SERVER["HTTPS"] == "on" ? "https" : "http";
-$rooted = isset($_SERVER["CI_ROOTED"]) && $_SERVER["CI_ROOTED"] == true ? true : false;
+$rooted = isset($_SERVER["CI_ROOTED"]) && $_SERVER["CI_ROOTED"] == true ? true : FALSE;
 $basedir = $rooted ? '' : '/myemsl/reporting';
 $config['base_url']	= "{$protocol}://".$_SERVER["SERVER_NAME"].$basedir;
 $config['base_dir'] = $basedir;

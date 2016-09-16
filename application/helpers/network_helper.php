@@ -7,20 +7,20 @@ function verify_macaddr_format($macaddr){
   $matches = array();
   $v_macaddr = '';
   $match_results = preg_match($pattern,$macaddr,$matches);
-  if($match_results || $match_results > 0) {
+  if($match_results OR $match_results > 0) {
     for($i=1;$i<7;$i++){
       if(strLen($v_macaddr)>0) $v_macaddr .= ':'; 
       $v_macaddr .= $matches[$i];
     }
   }else{
-    $v_macaddr = false;
+    $v_macaddr = FALSE;
   }
   return strtolower($v_macaddr);
 }
 
 function verify_ip_address_format($ip){
   $long_ip = ip2long($ip);
-  if(!$long_ip) {return false;}
+  if(!$long_ip) {return FALSE;}
   $v_ip = long2ip($long_ip);
   return $v_ip;
 }
@@ -94,7 +94,7 @@ function truncate_text($string, $limit, $break=" ", $pad="...")
   if(strlen($string) <= $limit) return $string;
 
   $string = substr($string, 0, $limit);
-  if(false !== ($breakpoint = strrpos($string, $break))) {
+  if(FALSE !== ($breakpoint = strrpos($string, $break))) {
     $string = substr($string, 0, $breakpoint);
   }
 

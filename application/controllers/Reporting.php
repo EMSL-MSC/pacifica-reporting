@@ -25,7 +25,7 @@ class Reporting extends CI_Controller
     }//end index()
 
 
-    public function group_view($object_type, $time_range = false, $start_date = false, $end_date = false, $time_basis = false)
+    public function group_view($object_type, $time_range = FALSE, $start_date = FALSE, $end_date = FALSE, $time_basis = FALSE)
     {
         $url = rtrim("group/view/{$object_type}/{$time_range}/{$start_date}/{$end_date}/{$time_basis}", "/");
         redirect($url, 'location', 301);
@@ -33,7 +33,7 @@ class Reporting extends CI_Controller
     }//end group_view()
 
 
-    public function view($object_type, $time_range = false, $start_date = false, $end_date = false, $time_basis = false)
+    public function view($object_type, $time_range = FALSE, $start_date = FALSE, $end_date = FALSE, $time_basis = FALSE)
     {
         $url = rtrim("item/view/{$object_type}/{$time_range}/{$start_date}/{$end_date}/{$time_basis}", "/");
         redirect($url, 'location', 301);

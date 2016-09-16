@@ -28,7 +28,7 @@ class Reporting_model extends CI_Model
 
     public function detailed_transaction_list($transaction_list)
     {
-        $available_proposals = !$this->is_emsl_staff ? $this->eus->get_proposals_for_user($this->user_id) : false;
+        $available_proposals = !$this->is_emsl_staff ? $this->eus->get_proposals_for_user($this->user_id) : FALSE;
         $eus_select_array    = array(
                                 'i.transaction',
                                 'i.group_type as category',
@@ -45,7 +45,7 @@ class Reporting_model extends CI_Model
         if($eus_query && $eus_query->num_rows() > 0) {
             foreach($eus_query->result() as $row){
                 if($row->category == 'instrument') {
-                    $inst_id = false;
+                    $inst_id = FALSE;
                     if($row->group_type == 'omics.dms.instrument_id') {
                         $id = intval($row->group_name);
                     }else if(stristr($row->group_type, 'instrument.')) {
@@ -80,7 +80,7 @@ class Reporting_model extends CI_Model
             foreach($query->result_array() as $row){
                 $row['proposal_id']   = array_key_exists('proposal', $eus_lookup[$row['upload_id']]) ? $eus_lookup[$row['upload_id']]['proposal'] : "Unknown";
                 $row['instrument_id'] = array_key_exists('instrument', $eus_lookup[$row['upload_id']]) ? $eus_lookup[$row['upload_id']]['instrument'] : "Unknown";
-                if($this->is_emsl_staff || in_array($row['proposal_id'], $available_proposals)) {
+                if($this->is_emsl_staff OR in_array($row['proposal_id'], $available_proposals)) {
                     $results[$row['upload_id']] = $row;
                 }
             }
@@ -91,7 +91,7 @@ class Reporting_model extends CI_Model
     }//end detailed_transaction_list()
 
 
-    private function get_files_for_user_list($eus_user_id_list, $start_date, $end_date, $unfiltered = false, $time_basis)
+    private function get_files_for_user_list($eus_user_id_list, $start_date, $end_date, $unfiltered = FALSE, $time_basis)
     {
         extract($this->canonicalize_date_range($start_date, $end_date));
         switch ($time_basis) {

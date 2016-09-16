@@ -2,7 +2,7 @@
 if(!defined('BASEPATH'))
   exit('No direct script access allowed');
 
-  function friendlyElapsedTime($datetime_object, $base_time_obj = false, $use_ago = true){
+  function friendlyElapsedTime($datetime_object, $base_time_obj = FALSE, $use_ago = true){
     date_default_timezone_set('America/Los_Angeles');
 
     if(!$base_time_obj) {
@@ -101,9 +101,9 @@ if(!defined('BASEPATH'))
 
   }
 
-  function time_range_to_date_pair($time_range, $valid_date_range = false, $start_date = false, $end_date = false){
+  function time_range_to_date_pair($time_range, $valid_date_range = FALSE, $start_date = FALSE, $end_date = FALSE){
     // var_dump($valid_date_range);
-    $latest_available_date = is_array($valid_date_range) && array_key_exists('latest',$valid_date_range) ? $valid_date_range['latest'] : false;
+    $latest_available_date = is_array($valid_date_range) && array_key_exists('latest',$valid_date_range) ? $valid_date_range['latest'] : FALSE;
     if(!$latest_available_date){
       $latest_available_date = new DateTime();
       $earliest_available_date = new DateTime('1991-01-01');
@@ -173,16 +173,16 @@ if(!defined('BASEPATH'))
     return $results;
   }
 
-  function day_graph_to_series($day_graph_info, $start_date = false, $end_date = false){
+  function day_graph_to_series($day_graph_info, $start_date = FALSE, $end_date = FALSE){
     // echo "<pre>";
     // var_dump($day_graph_info);
     // echo "</pre>";
 
     $keys = array_keys($day_graph_info['by_date']);
     $fd = array_shift($keys);
-    $fd_object = $start_date != false ? new DateTime($start_date) : new DateTime($fd);
+    $fd_object = $start_date != FALSE ? new DateTime($start_date) : new DateTime($fd);
     $ld = sizeof($keys) > 0 ? array_pop($keys) : clone $fd_object;
-    $ld_object = $end_date != false ? new DateTime($end_date) : new DateTime($ld);
+    $ld_object = $end_date != FALSE ? new DateTime($end_date) : new DateTime($ld);
     // $ld_object = new DateTime($ld);
 
     $current_object = clone $fd_object;

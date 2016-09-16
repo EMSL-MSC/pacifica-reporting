@@ -50,7 +50,7 @@ class Summary_model extends CI_Model
     }//end __construct()
 
 
-    public function summarize_uploads_by_user_list($eus_person_id_list, $start_date, $end_date, $make_day_graph, $time_basis = false)
+    public function summarize_uploads_by_user_list($eus_person_id_list, $start_date, $end_date, $make_day_graph, $time_basis = FALSE)
     {
         $group_type = 'user';
         return $this->summarize_uploads_general($eus_person_id_list, $start_date, $end_date, $make_day_graph, $time_basis, $group_type);
@@ -58,7 +58,7 @@ class Summary_model extends CI_Model
     }//end summarize_uploads_by_user_list()
 
 
-    public function summarize_uploads_by_proposal_list($eus_proposal_id_list, $start_date, $end_date, $make_day_graph, $time_basis = false)
+    public function summarize_uploads_by_proposal_list($eus_proposal_id_list, $start_date, $end_date, $make_day_graph, $time_basis = FALSE)
     {
         $group_type = 'proposal';
         return $this->summarize_uploads_general($eus_proposal_id_list, $start_date, $end_date, $make_day_graph, $time_basis, $group_type);
@@ -66,7 +66,7 @@ class Summary_model extends CI_Model
     }//end summarize_uploads_by_proposal_list()
 
 
-    public function summarize_uploads_by_instrument_list($eus_instrument_id_list, $start_date, $end_date, $make_day_graph, $time_basis = false)
+    public function summarize_uploads_by_instrument_list($eus_instrument_id_list, $start_date, $end_date, $make_day_graph, $time_basis = FALSE)
     {
         $group_type = 'instrument';
         return $this->summarize_uploads_general($eus_instrument_id_list, $start_date, $end_date, $make_day_graph, $time_basis, $group_type);
@@ -74,14 +74,14 @@ class Summary_model extends CI_Model
     }//end summarize_uploads_by_instrument_list()
 
 
-    public function summarize_uploads_general($id_list, $start_date, $end_date, $make_day_graph, $time_basis = false, $group_type)
+    public function summarize_uploads_general($id_list, $start_date, $end_date, $make_day_graph, $time_basis = FALSE, $group_type)
     {
         extract($this->canonicalize_date_range($start_date, $end_date));
         $start_date_obj  = new DateTime($start_date);
         $end_date_obj    = new DateTime($end_date);
         $available_dates = $this->generate_available_dates($start_date_obj, $end_date_obj);
 
-        if($group_type == 'instrument' || $group_type == 'proposal') {
+        if($group_type == 'instrument' OR $group_type == 'proposal') {
             $group_list_retrieval_fn_name = "get_{$group_type}_group_list";
             $group_collection = array();
             foreach ($id_list as $item_id) {
@@ -204,7 +204,7 @@ class Summary_model extends CI_Model
                     'user'       => array(),
                    );
         // echo $this->db->last_query();
-        $available_proposals = !$this->is_emsl_staff ? $this->eus->get_proposals_for_user($this->user_id) : false;
+        $available_proposals = !$this->is_emsl_staff ? $this->eus->get_proposals_for_user($this->user_id) : FALSE;
 
         if($query && $query->num_rows() > 0) {
             foreach($query->result() as $row){
@@ -213,7 +213,7 @@ class Summary_model extends CI_Model
                     $results[$row->category][$row->group_name] = $row->item_count;
                 }
 
-                if($this->is_emsl_staff || ($row->category == 'proposal' && in_array($row->group_name, $available_proposals))) {
+                if($this->is_emsl_staff OR ($row->category == 'proposal' && in_array($row->group_name, $available_proposals))) {
                     $results[$row->category][$row->group_name] = $row->item_count;
                 }else if($row->category == 'proposal' && !in_array($row->group_name, $available_proposals)) {
                     if(!isset($results[$row->category]['Other'])) {
@@ -279,7 +279,7 @@ class Summary_model extends CI_Model
                     'instrument' => array(),
                     'user'       => array(),
                    );
-        $available_proposals = !$this->is_emsl_staff ? $this->eus->get_proposals_for_user($this->user_id) : false;
+        $available_proposals = !$this->is_emsl_staff ? $this->eus->get_proposals_for_user($this->user_id) : FALSE;
 
         if($query && $query->num_rows() > 0) {
             foreach($query->result() as $row){
@@ -288,7 +288,7 @@ class Summary_model extends CI_Model
                     $results[$row->category][$row->group_name] = $row->item_count;
                 }
 
-                if($this->is_emsl_staff || ($row->category == 'proposal' && in_array($row->group_name, $available_proposals))) {
+                if($this->is_emsl_staff OR ($row->category == 'proposal' && in_array($row->group_name, $available_proposals))) {
                     $results[$row->category][$row->group_name] = $row->item_count;
                 }else if($row->category == 'proposal' && !in_array($row->group_name, $available_proposals)) {
                     if(!isset($results[$row->category]['Other'])) {
@@ -482,7 +482,7 @@ class Summary_model extends CI_Model
     }//end temp_stats_to_output()
 
 
-    public function fix_time_range($time_range, $start_date, $end_date, $valid_date_range = false)
+    public function fix_time_range($time_range, $start_date, $end_date, $valid_date_range = FALSE)
     {
         if (!empty($start_date) && !empty($end_date)) {
             $times = $this->canonicalize_date_range($start_date, $end_date);
@@ -539,7 +539,7 @@ class Summary_model extends CI_Model
         $end_time->setTime(23, 59, 59);
 
         if ($end_time < $start_time && !empty($end_time)) {
-            $temp_start = $end_time ? clone $end_time : false;
+            $temp_start = $end_time ? clone $end_time : FALSE;
             $end_time   = clone $start_time;
             $start_time = $temp_start;
         }
@@ -548,7 +548,7 @@ class Summary_model extends CI_Model
                 'start_time_object' => $start_time,
                 'end_time_object'   => $end_time,
                 'start_time'        => $start_time->format('Y-m-d H:i:s'),
-                'end_time'          => $end_time ? $end_time->format('Y-m-d H:i:s') : false,
+                'end_time'          => $end_time ? $end_time->format('Y-m-d H:i:s') : FALSE,
                );
 
     }//end canonicalize_date_range()

@@ -4,7 +4,7 @@ if(!defined('BASEPATH'))
 
 function get_user_details_myemsl($eus_id){
   $CI =& get_instance();
-  $results = false;
+  $results = FALSE;
   $users_table = "users";
   $DB_eus = $CI->load->database('eus_for_myemsl',TRUE);
 

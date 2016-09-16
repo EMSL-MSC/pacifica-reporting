@@ -57,7 +57,7 @@ $db['default'] = array(
     'dbdriver' => "sqlite",
     'pconnect' => true,
     'db_debug' => true,
-    'cache_on' => false,
+    'cache_on' => FALSE,
     'cachedir' => ""
 );
 
@@ -67,7 +67,7 @@ $db['eus_for_myemsl'] = array(
     'dbdriver' => "sqlite",
     'pconnect' => true,
     'db_debug' => true,
-    'cache_on' => false,
+    'cache_on' => FALSE,
 'cachedir' => ""
 );
 
@@ -77,7 +77,7 @@ $db['website_prefs'] = array(
     'dbdriver' => "sqlite",
     'pconnect' => true,
     'db_debug' => true,
-    'cache_on' => false,
+    'cache_on' => FALSE,
     'cachedir' => ""
 );
 

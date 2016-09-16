@@ -4,7 +4,7 @@ if(!defined('BASEPATH'))
 // --------------------------------------------------------------------
 
 function get_user(){
-  $user = false;
+  $user = FALSE;
   if(isset($_SERVER["REMOTE_USER"])){
     $user = strtolower(str_replace('@PNL.GOV','',$_SERVER["REMOTE_USER"]));
   }

@@ -34,7 +34,7 @@ class Testing extends Baseline_controller
         echo '</pre>';
     }
 
-    public function test_get_uploads_for_user($eus_person_id, $start_date = false, $end_date = false)
+    public function test_get_uploads_for_user($eus_person_id, $start_date = FALSE, $end_date = FALSE)
     {
         $results = $this->summary->summarize_uploads_by_user($eus_person_id, $start_date, $end_date);
         echo '<pre>';
@@ -42,7 +42,7 @@ class Testing extends Baseline_controller
         echo '</pre>';
     }
 
-    public function test_get_uploads_for_user_list($eus_person_id_list, $start_date = false, $end_date = false)
+    public function test_get_uploads_for_user_list($eus_person_id_list, $start_date = FALSE, $end_date = FALSE)
     {
         $eus_person_id_list = explode('-', $eus_person_id_list);
         $results = $this->summary->summarize_uploads_by_user_list($eus_person_id_list, $start_date, $end_date, true);
@@ -51,7 +51,7 @@ class Testing extends Baseline_controller
         echo '</pre>';
     }
 
-    public function test_get_uploads_for_instrument($eus_instrument_id_list, $start_date = false, $end_date = false)
+    public function test_get_uploads_for_instrument($eus_instrument_id_list, $start_date = FALSE, $end_date = FALSE)
     {
         $eus_instrument_id_list = explode('-', $eus_instrument_id_list);
         $results = $this->summary->summarize_uploads_by_instrument_list($eus_instrument_id_list, $start_date, $end_date, true, 'modified_time');
