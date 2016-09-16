@@ -36,7 +36,7 @@ class Item extends Baseline_controller
       '/resources/scripts/select2/select2.css',
       '/resources/scripts/bootstrap/css/bootstrap.css',
       '/resources/scripts/bootstrap-daterangepicker/daterangepicker.css',
-      APPPATH.'resources/stylesheets/reporting.css',
+      '/project_resources/stylesheets/reporting.css',
     );
         $this->page_data['script_uris'] = array(
       '/resources/scripts/spinner/spin.min.js',
