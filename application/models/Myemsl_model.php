@@ -43,13 +43,13 @@ class Myemsl_model extends CI_Model
 
         try{
               $response  = $session->get('/myemsl/userinfo');
-              $user_info = json_decode($response->body, true);
+              $user_info = json_decode($response->body, TRUE);
         }catch(Exception $e){
               $user_info = array('error' => 'Unable to retrieve User Information');
               return $user_info;
         }
 
-        $DB_myemsl = $this->load->database('default', true);
+        $DB_myemsl = $this->load->database('default', TRUE);
 
         // go retrieve the instrument/group lookup table
         $DB_myemsl->like('type', 'Instrument.')->or_like('type', 'omics.dms.instrument');

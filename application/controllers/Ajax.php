@@ -1,6 +1,6 @@
 <?php
 /**
- * Ajax
+ * Ajax Controller
  *
  * PHP version 5.5
  *
@@ -11,14 +11,6 @@
  * @link     http://github.com/EMSL-MSC/Pacifica-reporting
  */
 
-/** ----------------------------------------------------------------------------
- *
- * Ajax Controller
- *
- *  API functionality for Ajax calls from UI
- *
- * ----------------------------------------------------------------------------
- */
 
 defined('BASEPATH') OR exit('No direct script access allowed');
 require_once 'Baseline_controller.php';
@@ -37,7 +29,7 @@ require_once 'Baseline_controller.php';
  * @link    http://github.com/EMSL-MSC/Pacifica-reporting
 
  * @uses   Reporting_model
- * @uses   Group_info_model
+ * @uses   Group_Info_Model
  * @uses   Summary_model
  * @uses   EUS               EUS Database access library
  * @see    https://github.com/EMSL-MSC/pacifica-reporting
@@ -46,7 +38,7 @@ require_once 'Baseline_controller.php';
 class Ajax extends Baseline_controller
 {
     /**
-     * @var $last_update_time the timestamp when this file was last modified
+     * Contains the timestamp when this file was last modified
      */
     public $last_update_time;
 
@@ -61,7 +53,7 @@ class Ajax extends Baseline_controller
     {
         parent::__construct();
         $this->load->model('Reporting_model', 'rep');
-        $this->load->model('Group_info_model', 'gm');
+        $this->load->model('Group_Info_Model', 'gm');
         $this->load->model('Summary_model', 'summary');
         $this->load->library('EUS', '', 'eus');
         // $this->load->helper(array('network','file_info','inflector','time','item','search_term','cookie'));
@@ -74,9 +66,9 @@ class Ajax extends Baseline_controller
     /**
      * [make_new_group description]
      *
-     * @method make_new_group
+     * @param [type] $object_type [description]
      *
-     * @param  [type] $object_type [description]
+     * @method make_new_group
      *
      * @return [type] [description]
      *
@@ -106,9 +98,9 @@ class Ajax extends Baseline_controller
     /**
      * [change_group_name description]
      *
-     * @method change_group_name
+     * @param [type] $group_id [description]
      *
-     * @param  [type] $group_id [description]
+     * @method change_group_name
      *
      * @return [type] [description]
      *
@@ -172,9 +164,9 @@ class Ajax extends Baseline_controller
     /**
      * [change_group_option description]
      *
-     * @method change_group_option
+     * @param boolean $group_id [description]
      *
-     * @param  boolean $group_id [description]
+     * @method change_group_option
      *
      * @return [type] [description]
      *
@@ -238,15 +230,14 @@ class Ajax extends Baseline_controller
     /**
      * [get_group_container description]
      *
+     * @param [type]  $object_type [description]
+     * @param [type]  $group_id    [description]
+     * @param boolean $time_range  [description]
+     * @param boolean $start_date  [description]
+     * @param boolean $end_date    [description]
+     * @param boolean $time_basis  [description]
+     *
      * @method get_group_container
-     *
-     * @param  [type]  $object_type [description]
-     * @param  [type]  $group_id    [description]
-     * @param  boolean $time_range  [description]
-     * @param  boolean $start_date  [description]
-     * @param  boolean $end_date    [description]
-     * @param  boolean $time_basis  [description]
-     *
      * @return [type] [description]
      *
      * @author Ken Auberry <kenneth.auberry@pnnl.gov>
@@ -304,14 +295,13 @@ class Ajax extends Baseline_controller
     }
 
     /**
-     * [update_object_preferences description]
+     * Allows the user to change information about a given group object
+     *
+     * @param string  $object_type type of object to update
+     * @param boolean $group_id    ID from *reporting_object_groups* table
      *
      * @method update_object_preferences
-     *
-     * @param  [type]  $object_type [description]
-     * @param  boolean $group_id    [description]
-     *
-     * @return [type] [description]
+     * @return none
      *
      * @author Ken Auberry <kenneth.auberry@pnnl.gov>
      */
@@ -335,13 +325,12 @@ class Ajax extends Baseline_controller
     }
 
     /**
-     * [remove_group description]
+     * API call to remove a group collection object from the prefs database
+     *
+     * @param boolean $group_id the integer ID from the *reporting_object_groups* table
      *
      * @method remove_group
-     *
-     * @param  boolean $group_id [description]
-     *
-     * @return [type] [description]
+     * @return string json status callback
      *
      * @author Ken Auberry <kenneth.auberry@pnnl.gov>
      */
@@ -373,14 +362,14 @@ class Ajax extends Baseline_controller
     /**
      * [get_object_group_lookup description]
      *
+     * @param string  $object_type [description]
+     * @param integer $group_id    [description]
+     * @param string  $filter      [description]
+     *
      * @method get_object_group_lookup
-     *
-     * @param  [type] $object_type [description]
-     * @param  [type] $group_id    [description]
-     * @param  string $filter      [description]
-     *
      * @return [type] [description]
-     *
+     * @uses   Group::get_selected_objects
+     * @uses   EUS::get_object_list
      * @author Ken Auberry <kenneth.auberry@pnnl.gov>
      */
     public function get_object_group_lookup($object_type, $group_id, $filter = '')

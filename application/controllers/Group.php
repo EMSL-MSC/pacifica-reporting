@@ -32,7 +32,7 @@ require_once 'Baseline_controller.php';
  * @link    http://github.com/EMSL-MSC/Pacifica-reporting
 
  * @uses   Reporting_model
- * @uses   Group_info_model
+ * @uses   Group_Info_Model
  * @uses   Summary_model
  * @uses   EUS               EUS Database access library
  * @see    https://github.com/EMSL-MSC/pacifica-reporting
@@ -41,7 +41,9 @@ require_once 'Baseline_controller.php';
 class Group extends Baseline_controller
 {
     /**
-     * @var $last_update_time the timestamp when this file was last modified
+     * The timestamp when this file was last modified
+     *
+     * @var $last_update_time
      */
     public $last_update_time;
 
@@ -55,7 +57,7 @@ class Group extends Baseline_controller
     {
         parent::__construct();
         $this->load->model('Reporting_model', 'rep');
-        $this->load->model('Group_info_model', 'gm');
+        $this->load->model('Group_Info_Model', 'gm');
         $this->load->model('Summary_model', 'summary');
         $this->load->library('EUS', '', 'eus');
         $this->load->helper(
@@ -132,7 +134,7 @@ class Group extends Baseline_controller
                                   'proposal',
                                   'user',
                                  );
-        if ( ! in_array($object_type, $accepted_object_types)) {
+        if(!in_array($object_type, $accepted_object_types)) {
             redirect('group/view/instrument');
         }
 
@@ -279,18 +281,17 @@ class Group extends Baseline_controller
     /**
      *  [get_reporting_info_list description]
      *
-     *  @method get_reporting_info_list
-     *
-     *  @param [type]  $object_type   [description]
-     *  @param [type]  $group_id      [description]
+     *  @param string  $object_type   [description]
+     *  @param integer $group_id      [description]
      *  @param boolean $time_basis    [description]
      *  @param boolean $time_range    [description]
      *  @param boolean $start_date    [description]
      *  @param boolean $end_date      [description]
      *  @param boolean $with_timeline [description]
      *
-     *  @return [type]   [description]
+     *  @return none   pushes to viewfile
      *
+     *  @method get_reporting_info_list
      *  @author Ken Auberry <kenneth.auberry@pnnl.gov>
      */
     public function get_reporting_info_list($object_type, $group_id, $time_basis = FALSE, $time_range = FALSE, $start_date = FALSE, $end_date = FALSE, $with_timeline = TRUE)
@@ -301,13 +302,16 @@ class Group extends Baseline_controller
 
     /**
      * [get_reporting_info_list_no_timeline description]
-     * @param  [type]  $object_type [description]
-     * @param  [type]  $group_id    [description]
-     * @param  boolean $time_basis  [description]
-     * @param  boolean $time_range  [description]
-     * @param  boolean $start_date  [description]
-     * @param  boolean $end_date    [description]
-     * @return  [type]  [description]
+     *
+     * @param string  $object_type [description]
+     * @param integer $group_id    [description]
+     * @param boolean $time_basis  [description]
+     * @param boolean $time_range  [description]
+     * @param boolean $start_date  [description]
+     * @param boolean $end_date    [description]
+
+     * @method get_reporting_info_list_no_timeline
+     * @return none  pushes to viewfile
      * @author Ken Auberry <kenneth.auberry@pnnl.gov>
      */
     public function get_reporting_info_list_no_timeline($object_type, $group_id, $time_basis = FALSE, $time_range = FALSE, $start_date = FALSE, $end_date = FALSE)
@@ -318,16 +322,18 @@ class Group extends Baseline_controller
 
     /**
      * [_get_reporting_info_list_base description]
-     * @method _get_reporting_info_list_base
-     * @param  [type]  $object_type   [description]
-     * @param  [type]  $group_id      [description]
-     * @param  [type]  $time_basis    [description]
-     * @param  [type]  $time_range    [description]
-     * @param  boolean $start_date    [description]
-     * @param  boolean $end_date      [description]
-     * @param  boolean $with_timeline [description]
-     * @param  boolean $full_object   [description]
+     *
+     * @param [type]  $object_type   [description]
+     * @param [type]  $group_id      [description]
+     * @param [type]  $time_basis    [description]
+     * @param [type]  $time_range    [description]
+     * @param boolean $start_date    [description]
+     * @param boolean $end_date      [description]
+     * @param boolean $with_timeline [description]
+     * @param boolean $full_object   [description]
+
      * @return [type] [description]
+     * @method _get_reporting_info_list_base
      * @author Ken Auberry <kenneth.auberry@pnnl.gov>
      */
     private function _get_reporting_info_list_base($object_type, $group_id, $time_basis, $time_range, $start_date = FALSE, $end_date = FALSE, $with_timeline = TRUE, $full_object = FALSE)

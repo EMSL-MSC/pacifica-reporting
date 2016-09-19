@@ -1,15 +1,50 @@
 <?php
+/**
+ * Item Controller
+ *
+ * PHP version 5.5
+ *
+ * @category Page_Controller
+ * @package  Pacifica-reporting
+ * @author   Ken Auberry <kenneth.auberry@pnnl.gov>
+ * @license  BSD https://opensource.org/licenses/BSD-3-Clause
+ * @link     http://github.com/EMSL-MSC/Pacifica-reporting
+ */
 
-defined('BASEPATH') or exit('No direct script access allowed');
+
+defined('BASEPATH') OR exit('No direct script access allowed');
 require_once 'Baseline_controller.php';
 
+/**
+ *  Item is a CI controller class that extends Baseline_controller
+ *
+ *  The *Item* class contains largely deprecated functionality, and will likely
+ *  be removed in a later release
+ *
+ * @category Page_Controller
+ * @package  Pacifica-reporting
+ * @author   Ken Auberry <kenneth.auberry@pnnl.gov>
+ *
+ * @license BSD https://opensource.org/licenses/BSD-3-Clause
+ * @link    http://github.com/EMSL-MSC/Pacifica-reporting
+
+ * @uses   Reporting_model
+ * @uses   EUS             EUS Database access library
+ * @access public
+ */
 class Item extends Baseline_controller
 {
+    /**
+     * Contains the timestamp when this file was last modified
+     */
     public $last_update_time;
-    public $accepted_object_types;
-    public $accepted_time_basis_types;
-    public $local_resources_folder;
 
+    /**
+     * [__construct description]
+     *
+     * @method __construct
+     * @author Ken Auberry <kenneth.auberry@pnnl.gov>
+     */
     public function __construct()
     {
         parent::__construct();
@@ -22,6 +57,19 @@ class Item extends Baseline_controller
         $this->local_resources_folder = $this->config->item('local_resources_folder');
     }
 
+    /**
+     * [view description]
+     *
+     * @param string  $object_type [description]
+     * @param integer $group_id    [description]
+     * @param string  $time_range  [description]
+     * @param boolean $start_date  [description]
+     * @param boolean $end_date    [description]
+     *
+     * @return [type] [description]
+     *
+     * @author Ken Auberry <kenneth.auberry@pnnl.gov>
+     */
     public function view($object_type, $group_id, $time_range = '1-month', $start_date = FALSE, $end_date = FALSE)
     {
         $object_type = singular($object_type);
@@ -102,18 +150,60 @@ class Item extends Baseline_controller
         $this->load->view('reporting_view.html', $this->page_data);
     }
 
-    public function get_reporting_info($object_type, $object_id, $time_range = '1-week', $start_date = FALSE, $end_date = FALSE, $with_timeline = true)
+    /**
+     * [get_reporting_info description]
+     *
+     * @param string  $object_type   [description]
+     * @param integer $object_id     [description]
+     * @param string  $time_range    [description]
+     * @param boolean $start_date    [description]
+     * @param boolean $end_date      [description]
+     * @param boolean $with_timeline [description]
+     *
+     * @return [type] [description]
+     *
+     * @author Ken Auberry <kenneth.auberry@pnnl.gov>
+     */
+    public function get_reporting_info($object_type, $object_id, $time_range = '1-week', $start_date = FALSE, $end_date = FALSE, $with_timeline = TRUE)
     {
-        $this->get_reporting_info_base($object_type, $object_id, $time_range, $start_date, $end_date, true);
+        $this->_get_reporting_info_base($object_type, $object_id, $time_range, $start_date, $end_date, TRUE);
     }
 
+    /**
+     * [get_reporting_info_no_timeline description]
+     *
+     * @param string  $object_type [description]
+     * @param integer $object_id   [description]
+     * @param string  $time_range  [description]
+     * @param string  $start_date  [description]
+     * @param string  $end_date    [description]
+     *
+     * @return [type] [description]
+     *
+     * @author Ken Auberry <kenneth.auberry@pnnl.gov>
+     */
     public function get_reporting_info_no_timeline($object_type, $object_id, $time_range = '1-week', $start_date = FALSE, $end_date = FALSE)
     {
-        $this->get_reporting_info_base($object_type, $object_id, $time_range, $start_date, $end_date, FALSE);
+        $this->_get_reporting_info_base($object_type, $object_id, $time_range, $start_date, $end_date, FALSE);
     }
 
     // Call to retrieve fill-in HTML for reporting block entries
-    private function get_reporting_info_base($object_type, $object_id, $time_range = '1-week', $start_date = FALSE, $end_date = FALSE, $with_timeline = true, $full_object = FALSE)
+    /**
+     * [_get_reporting_info_base description]
+     *
+     * @param string  $object_type   [description]
+     * @param integer $object_id     [description]
+     * @param string  $time_range    [description]
+     * @param string  $start_date    [description]
+     * @param string  $end_date      [description]
+     * @param boolean $with_timeline [description]
+     * @param boolean $full_object   [description]
+     *
+     * @return [type] [description]
+     *
+     * @author Ken Auberry <kenneth.auberry@pnnl.gov>
+     */
+    private function _get_reporting_info_base($object_type, $object_id, $time_range = '1-week', $start_date = FALSE, $end_date = FALSE, $with_timeline = TRUE, $full_object = FALSE)
     {
         $this->page_data['object_id'] = $object_id;
         $this->page_data["{$object_type}_id"] = $object_id;
@@ -190,6 +280,18 @@ class Item extends Baseline_controller
         }
     }
 
+    /**
+     * [get_timeline_data description]
+     *
+     * @param string  $object_type [description]
+     * @param integer $object_id   [description]
+     * @param string  $start_date  [description]
+     * @param string  $end_date    [description]
+     *
+     * @return [type] [description]
+     *
+     * @author Ken Auberry <kenneth.auberry@pnnl.gov>
+     */
     public function get_timeline_data($object_type, $object_id, $start_date, $end_date)
     {
         if (!in_array($object_type, $this->accepted_object_types)) {
@@ -198,7 +300,7 @@ class Item extends Baseline_controller
         }
 
         $retrieval_func = "summarize_uploads_by_{$object_type}";
-        $results = $this->rep->$retrieval_func($object_id, $start_date, $end_date, true);
+        $results = $this->rep->$retrieval_func($object_id, $start_date, $end_date, TRUE);
         $downselect = $results['day_graph']['by_date'];
         $return_array = array(
         'file_volumes' => array_values($downselect['file_volume_array']),
@@ -207,6 +309,16 @@ class Item extends Baseline_controller
         send_json_array($return_array);
     }
 
+    /**
+     * [get_object_lookup description]
+     *
+     * @param string $object_type [description]
+     * @param string $filter      [description]
+     *
+     * @return [type] [description]
+     *
+     * @author Ken Auberry <kenneth.auberry@pnnl.gov>
+     */
     public function get_object_lookup($object_type, $filter = '')
     {
         $my_objects = $this->rep->get_selected_objects($this->user_id);

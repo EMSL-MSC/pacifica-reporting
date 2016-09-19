@@ -1,20 +1,44 @@
 <?php
+ /**
+  * Group_Info_Model
+  *
+  * PHP version 5.5
+  *
+  * @category CI_Model
+  * @package  Pacifica-reporting
+  * @author   Ken Auberry <kenneth.auberry@pnnl.gov>
+  * @license  BSD https://opensource.org/licenses/BSD-3-Clause
+  * @link     http://github.com/EMSL-MSC/Pacifica-reporting
+  */
 
-/** ----------------------------------------------------------------------------
- * 
- * Group Info Model
- *
- * functionality for summarizing upload and activity data.
- *
- * ----------------------------------------------------------------------------
- */
+ defined('BASEPATH') OR exit('No direct script access allowed');
 
-class Group_info_model extends CI_Model
+ /**
+  *  Ajax is a CI controller class that extends Baseline_controller
+  *
+  *  The *Group_Info_Model* class contains functionality for
+  *  summarizing upload and activity data
+  *
+  * @category CI_Model
+  * @package  Pacifica-reporting
+  * @author   Ken Auberry <kenneth.auberry@pnnl.gov>
+  *
+  * @license BSD https://opensource.org/licenses/BSD-3-Clause
+  * @link    http://github.com/EMSL-MSC/Pacifica-reporting
+
+  * @uses   EUS               EUS Database access library
+  * @access public
+  */
+class Group_Info_Model extends CI_Model
 {
-    private $debug;
-    private $group_id_list = FALSE;
+    public $debug;
+    public $group_id_list = FALSE;
 
-
+    /**
+     * [__construct description]
+     *
+     * @author Ken Auberry <kenneth.auberry@pnnl.gov>
+     */
     public function __construct()
     {
         parent::__construct();
@@ -24,11 +48,19 @@ class Group_info_model extends CI_Model
 
     }//end __construct()
 
-
+    /**
+     * [get_group_options description]
+     *
+     * @param integer $group_id [description]
+     *
+     * @return array  [description]
+     *
+     * @author Ken Auberry <kenneth.auberry@pnnl.gov>
+     */
     public function get_group_options($group_id)
     {
         $option_defaults = $this->get_group_option_defaults();
-        $DB_prefs        = $this->load->database('website_prefs', true);
+        $DB_prefs        = $this->load->database('website_prefs', TRUE);
         $query           = $DB_prefs->get_where('reporting_object_groups', array('group_id' => $group_id), 1);
         $options         = array();
         if ($query && $query->num_rows() > 0) {
@@ -58,11 +90,19 @@ class Group_info_model extends CI_Model
 
     }//end get_group_options()
 
-
+    /**
+     * [get_group_info description]
+     *
+     * @param integer $group_id [description]
+     *
+     * @return array [description]
+     *
+     * @author Ken Auberry <kenneth.auberry@pnnl.gov>
+     */
     public function get_group_info($group_id)
     {
         $option_defaults = $this->get_group_option_defaults();
-        $DB_prefs        = $this->load->database('website_prefs', true);
+        $DB_prefs        = $this->load->database('website_prefs', TRUE);
         $query           = $DB_prefs->get_where('reporting_object_groups', array('group_id' => $group_id), 1);
 
         $group_info = FALSE;
@@ -135,9 +175,16 @@ class Group_info_model extends CI_Model
     }//end get_group_info()
 
 
+    /**
+     * [get_group_option_defaults description]
+     *
+     * @return array [description]
+     *
+     * @author Ken Auberry <kenneth.auberry@pnnl.gov>
+     */
     public function get_group_option_defaults()
     {
-        $DB_prefs = $this->load->database('website_prefs', true);
+        $DB_prefs = $this->load->database('website_prefs', TRUE);
         $query    = $DB_prefs->get('reporting_object_group_option_defaults');
         $defaults = array();
         if ($query && $query->num_rows() > 0) {
@@ -161,10 +208,18 @@ class Group_info_model extends CI_Model
 
     }//end get_group_option_defaults()
 
-
+    /**
+     * [get_items_for_group description]
+     *
+     * @param integer $group_id [description]
+     *
+     * @return array [description]
+     *
+     * @author Ken Auberry <kenneth.auberry@pnnl.gov>
+     */
     public function get_items_for_group($group_id)
     {
-        $DB_prefs = $this->load->database('website_prefs', true);
+        $DB_prefs = $this->load->database('website_prefs', TRUE);
         $DB_prefs->select(array('item_type', 'item_id'));
         $query   = $DB_prefs->get_where('reporting_selection_prefs', array('group_id' => $group_id));
         $results = array();
@@ -179,9 +234,20 @@ class Group_info_model extends CI_Model
     }//end get_items_for_group()
 
 
+    /**
+     * [make_new_group description]
+     *
+     * @param string  $object_type   [description]
+     * @param integer $eus_person_id [description]
+     * @param string  $group_name    [description]
+     *
+     * @return [type] [description]
+     *
+     * @author Ken Auberry <kenneth.auberry@pnnl.gov>
+     */
     public function make_new_group($object_type, $eus_person_id, $group_name = FALSE)
     {
-        $DB_prefs   = $this->load->database('website_prefs', true);
+        $DB_prefs   = $this->load->database('website_prefs', TRUE);
         $table_name = 'reporting_object_groups';
         // check the name and make sure it's unique for this user_id
         if (!$group_name) {
@@ -215,11 +281,20 @@ class Group_info_model extends CI_Model
 
     }//end make_new_group()
 
-
+    /**
+     * [change_group_name description]
+     *
+     * @param integer $group_id   [description]
+     * @param string  $group_name [description]
+     *
+     * @return array [description]
+     *
+     * @author Ken Auberry <kenneth.auberry@pnnl.gov>
+     */
     public function change_group_name($group_id, $group_name)
     {
         $new_group_info = FALSE;
-        $DB_prefs       = $this->load->database('website_prefs', true);
+        $DB_prefs       = $this->load->database('website_prefs', TRUE);
         $update_array   = array('group_name' => $group_name);
         $DB_prefs->where('group_id', $group_id)->set('group_name', $group_name);
         $DB_prefs->update('reporting_object_groups', $update_array);
@@ -231,10 +306,20 @@ class Group_info_model extends CI_Model
 
     }//end change_group_name()
 
-
+    /**
+     * [change_group_option description]
+     *
+     * @param integer $group_id    [description]
+     * @param string  $option_type [description]
+     * @param string  $value       [description]
+     *
+     * @return array [description]
+     *
+     * @author Ken Auberry <kenneth.auberry@pnnl.gov>
+     */
     public function change_group_option($group_id, $option_type, $value)
     {
-        $DB_prefs     = $this->load->database('website_prefs', true);
+        $DB_prefs     = $this->load->database('website_prefs', TRUE);
         $table_name   = 'reporting_object_group_options';
         $where_array  = array(
                          'group_id'    => $group_id,
@@ -256,10 +341,20 @@ class Group_info_model extends CI_Model
 
     }//end change_group_option()
 
-
+    /**
+     * [get_selected_objects description]
+     *
+     * @param integer $eus_person_id [description]
+     * @param string  $restrict_type [description]
+     * @param integer $group_id      [description]
+     *
+     * @return array [description]
+     *
+     * @author Ken Auberry <kenneth.auberry@pnnl.gov>
+     */
     public function get_selected_objects($eus_person_id, $restrict_type = FALSE, $group_id = FALSE)
     {
-        $DB_prefs = $this->load->database('website_prefs', true);
+        $DB_prefs = $this->load->database('website_prefs', TRUE);
         $DB_prefs->select(array('eus_person_id', 'item_type', 'item_id', 'group_id'));
         $DB_prefs->where('deleted is null');
         if (!empty($group_id)) {
@@ -295,12 +390,22 @@ class Group_info_model extends CI_Model
 
     }//end get_selected_objects()
 
-
-    public function get_selected_groups($eus_person_id, $restrict_type = FALSE, $get_group_info = true)
+    /**
+     * [get_selected_groups description]
+     *
+     * @param integer $eus_person_id  [description]
+     * @param string  $restrict_type  [description]
+     * @param boolean $get_group_info [description]
+     *
+     * @return array [description]
+     *
+     * @author Ken Auberry <kenneth.auberry@pnnl.gov>
+     */
+    public function get_selected_groups($eus_person_id, $restrict_type = FALSE, $get_group_info = TRUE)
     {
         $this->benchmark->mark('get_selected_groups_start');
         $results  = array();
-        $DB_prefs = $this->load->database('website_prefs', true);
+        $DB_prefs = $this->load->database('website_prefs', TRUE);
         $DB_prefs->select('g.group_id');
         $person_array = array($eus_person_id);
         $DB_prefs->where_in('g.person_id', $person_array);
@@ -331,7 +436,16 @@ class Group_info_model extends CI_Model
 
     }//end get_selected_groups()
 
-
+    /**
+     * [remove_group_object description]
+     *
+     * @param integer $group_id    [description]
+     * @param boolean $full_delete [description]
+     *
+     * @return none [description]
+     *
+     * @author Ken Auberry <kenneth.auberry@pnnl.gov>
+     */
     public function remove_group_object($group_id, $full_delete = FALSE)
     {
         $tables       = array(
@@ -339,7 +453,7 @@ class Group_info_model extends CI_Model
                          'reporting_selection_prefs',
                          'reporting_object_groups',
                         );
-        $DB_prefs     = $this->load->database('website_prefs', true);
+        $DB_prefs     = $this->load->database('website_prefs', TRUE);
         $where_clause = array('group_id' => $group_id);
 
         if ($full_delete) {
@@ -353,11 +467,21 @@ class Group_info_model extends CI_Model
 
     }//end remove_group_object()
 
-
+    /**
+     * [update_object_preferences description]
+     *
+     * @param string  $object_type [description]
+     * @param array   $object_list [description]
+     * @param integer $group_id    [description]
+     *
+     * @return [type] [description]
+     *
+     * @author Ken Auberry <kenneth.auberry@pnnl.gov>
+     */
     public function update_object_preferences($object_type, $object_list, $group_id = FALSE)
     {
         $table        = 'reporting_selection_prefs';
-        $DB_prefs     = $this->load->database('website_prefs', true);
+        $DB_prefs     = $this->load->database('website_prefs', TRUE);
         $additions    = array();
         $removals     = array();
         $existing     = array();
@@ -411,17 +535,28 @@ class Group_info_model extends CI_Model
             }
         }//end foreach
 
-        return true;
+        return TRUE;
 
     }//end update_object_preferences()
 
 
+    /**
+     * [earliest_latest_data_for_list description]
+     *
+     * @param string $object_type    [description]
+     * @param array  $object_id_list [description]
+     * @param string $time_basis     [description]
+     *
+     * @return array [description]
+     *
+     * @author Ken Auberry <kenneth.auberry@pnnl.gov>
+     */
     public function earliest_latest_data_for_list($object_type, $object_id_list, $time_basis)
     {
         $group_list_retrieval_fn_name = "get_{$object_type}_group_list";
         $time_basis = str_replace('_time', '_date', $time_basis);
 
-        $spread = $this->available_item_spread_general(
+        $spread = $this->_available_item_spread_general(
             $object_id_list,
             $time_basis,
             $object_type,
@@ -433,9 +568,21 @@ class Group_info_model extends CI_Model
     }//end earliest_latest_data_for_list()
 
 
-    private function available_item_spread_general($object_id_list, $time_basis, $group_type, $group_list_retrieval_fn_name = FALSE)
+    /**
+     * [_available_item_spread_general description]
+     *
+     * @param array  $object_id_list               [description]
+     * @param string $time_basis                   [description]
+     * @param string $group_type                   [description]
+     * @param string $group_list_retrieval_fn_name [description]
+     *
+     * @return array [description]
+     *
+     * @author Ken Auberry <kenneth.auberry@pnnl.gov>
+     */
+    private function _available_item_spread_general($object_id_list, $time_basis, $group_type, $group_list_retrieval_fn_name = FALSE)
     {
-        // echo "<br />in available_item_spread_general<br  />";
+        // echo "<br />in _available_item_spread_general<br  />";
         // $e = new \Exception;
         // var_dump($e->getTraceAsString());
         $return_array = FALSE;
@@ -488,28 +635,58 @@ class Group_info_model extends CI_Model
 
         return $return_array;
 
-    }//end available_item_spread_general()
+    }//end _available_item_spread_general()
 
 
-    private function available_instrument_data_spread($object_id_list, $time_field)
+    /**
+     * [_available_instrument_data_spread description]
+     *
+     * @param array  $object_id_list [description]
+     * @param string $time_field     [description]
+     *
+     * @return [type] [description]
+     *
+     * @author Ken Auberry <kenneth.auberry@pnnl.gov>
+     */
+    private function _available_instrument_data_spread($object_id_list, $time_field)
     {
         $group_list_retrieval_fn_name = 'get_instrument_group_list';
 
-        return $this->available_item_spread_general($object_id_list, $time_field, 'instrument', $group_list_retrieval_fn_name);
+        return $this->_available_item_spread_general($object_id_list, $time_field, 'instrument', $group_list_retrieval_fn_name);
 
-    }//end available_instrument_data_spread()
+    }//end _available_instrument_data_spread()
 
 
-    private function available_proposal_data_spread($object_id_list, $time_field)
+    /**
+     * [_available_proposal_data_spread description]
+     *
+     * @param array  $object_id_list [description]
+     * @param string $time_field     [description]
+     *
+     * @return array [description]
+     *
+     * @author Ken Auberry <kenneth.auberry@pnnl.gov>
+     */
+    private function _available_proposal_data_spread($object_id_list, $time_field)
     {
         $group_list_retrieval_fn_name = 'get_proposal_group_list';
 
-        return $this->available_item_spread_general($object_id_list, $time_field, 'proposal', $group_list_retrieval_fn_name);
+        return $this->_available_item_spread_general($object_id_list, $time_field, 'proposal', $group_list_retrieval_fn_name);
 
-    }//end available_proposal_data_spread()
+    }//end _available_proposal_data_spread()
 
 
-    private function available_user_data_spread($object_id_list, $time_field)
+    /**
+     * [_available_user_data_spread description]
+     *
+     * @param array  $object_id_list [description]
+     * @param string $time_field     [description]
+     *
+     * @return array [description]
+     *
+     * @author Ken Auberry <kenneth.auberry@pnnl.gov>
+     */
+    private function _available_user_data_spread($object_id_list, $time_field)
     {
         $return_array = FALSE;
         if (empty($object_id_list)) {
@@ -545,9 +722,18 @@ class Group_info_model extends CI_Model
 
         return $return_array;
 
-    }//end available_user_data_spread()
+    }//end _available_user_data_spread()
 
 
+    /**
+     * [get_proposal_group_list description]
+     *
+     * @param string $proposal_id_filter [description]
+     *
+     * @return array [description]
+     *
+     * @author Ken Auberry <kenneth.auberry@pnnl.gov>
+     */
     public function get_proposal_group_list($proposal_id_filter = '')
     {
         $is_emsl_staff = $this->is_emsl_staff;
@@ -585,6 +771,15 @@ class Group_info_model extends CI_Model
     }//end get_proposal_group_list()
 
 
+    /**
+     * [get_instrument_group_list description]
+     *
+     * @param string $inst_id_filter [description]
+     *
+     * @return array [description]
+     *
+     * @author Ken Auberry <kenneth.auberry@pnnl.gov>
+     */
     public function get_instrument_group_list($inst_id_filter = '')
     {
         // $e = new Exception();
@@ -630,7 +825,15 @@ class Group_info_model extends CI_Model
 
     }//end get_instrument_group_list()
 
-
+    /**
+     * [get_info_for_transactions description]
+     *
+     * @param array $transaction_info [description]
+     *
+     * @return array [description]
+     *
+     * @author Ken Auberry <kenneth.auberry@pnnl.gov>
+     */
     public function get_info_for_transactions($transaction_info)
     {
         $ranged_transactions = split_array_into_ranges($transaction_info);

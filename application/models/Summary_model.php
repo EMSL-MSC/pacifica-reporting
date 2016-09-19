@@ -16,7 +16,7 @@ class Summary_model extends CI_Model
         parent::__construct();
         $this->load->database('default');
 
-        $this->load->model('Group_info_model', 'gm');
+        $this->load->model('Group_Info_Model', 'gm');
         $this->load->library('EUS', '', 'eus');
         $this->load->helper(array('item', 'time'));
         $this->debug   = $this->config->item('debug_enabled');

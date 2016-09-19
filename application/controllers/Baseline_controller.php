@@ -1,21 +1,47 @@
 <?php
-
-/** ----------------------------------------------------------------------------
- *
- * Baseline Controller
- *
- *  Lots of common functionality for setting up new pages and pre-filling them
- *  with useful data
- *
- * ----------------------------------------------------------------------------
- */
+ /**
+  * Baseline Controller
+  *
+  * Lots of common functionality for setting up new pages and pre-filling them
+  *  with useful data
+  *
+  * PHP version 5.5
+  *
+  * @category Page_Controller
+  * @package  Pacifica-reporting
+  * @author   Ken Auberry <kenneth.auberry@pnnl.gov>
+  * @license  BSD https://opensource.org/licenses/BSD-3-Clause
+  * @link     http://github.com/EMSL-MSC/Pacifica-reporting
+  */
 
 ini_set('memory_limit', '2048M');
 ini_set('set_time_limit', 120);
 ini_set('max_execution_time', 120);
 
-class Baseline_controller extends CI_Controller
+/**
+ *  Baseline_Controller is a CI controller class that extends CI_controller
+ *
+ *  The *Baseline Controller* class provides low-level common functionality that
+ *  is used by all of the other page controllers in the site
+ *
+ * @category Page_Controller
+ * @package  Pacifica-reporting
+ * @author   Ken Auberry <kenneth.auberry@pnnl.gov>
+ *
+ * @license BSD https://opensource.org/licenses/BSD-3-Clause
+ * @link    http://github.com/EMSL-MSC/Pacifica-reporting
+ * @access  public
+ */
+class Baseline_Controller extends CI_Controller
 {
+    /**
+     * Sets up the basics, loads up some common variables, defines a few
+     * constants, parses and translates user_info
+     *
+     * @method __construct
+     *
+     * @author Ken Auberry <kenneth.auberry@pnnl.gov>
+     */
     public function __construct()
     {
         date_default_timezone_set('America/Los_Angeles');
@@ -27,7 +53,7 @@ class Baseline_controller extends CI_Controller
 
         if (!$this->user_id) {
             //something is wrong with the authentication system or the user's log in
-          	$message = 'Unable to retrieve username from [REMOTE_USER]';
+            $message = 'Unable to retrieve username from [REMOTE_USER]';
             show_error($message, 500, 'User Authorization Error or Server Misconfiguration in Auth System');
         }
 
