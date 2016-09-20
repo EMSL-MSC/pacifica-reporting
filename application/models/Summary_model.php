@@ -1,25 +1,62 @@
 <?php
-
 /**
- * Summary Model
+ * Pacifica
  *
- * functionality for summarizing upload and activity data.
+ * Pacifica is an open-source data management framework designed
+ * for the curation and storage of raw and processed scientific
+ * data. It is based on the [CodeIgniter web framework](http://codeigniter.com).
+ *
+ *  The Pacifica-Reporting module provides an interface for
+ *  concerned and interested parties to view the current
+ *  contribution status of any and all instruments in the
+ *  system. The reporting interface can be customized and
+ *  filtered streamline the report to fit any level of user,
+ *  from managers through instrument operators.
+ *
+ * PHP version 5.5
+ *
+ * @package Pacifica-reporting
+ *
+ * @author  Ken Auberry <kenneth.auberry@pnnl.gov>
+ * @license BSD https://opensource.org/licenses/BSD-3-Clause
+ *
+ * @link http://github.com/EMSL-MSC/Pacifica-reporting
  */
+
+ /**
+  *  Summary Model
+  *
+  *  The **Summary_model** class contains functionality for
+  *  summarizing upload and activity data. It pulls data from
+  *  both the MyEMSL and website_prefs databases
+  *
+  * @category CI_Model
+  * @package  Pacifica-reporting
+  * @author   Ken Auberry <kenneth.auberry@pnnl.gov>
+  *
+  * @license BSD https://opensource.org/licenses/BSD-3-Clause
+  * @link    http://github.com/EMSL-MSC/Pacifica-reporting
+
+  * @uses   EUS EUS Database access library
+  * @access public
+  */
 class Summary_model extends CI_Model
 {
-    private $debug;
-    private $results;
+    public $results;
 
-
+    /**
+     *  Class constructor
+     *
+     *  @author Ken Auberry <kenneth.auberry@pnnl.gov>
+     */
     public function __construct()
     {
         parent::__construct();
         $this->load->database('default');
 
-        $this->load->model('Group_Info_Model', 'gm');
+        $this->load->model('Group_info_model', 'gm');
         $this->load->library('EUS', '', 'eus');
         $this->load->helper(array('item', 'time'));
-        $this->debug   = $this->config->item('debug_enabled');
         $this->results = array(
                           'transactions'   => array(),
                           'time_range'     => array(
@@ -49,7 +86,23 @@ class Summary_model extends CI_Model
 
     }//end __construct()
 
-
+    /**
+     *  Helper function to retrieve aggregated data grouped
+     *  by person_id of a user
+     *
+     *  @param array   $eus_person_id_list list of users to aggregate over
+     *  @param string  $start_date         starting date (YYYY-MM-DD)
+     *  @param string  $end_date           ending date (YYYY-MM-DD)
+     *  @param boolean $make_day_graph     toggle to control whether or not
+     *                                     per day totals are included
+     *  @param boolean $time_basis         one of created_date, modified_date,
+     *                                     submitted_date
+     *
+     *  @return array
+     *
+     *  @uses   Summary_model::summarize_uploads_general
+     *  @author Ken Auberry <kenneth.auberry@pnnl.gov>
+     */
     public function summarize_uploads_by_user_list($eus_person_id_list, $start_date, $end_date, $make_day_graph, $time_basis = FALSE)
     {
         $group_type = 'user';
@@ -57,7 +110,23 @@ class Summary_model extends CI_Model
 
     }//end summarize_uploads_by_user_list()
 
-
+    /**
+     *  Helper function to retrieve aggregated data grouped
+     *  by proposal id
+     *
+     *  @param array   $eus_proposal_id_list list of proposals to aggregate over
+     *  @param string  $start_date           starting date (YYYY-MM-DD)
+     *  @param string  $end_date             ending date (YYYY-MM-DD)
+     *  @param boolean $make_day_graph       toggle to control whether or not
+     *                                       per day totals are included
+     *  @param boolean $time_basis           one of created_date, modified_date,
+     *                                       submitted_date
+     *
+     *  @return array
+     *
+     *  @uses   Summary_model::summarize_uploads_general
+     *  @author Ken Auberry <kenneth.auberry@pnnl.gov>
+     */
     public function summarize_uploads_by_proposal_list($eus_proposal_id_list, $start_date, $end_date, $make_day_graph, $time_basis = FALSE)
     {
         $group_type = 'proposal';
@@ -65,7 +134,23 @@ class Summary_model extends CI_Model
 
     }//end summarize_uploads_by_proposal_list()
 
-
+    /**
+     *  Helper function to retrieve aggregated data grouped
+     *  by instrument id
+     *
+     *  @param array   $eus_instrument_id_list list of instruments to aggregate over
+     *  @param string  $start_date             starting date (YYYY-MM-DD)
+     *  @param string  $end_date               ending date (YYYY-MM-DD)
+     *  @param boolean $make_day_graph         toggle to control whether or not
+     *                                         per day totals are included
+     *  @param boolean $time_basis             one of created_date, modified_date,
+     *                                         submitted_date
+     *
+     *  @return array
+     *
+     *  @uses   Summary_model::summarize_uploads_general
+     *  @author Ken Auberry <kenneth.auberry@pnnl.gov>
+     */
     public function summarize_uploads_by_instrument_list($eus_instrument_id_list, $start_date, $end_date, $make_day_graph, $time_basis = FALSE)
     {
         $group_type = 'instrument';
@@ -73,8 +158,24 @@ class Summary_model extends CI_Model
 
     }//end summarize_uploads_by_instrument_list()
 
-
-    public function summarize_uploads_general($id_list, $start_date, $end_date, $make_day_graph, $time_basis = FALSE, $group_type)
+    /**
+     *  Backend database function to aggregate data over several
+     *  different types of object groupings.
+     *
+     *  @param array   $id_list        list of object id's
+     *  @param string  $start_date     starting date (YYYY-MM-DD)
+     *  @param string  $end_date       ending date (YYYY-MM-DD)
+     *  @param boolean $make_day_graph toggle to control whether or not
+     *                                 per day totals are included
+     *  @param boolean $time_basis     one of created_date, modified_date,
+     *                                 submitted_date
+     *  @param string  $group_type     type of group to summarize over
+     *
+     *  @return array
+     *
+     *  @author Ken Auberry <kenneth.auberry@pnnl.gov>
+     */
+    public function summarize_uploads_general($id_list, $start_date, $end_date, $make_day_graph, $time_basis, $group_type)
     {
         extract($this->canonicalize_date_range($start_date, $end_date));
         $start_date_obj  = new DateTime($start_date);
@@ -111,6 +212,19 @@ class Summary_model extends CI_Model
     }//end summarize_uploads_general()
 
 
+    /**
+     *  [get_per_day_totals_from_user_list description]
+     *
+     *  @param array   $eus_user_id_list list of user id's to include
+     *  @param string  $start_date       starting date (YYYY-MM-DD)
+     *  @param string  $end_date         ending date (YYYY-MM-DD)
+     *  @param boolean $time_basis       one of created_date, modified_date,
+     *                                   submitted_date
+     *
+     *  @return array
+     *
+     *  @author Ken Auberry <kenneth.auberry@pnnl.gov>
+     */
     public function get_per_day_totals_from_user_list($eus_user_id_list, $start_date, $end_date, $time_basis)
     {
 

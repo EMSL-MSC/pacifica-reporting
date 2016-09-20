@@ -1,18 +1,54 @@
 <?php
+/**
+* Pacifica
+*
+* Pacifica is an open-source data management framework designed
+* for the curation and storage of raw and processed scientific
+* data. It is based on the [CodeIgniter web framework](http://codeigniter.com).
+*
+*  The Pacifica-Reporting module provides an interface for
+*  concerned and interested parties to view the current
+*  contribution status of any and all instruments in the
+*  system. The reporting interface can be customized and
+*  filtered streamline the report to fit any level of user,
+*  from managers through instrument operators.
+*
+* PHP version 5.5
+*
+* @package Pacifica-reporting
+*
+* @author  Ken Auberry <kenneth.auberry@pnnl.gov>
+* @license BSD https://opensource.org/licenses/BSD-3-Clause
+*
+* @link http://github.com/EMSL-MSC/Pacifica-reporting
+*/
 
 /**
- * Reporting Model
- *
- * functionality for summarizing upload and activity data.
- */
+*  Reporting Model
+*
+*  The **Reporting_model** class contains functionality
+*  for summarizing upload and activity data.
+*
+* @category CI_Model
+* @package  Pacifica-reporting
+* @author   Ken Auberry <kenneth.auberry@pnnl.gov>
+*
+* @license BSD https://opensource.org/licenses/BSD-3-Clause
+* @link    http://github.com/EMSL-MSC/Pacifica-reporting
 
-
-
+* @uses EUS EUS Database access library
+*
+* @access public
+*/
 class Reporting_model extends CI_Model
 {
-    private $debug;
-
-
+    /**
+     *  Class constructor
+     *
+     *  @method __construct
+     *
+     *  @author Ken Auberry <kenneth.auberry@pnnl.gov>
+     */
     public function __construct()
     {
         parent::__construct();
@@ -21,11 +57,19 @@ class Reporting_model extends CI_Model
         $this->load->database();
         $this->load->helper(array('item'));
         $this->load->library('EUS', '', 'eus');
-        $this->debug = $this->config->item('debug_enabled');
 
     }//end __construct()
 
-
+    /**
+     *  Retrieve a detailed array of data for a given
+     *  set of upload transactions.
+     *
+     *  @param array $transaction_list set of transactions to detail
+     *
+     *  @return array
+     *
+     *  @author Ken Auberry <kenneth.auberry@pnnl.gov>
+     */
     public function detailed_transaction_list($transaction_list)
     {
         $available_proposals = !$this->is_emsl_staff ? $this->eus->get_proposals_for_user($this->user_id) : FALSE;
@@ -90,8 +134,22 @@ class Reporting_model extends CI_Model
 
     }//end detailed_transaction_list()
 
-
-    private function get_files_for_user_list($eus_user_id_list, $start_date, $end_date, $unfiltered = FALSE, $time_basis)
+    /**
+     *  [_get_files_for_user_list description]
+     *
+     *  @param array   $eus_user_id_list list of users
+     *  @param string  $start_date       [description]
+     *  @param string  $end_date         [description]
+     *  @param string  $time_basis       [description]
+     *  @param boolean $unfiltered       [description]
+     *
+     *  @return array
+     *
+     *  @deprecated
+     *
+     *  @author Ken Auberry <kenneth.auberry@pnnl.gov>
+     */
+    private function _get_files_for_user_list($eus_user_id_list, $start_date, $end_date, $time_basis, $unfiltered = FALSE)
     {
         extract($this->canonicalize_date_range($start_date, $end_date));
         switch ($time_basis) {
@@ -146,7 +204,7 @@ class Reporting_model extends CI_Model
 
         return $files;
 
-    }//end get_files_for_user_list()
+    }//end _get_files_for_user_list()
 
 
 }//end class

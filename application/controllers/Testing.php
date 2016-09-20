@@ -1,15 +1,26 @@
 <?php
 /**
- * Teting Controller.
+ * Pacifica
+ *
+ * Pacifica is an open-source data management framework designed
+ * for the curation and storage of raw and processed scientific
+ * data. It is based on the [CodeIgniter web framework](http://codeigniter.com).
+ *
+ *  The Pacifica-Reporting module provides an interface for
+ *  concerned and interested parties to view the current
+ *  contribution status of any and all instruments in the
+ *  system. The reporting interface can be customized and
+ *  filtered streamline the report to fit any level of user,
+ *  from managers through instrument operators.
  *
  * PHP version 5.5
  *
- * @category Page_Controller
+ * @package Pacifica-reporting
  *
- * @author   Ken Auberry <kenneth.auberry@pnnl.gov>
- * @license  BSD https://opensource.org/licenses/BSD-3-Clause
+ * @author  Ken Auberry <kenneth.auberry@pnnl.gov>
+ * @license BSD https://opensource.org/licenses/BSD-3-Clause
  *
- * @link     http://github.com/EMSL-MSC/Pacifica-reporting
+ * @link http://github.com/EMSL-MSC/Pacifica-reporting
  */
 defined('BASEPATH') or exit('No direct script access allowed');
 require_once 'Baseline_controller.php';
@@ -17,16 +28,17 @@ require_once 'Baseline_controller.php';
 /**
  *  Testing is a CI controller class that extends Baseline_controller.
  *
- *  The *Testing* class contains a smattering of browser-accessible snippets of
- *  code that return ugly var_dumps so I can make sure AJAX calls, etc. are
- *  working properly
+ *  The **Testing** class contains a smattering of browser-accessible
+ *  snippets of code that return ugly var_dumps so the developer can
+ *  make sure AJAX calls, etc. are working properly
  *
  * @category Page_Controller
+ * @package  Pacifica-reporting
  *
- * @author   Ken Auberry <kenneth.auberry@pnnl.gov>
+ * @author  Ken Auberry <kenneth.auberry@pnnl.gov>
  * @license BSD https://opensource.org/licenses/BSD-3-Clause
  *
- * @link    http://github.com/EMSL-MSC/Pacifica-reporting
+ * @link http://github.com/EMSL-MSC/Pacifica-reporting
  */
 class Testing extends Baseline_controller
 {
@@ -36,14 +48,15 @@ class Testing extends Baseline_controller
     public $local_resources_folder;
 
     /**
-     * [__construct description].
+     * Class constructor
      *
      * @author Ken Auberry <kenneth.auberry@pnnl.gov>
+     * @return void
      */
     public function __construct()
     {
         parent::__construct();
-        $this->load->model('Group_Info_Model', 'gm');
+        $this->load->model('Group_info_model', 'gm');
         $this->load->model('Summary_model', 'summary');
         $this->load->model('Myemsl_model', 'myemsl');
         $this->load->library('EUS', '', 'eus');
@@ -54,12 +67,14 @@ class Testing extends Baseline_controller
     }
 
     /**
-     * [test_get_proposals description].
+     * Test proposal retrieval from EUS
      *
-     * @param [type] $proposal_name_fragment [description]
-     * @param string $active                 [description]
+     * @param string $proposal_name_fragment search term for
+     *                                       finding a proposal
+     * @param string $active                 retrieve only
+     *                                       active proposals?
      *
-     * @return [type] [description]
+     * @return void
      *
      * @author Ken Auberry <kenneth.auberry@pnnl.gov>
      */
@@ -72,17 +87,17 @@ class Testing extends Baseline_controller
     }
 
     /**
-     * [test_get_uploads_for_user description].
+     * What items have been contributed by this user?
      *
-     * @param [type] $eus_person_id [description]
-     * @param bool   $start_date    [description]
-     * @param bool   $end_date      [description]
+     * @param integer $eus_person_id EMSL user id of the person in question
+     * @param string  $start_date    Date range start (as YYYY-MM-DD)
+     * @param string  $end_date      Date range end (as YYYY-MM-DD)
      *
-     * @return [type] [description]
+     * @return void
      *
      * @author Ken Auberry <kenneth.auberry@pnnl.gov>
      */
-    public function test_get_uploads_for_user($eus_person_id, $start_date = false, $end_date = false)
+    public function test_get_uploads_for_user($eus_person_id, $start_date = FALSE, $end_date = FALSE)
     {
         $results = $this->summary->summarize_uploads_by_user($eus_person_id, $start_date, $end_date);
         echo '<pre>';
@@ -91,40 +106,44 @@ class Testing extends Baseline_controller
     }
 
     /**
-     * [test_get_uploads_for_user_list description].
+     * What items have been contributed by this list of users?
      *
-     * @param [type] $eus_person_id_list [description]
-     * @param bool   $start_date         [description]
-     * @param bool   $end_date           [description]
+     * @param string $eus_person_id_list List of user id's,
+     *                                   separated by '-'
+     *                                   (i.e. 43751-50274-38991)
+     * @param string $start_date         Date range start (as YYYY-MM-DD)
+     * @param string $end_date           Date range end (as YYYY-MM-DD)
      *
-     * @return [type] [description]
+     * @return void
      *
      * @author Ken Auberry <kenneth.auberry@pnnl.gov>
      */
-    public function test_get_uploads_for_user_list($eus_person_id_list, $start_date = false, $end_date = false)
+    public function test_get_uploads_for_user_list($eus_person_id_list, $start_date = FALSE, $end_date = FALSE)
     {
         $eus_person_id_list = explode('-', $eus_person_id_list);
-        $results = $this->summary->summarize_uploads_by_user_list($eus_person_id_list, $start_date, $end_date, true);
+        $results = $this->summary->summarize_uploads_by_user_list($eus_person_id_list, $start_date, $end_date, TRUE);
         echo '<pre>';
         var_dump($results);
         echo '</pre>';
     }
 
     /**
-     * [test_get_uploads_for_instrument description].
+     * What items have been contributed from this instrument?
      *
-     * @param [type] $eus_instrument_id_list [description]
-     * @param bool   $start_date             [description]
-     * @param bool   $end_date               [description]
+     * @param string $eus_instrument_id_list List of instrument id's,
+     *                                       separated by '-'
+     *                                       (i.e. 34105-34075)
+     * @param string $start_date             Date range start (as YYYY-MM-DD)
+     * @param string $end_date               Date range end (as YYYY-MM-DD)
      *
-     * @return [type] [description]
+     * @return void
      *
      * @author Ken Auberry <kenneth.auberry@pnnl.gov>
      */
-    public function test_get_uploads_for_instrument($eus_instrument_id_list, $start_date = false, $end_date = false)
+    public function test_get_uploads_for_instrument($eus_instrument_id_list, $start_date = FALSE, $end_date = FALSE)
     {
         $eus_instrument_id_list = explode('-', $eus_instrument_id_list);
-        $results = $this->summary->summarize_uploads_by_instrument_list($eus_instrument_id_list, $start_date, $end_date, true, 'modified_time');
+        $results = $this->summary->summarize_uploads_by_instrument_list($eus_instrument_id_list, $start_date, $end_date, TRUE, 'modified_time');
         echo '<pre>';
         var_dump($results);
         echo '</pre>';

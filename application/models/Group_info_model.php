@@ -1,23 +1,36 @@
 <?php
- /**
-  * Group_Info_Model
-  *
-  * PHP version 5.5
-  *
-  * @category CI_Model
-  * @package  Pacifica-reporting
-  * @author   Ken Auberry <kenneth.auberry@pnnl.gov>
-  * @license  BSD https://opensource.org/licenses/BSD-3-Clause
-  * @link     http://github.com/EMSL-MSC/Pacifica-reporting
-  */
+/**
+ * Pacifica
+ *
+ * Pacifica is an open-source data management framework designed
+ * for the curation and storage of raw and processed scientific
+ * data. It is based on the [CodeIgniter web framework](http://codeigniter.com).
+ *
+ *  The Pacifica-Reporting module provides an interface for
+ *  concerned and interested parties to view the current
+ *  contribution status of any and all instruments in the
+ *  system. The reporting interface can be customized and
+ *  filtered streamline the report to fit any level of user,
+ *  from managers through instrument operators.
+ *
+ * PHP version 5.5
+ *
+ * @package Pacifica-reporting
+ *
+ * @author  Ken Auberry <kenneth.auberry@pnnl.gov>
+ * @license BSD https://opensource.org/licenses/BSD-3-Clause
+ *
+ * @link http://github.com/EMSL-MSC/Pacifica-reporting
+ */
 
  defined('BASEPATH') OR exit('No direct script access allowed');
 
  /**
-  *  Ajax is a CI controller class that extends Baseline_controller
+  *  Group Info Model
   *
-  *  The *Group_Info_Model* class contains functionality for
-  *  summarizing upload and activity data
+  *  The **Group_info_model** class contains functionality for
+  *  summarizing upload and activity data. It pulls data from
+  *  both the MyEMSL and website_prefs databases
   *
   * @category CI_Model
   * @package  Pacifica-reporting
@@ -26,16 +39,16 @@
   * @license BSD https://opensource.org/licenses/BSD-3-Clause
   * @link    http://github.com/EMSL-MSC/Pacifica-reporting
 
-  * @uses   EUS               EUS Database access library
+  * @uses   EUS EUS Database access library
   * @access public
   */
-class Group_Info_Model extends CI_Model
+class Group_info_model extends CI_Model
 {
     public $debug;
     public $group_id_list = FALSE;
 
     /**
-     * [__construct description]
+     * Class constructor
      *
      * @author Ken Auberry <kenneth.auberry@pnnl.gov>
      */
@@ -49,11 +62,18 @@ class Group_Info_Model extends CI_Model
     }//end __construct()
 
     /**
-     * [get_group_options description]
+     * Retrieves various pieces of information on a given
+     * group object. These include the last selected time_range,
+     * last selected aggregation type (time_basis) [can be
+     * submit_time, create_time, modified_time], and start/end
+     * times for reporting period. If no values are found
+     * in the reporting_object_group_options table, then suitable
+     * default values are pulled from the
+     * reporting_object_group_option_defaults table and merged.
      *
      * @param integer $group_id [description]
      *
-     * @return array  [description]
+     * @return array
      *
      * @author Ken Auberry <kenneth.auberry@pnnl.gov>
      */
@@ -91,7 +111,12 @@ class Group_Info_Model extends CI_Model
     }//end get_group_options()
 
     /**
-     * [get_group_info description]
+     * Retrieves the full set of information about a specified group.
+     * Combines options (from Group_info_model::get_group_options, above)
+     * with earliest/latest item data from
+     * Group_info_model::earliest_latest_data_for_list and
+     * corrects the stored option start/end times if they
+     * cross outside the boundaries defined by earliest/latest
      *
      * @param integer $group_id [description]
      *
@@ -101,38 +126,7 @@ class Group_Info_Model extends CI_Model
      */
     public function get_group_info($group_id)
     {
-        $option_defaults = $this->get_group_option_defaults();
-        $DB_prefs        = $this->load->database('website_prefs', TRUE);
-        $query           = $DB_prefs->get_where('reporting_object_groups', array('group_id' => $group_id), 1);
-
-        $group_info = FALSE;
-        $options    = array();
-        if ($query && $query->num_rows() > 0) {
-            $options_query = $DB_prefs->get_where('reporting_object_group_options', array('group_id' => $group_id));
-            if ($options_query && $options_query->num_rows() > 0) {
-                foreach ($options_query->result() as $option_row) {
-                    $options[$option_row->option_type] = $option_row->option_value;
-                }
-            }
-
-            $group_info = $query->row_array();
-            if($group_info['group_type'] == 'proposal' && !$this->is_emsl_staff) {
-                $available_proposals = $this->eus->get_proposals_for_user($this->user_id);
-                $DB_prefs->where_in('item_id', $available_proposals);
-            }
-
-            $member_query = $DB_prefs->select('item_id')->get_where('reporting_selection_prefs', array('group_id' => $group_id));
-            // echo $DB_prefs->last_query();
-            if ($member_query && $member_query->num_rows() > 0) {
-                foreach ($member_query->result() as $row) {
-                    $group_info['item_list'][] = $row->item_id;
-                }
-            } else {
-                $group_info['item_list'] = array();
-            }
-
-            $group_info['options_list'] = ($options + $option_defaults);
-        }//end if
+        $group_info['options_list'] = $this->get_group_options($group_id);
 
         $earliest_latest = $this->earliest_latest_data_for_list(
             $group_info['group_type'],
@@ -176,9 +170,10 @@ class Group_Info_Model extends CI_Model
 
 
     /**
-     * [get_group_option_defaults description]
+     * Retrieve a reasonable set of default options to be used for
+     * newly defined groups until the user sets their own options
      *
-     * @return array [description]
+     * @return array
      *
      * @author Ken Auberry <kenneth.auberry@pnnl.gov>
      */
@@ -209,9 +204,10 @@ class Group_Info_Model extends CI_Model
     }//end get_group_option_defaults()
 
     /**
-     * [get_items_for_group description]
+     * Retrieve a list of instruments/proposals/users
+     * for a specifid group.
      *
-     * @param integer $group_id [description]
+     * @param integer $group_id group_id to retrieve
      *
      * @return array [description]
      *
@@ -235,13 +231,17 @@ class Group_Info_Model extends CI_Model
 
 
     /**
-     * [make_new_group description]
+     * Backend database function to cause the creation
+     * of a new, empty grouping object of a specific type,
+     * owned by the specified user. If no group name is
+     * supplied, generate a generic name using the object type.
      *
-     * @param string  $object_type   [description]
-     * @param integer $eus_person_id [description]
-     * @param string  $group_name    [description]
+     * @param string  $object_type   instrument/proposal/user
+     * @param integer $eus_person_id person_id for ownership
+     * @param string  $group_name    optional group name for
+     *                               later identification/display
      *
-     * @return [type] [description]
+     * @return array
      *
      * @author Ken Auberry <kenneth.auberry@pnnl.gov>
      */
@@ -282,12 +282,13 @@ class Group_Info_Model extends CI_Model
     }//end make_new_group()
 
     /**
-     * [change_group_name description]
+     * Backend database function to change the name of
+     * the specified group.
      *
-     * @param integer $group_id   [description]
-     * @param string  $group_name [description]
+     * @param integer $group_id   group_id to change
+     * @param string  $group_name new group name
      *
-     * @return array [description]
+     * @return array
      *
      * @author Ken Auberry <kenneth.auberry@pnnl.gov>
      */
@@ -307,13 +308,14 @@ class Group_Info_Model extends CI_Model
     }//end change_group_name()
 
     /**
-     * [change_group_option description]
+     * Backend database function to set/update options
+     * for the specified group object.
      *
-     * @param integer $group_id    [description]
-     * @param string  $option_type [description]
-     * @param string  $value       [description]
+     * @param integer $group_id    Group id to be acted upon
+     * @param string  $option_type The option to be changed
+     * @param string  $value       The new value to be set
      *
-     * @return array [description]
+     * @return array summary of group, value name, changed value
      *
      * @author Ken Auberry <kenneth.auberry@pnnl.gov>
      */
@@ -342,13 +344,15 @@ class Group_Info_Model extends CI_Model
     }//end change_group_option()
 
     /**
-     * [get_selected_objects description]
+     * Retrieve a set of objects associated with a given
+     * combination of person/type/group_id
      *
-     * @param integer $eus_person_id [description]
-     * @param string  $restrict_type [description]
-     * @param integer $group_id      [description]
+     * @param integer $eus_person_id person_id to search
+     * @param string  $restrict_type specified if only a certain
+     *                               item type if to be returned
+     * @param integer $group_id      further limit by group_id
      *
-     * @return array [description]
+     * @return array collection of items, separated by item_type
      *
      * @author Ken Auberry <kenneth.auberry@pnnl.gov>
      */
@@ -391,13 +395,16 @@ class Group_Info_Model extends CI_Model
     }//end get_selected_objects()
 
     /**
-     * [get_selected_groups description]
+     * Retrieve group info for all the group objects owned
+     * by a specified user. Can be filtered by type, as
+     * well as limited in scope to exclude full group info
      *
-     * @param integer $eus_person_id  [description]
-     * @param string  $restrict_type  [description]
-     * @param boolean $get_group_info [description]
+     * @param integer $eus_person_id  person_id to search
+     * @param string  $restrict_type  instrument/proposal/user
+     * @param boolean $get_group_info toggle to control depth
+     *                                of information returned
      *
-     * @return array [description]
+     * @return array
      *
      * @author Ken Auberry <kenneth.auberry@pnnl.gov>
      */
@@ -437,12 +444,16 @@ class Group_Info_Model extends CI_Model
     }//end get_selected_groups()
 
     /**
-     * [remove_group_object description]
+     * Backend database function to remove access to a
+     * specified group object. Can be soft-deleted
+     * (disabled by adding a *deleted* date) or completely
+     * removed from the table.
      *
      * @param integer $group_id    [description]
-     * @param boolean $full_delete [description]
+     * @param boolean $full_delete Set FALSE for soft delete
+     *                             Set TRUE for row drop by DELETE
      *
-     * @return none [description]
+     * @return void
      *
      * @author Ken Auberry <kenneth.auberry@pnnl.gov>
      */
@@ -468,17 +479,19 @@ class Group_Info_Model extends CI_Model
     }//end remove_group_object()
 
     /**
-     * [update_object_preferences description]
+     * Backend database function to to add/remove objects
+     * as part of a specified group.
      *
-     * @param string  $object_type [description]
-     * @param array   $object_list [description]
-     * @param integer $group_id    [description]
+     * @param string  $object_type instrument/proposal/user
+     * @param array   $object_list contains items with
+     *                             associated actions
+     * @param integer $group_id    group on which to operate
      *
-     * @return [type] [description]
+     * @return boolean success/failure code
      *
      * @author Ken Auberry <kenneth.auberry@pnnl.gov>
      */
-    public function update_object_preferences($object_type, $object_list, $group_id = FALSE)
+    public function update_object_preferences($object_type, $object_list, $group_id)
     {
         $table        = 'reporting_selection_prefs';
         $DB_prefs     = $this->load->database('website_prefs', TRUE);
@@ -489,6 +502,7 @@ class Group_Info_Model extends CI_Model
                          'item_type'     => $object_type,
                          'eus_person_id' => $this->user_id,
                         );
+        $status = FALSE;
         if ($group_id && is_numeric($group_id)) {
             $where_clause['group_id'] = $group_id;
         }
@@ -523,6 +537,9 @@ class Group_Info_Model extends CI_Model
                                       'group_id'      => $group_id,
                                      );
                     $DB_prefs->insert($table, $insert_object);
+                    if($DB_prefs->affected_rows() > 0) {
+                        $status = TRUE;
+                    }
                 }
             }
 
@@ -531,23 +548,29 @@ class Group_Info_Model extends CI_Model
                 foreach ($removals as $object_id) {
                     $my_where['item_id'] = strval($object_id);
                     $DB_prefs->where($my_where)->delete($table);
+                    if($DB_prefs->affected_rows() > 0) {
+                        $status = TRUE;
+                    }
                 }
             }
         }//end foreach
 
-        return TRUE;
+        return $status;
 
     }//end update_object_preferences()
 
 
     /**
-     * [earliest_latest_data_for_list description]
+     * Retrieve the earliest and latest objects of a given type
+     * and time_basis within a group of object_id's
      *
-     * @param string $object_type    [description]
-     * @param array  $object_id_list [description]
-     * @param string $time_basis     [description]
+     * @param string $object_type    the type of object to retrieve
+     *                               [instrument/proposal/user]
+     * @param array  $object_id_list array of object id's to affect
+     * @param string $time_basis     one of created_date, modified_date
+     *                               submitted_date
      *
-     * @return array [description]
+     * @return array
      *
      * @author Ken Auberry <kenneth.auberry@pnnl.gov>
      */
@@ -569,22 +592,24 @@ class Group_Info_Model extends CI_Model
 
 
     /**
-     * [_available_item_spread_general description]
+     * Private worker function to get the earliest/latest items
+     * in a given list of objects
      *
      * @param array  $object_id_list               [description]
-     * @param string $time_basis                   [description]
-     * @param string $group_type                   [description]
-     * @param string $group_list_retrieval_fn_name [description]
+     * @param string $time_basis                   one of created_date, modified_date
+     *                                             submitted_date
+     * @param string $group_type                   instrument/proposal/user
+     * @param string $group_list_retrieval_fn_name the name of the function to calls
+     *                                             upon to get the myemsl internal
+     *                                             groups associated with a given
+     *                                             object
      *
-     * @return array [description]
+     * @return array
      *
      * @author Ken Auberry <kenneth.auberry@pnnl.gov>
      */
     private function _available_item_spread_general($object_id_list, $time_basis, $group_type, $group_list_retrieval_fn_name = FALSE)
     {
-        // echo "<br />in _available_item_spread_general<br  />";
-        // $e = new \Exception;
-        // var_dump($e->getTraceAsString());
         $return_array = FALSE;
         if (empty($object_id_list)) {
             return FALSE;
@@ -639,54 +664,63 @@ class Group_Info_Model extends CI_Model
 
 
     /**
-     * [_available_instrument_data_spread description]
+     * Helper function to get the earliest/latest
+     * spread for a given set of instruments.
      *
-     * @param array  $object_id_list [description]
-     * @param string $time_field     [description]
+     * @param array  $object_id_list list of instruments to scan
+     * @param string $time_basis     one of created_date, modified_date
+     *                                submitted_date
      *
-     * @return [type] [description]
+     * @uses   Group_info_model::_available_item_spread_general
+     * @return array
      *
      * @author Ken Auberry <kenneth.auberry@pnnl.gov>
      */
-    private function _available_instrument_data_spread($object_id_list, $time_field)
+    private function _available_instrument_data_spread($object_id_list, $time_basis)
     {
         $group_list_retrieval_fn_name = 'get_instrument_group_list';
 
-        return $this->_available_item_spread_general($object_id_list, $time_field, 'instrument', $group_list_retrieval_fn_name);
+        return $this->_available_item_spread_general($object_id_list, $time_basis, 'instrument', $group_list_retrieval_fn_name);
 
     }//end _available_instrument_data_spread()
 
 
     /**
-     * [_available_proposal_data_spread description]
+     * Helper function to get the earliest/latest
+     * spread for a given set of proposals.
      *
-     * @param array  $object_id_list [description]
-     * @param string $time_field     [description]
+     * @param array  $object_id_list list of proposals to scan
+     * @param string $time_basis     one of created_date, modified_date
+     *                                submitted_date
      *
-     * @return array [description]
+     * @uses   Group_info_model::_available_item_spread_general
+     * @return array
      *
      * @author Ken Auberry <kenneth.auberry@pnnl.gov>
      */
-    private function _available_proposal_data_spread($object_id_list, $time_field)
+    private function _available_proposal_data_spread($object_id_list, $time_basis)
     {
         $group_list_retrieval_fn_name = 'get_proposal_group_list';
 
-        return $this->_available_item_spread_general($object_id_list, $time_field, 'proposal', $group_list_retrieval_fn_name);
+        return $this->_available_item_spread_general($object_id_list, $time_basis, 'proposal', $group_list_retrieval_fn_name);
 
     }//end _available_proposal_data_spread()
 
 
     /**
-     * [_available_user_data_spread description]
+     * Helper function to get the earliest/latest
+     * spread for a given set of users.
      *
-     * @param array  $object_id_list [description]
-     * @param string $time_field     [description]
+     * @param array  $object_id_list list of users to scan
+     * @param string $time_basis     one of created_date, modified_date
+     *                                submitted_date
      *
-     * @return array [description]
+     * @uses   Group_info_model::_available_item_spread_general
+     * @return array
      *
      * @author Ken Auberry <kenneth.auberry@pnnl.gov>
      */
-    private function _available_user_data_spread($object_id_list, $time_field)
+    private function _available_user_data_spread($object_id_list, $time_basis)
     {
         $return_array = FALSE;
         if (empty($object_id_list)) {
@@ -695,8 +729,8 @@ class Group_Info_Model extends CI_Model
 
         $this->db->select(
             array(
-             "earliest_{$time_field} as earliest",
-             "latest_{$time_field} as latest",
+             "earliest_{$time_basis} as earliest",
+             "latest_{$time_basis} as latest",
             )
         );
 
@@ -726,18 +760,21 @@ class Group_Info_Model extends CI_Model
 
 
     /**
-     * [get_proposal_group_list description]
+     * Retrieve a list of pertinent Myemsl internal groups
+     * for a given proposal name search term.
+     * Further limits based on staff/non-staff classifications
      *
-     * @param string $proposal_id_filter [description]
+     * @param string $proposal_id_filter search term to filter on
      *
-     * @return array [description]
+     * @return array
      *
      * @author Ken Auberry <kenneth.auberry@pnnl.gov>
      */
     public function get_proposal_group_list($proposal_id_filter = '')
     {
         $is_emsl_staff = $this->is_emsl_staff;
-        $this->db->select(array('group_id', 'name as proposal_id'))->where('type', 'proposal');
+        $DB_myemsl = $this->load->database('default', TRUE);
+        $DB_myemsl->select(array('group_id', 'name as proposal_id'))->where('type', 'proposal');
         $proposals_available = FALSE;
         if(!$is_emsl_staff) {
             $proposals_available = $this->eus->get_proposals_for_user($this->user_id);
@@ -745,13 +782,13 @@ class Group_Info_Model extends CI_Model
 
         if (!empty($proposal_id_filter)) {
             if (is_array($proposal_id_filter)) {
-                $this->db->where_in('name', $proposal_id_filter);
+                $DB_myemsl->where_in('name', $proposal_id_filter);
             } else {
-                $this->db->where('name', $proposal_id_filter);
+                $DB_myemsl->where('name', $proposal_id_filter);
             }
         }
 
-        $query = $this->db->get('groups');
+        $query = $DB_myemsl->get('groups');
 
         $results_by_proposal = array();
         if ($query && $query->num_rows()) {
@@ -772,11 +809,13 @@ class Group_Info_Model extends CI_Model
 
 
     /**
-     * [get_instrument_group_list description]
+     * Retrieve a list of pertinent Myemsl internal groups
+     * for a given instrument name search term.
+     * Further limits based on staff/non-staff classifications
      *
-     * @param string $inst_id_filter [description]
+     * @param string $inst_id_filter search term to filter on
      *
-     * @return array [description]
+     * @return array
      *
      * @author Ken Auberry <kenneth.auberry@pnnl.gov>
      */
@@ -784,20 +823,21 @@ class Group_Info_Model extends CI_Model
     {
         // $e = new Exception();
         // var_dump($e->getTraceAsString());
-        $this->db->select(array('group_id', 'name', 'type'));
+        $DB_myemsl = $this->load->database('default', TRUE);
+        $DB_myemsl->select(array('group_id', 'name', 'type'));
         if (!empty($inst_id_filter)) {
             $where_clause = array(
                              'type' => 'omics.dms.instrument_id',
                              'name' => $inst_id_filter,
                             );
-            $this->db->where($where_clause);
-            $this->db->or_where('type', "Instrument.{$inst_id_filter}");
+            $DB_myemsl->where($where_clause);
+            $DB_myemsl->or_where('type', "Instrument.{$inst_id_filter}");
         } else {
             $where_clause = "(type = 'omics.dms.instrument_id' or type ilike 'instrument.%') and name not in ('foo')";
-            $this->db->where($where_clause);
+            $DB_myemsl->where($where_clause);
         }
 
-        $query = $this->db->order_by('name')->get('groups');
+        $query = $DB_myemsl->order_by('name')->get('groups');
         $results_by_inst_id = array();
         if ($query && $query->num_rows() > 0) {
             foreach ($query->result() as $row) {
@@ -824,100 +864,5 @@ class Group_Info_Model extends CI_Model
         return $results;
 
     }//end get_instrument_group_list()
-
-    /**
-     * [get_info_for_transactions description]
-     *
-     * @param array $transaction_info [description]
-     *
-     * @return array [description]
-     *
-     * @author Ken Auberry <kenneth.auberry@pnnl.gov>
-     */
-    public function get_info_for_transactions($transaction_info)
-    {
-        $ranged_transactions = split_array_into_ranges($transaction_info);
-        $this->db->select(array('f.transaction', 'g.name as proposal_id'));
-        $this->db->or_group_start();
-        foreach ($ranged_transactions as $block) {
-            if (sizeof($block) == 1) {
-                $this->db->or_where('f.transaction', $block[0]);
-            } else {
-                $this->db->or_group_start();
-                $this->db->where('f.transaction >=', $block[0]);
-                $this->db->where('f.transaction <=', $block[1]);
-                $this->db->group_end();
-            }
-        }
-
-        $this->db->group_end();
-        $this->db->where('g.type', 'proposal');
-
-        $this->db->from('item_time_cache_by_transaction f');
-        $this->db->join('groups g', 'g.group_id = f.group_id');
-
-        $proposal_query = $this->db->get();
-        // echo $this->db->last_query();
-        $trans_prop_lookup = array();
-        if ($proposal_query && $proposal_query->num_rows() > 0) {
-            foreach ($proposal_query->result() as $row) {
-                $trans_prop_lookup[$row->transaction]['eus_proposal_id'] = $row->proposal_id;
-            }
-        }
-
-        $this->db->select(array('f.transaction', 'g.name as group_name', 'g.type as group_type'));
-
-        $this->db->or_group_start();
-        foreach ($ranged_transactions as $block) {
-            if (sizeof($block) == 1) {
-                $this->db->or_where('f.transaction', $block[0]);
-            } else {
-                $this->db->or_group_start();
-                $this->db->where('f.transaction >=', $block[0]);
-                $this->db->where('f.transaction <=', $block[1]);
-                $this->db->group_end();
-            }
-        }
-
-        $this->db->group_end();
-        $this->db->where("(g.type = 'omics.dms.instrument_id' or g.type ilike 'instrument.%')");
-        $this->db->from('item_time_cache_by_transaction f');
-        $this->db->join('groups g', 'g.group_id = f.group_id');
-        $inst_query = $this->db->get();
-        if ($inst_query && $inst_query->num_rows() > 0) {
-            foreach ($inst_query->result() as $row) {
-                $instrument_id = $row->group_type == 'omics.dms.instrument_id' ? $row->group_name : str_ireplace('instrument.', '', $row->group_type);
-                $trans_prop_lookup[$row->transaction]['eus_instrument_id'] = ($instrument_id + 0);
-            }
-        }
-
-        $this->db->select(array('person_id', 'trans_id as transaction'));
-        $this->db->order_by('step desc');
-        $this->db->or_group_start();
-        foreach ($ranged_transactions as $block) {
-            if (sizeof($block) == 1) {
-                $this->db->or_where('trans_id', $block[0]);
-            } else {
-                $this->db->or_group_start();
-                $this->db->where('trans_id >=', $block[0]);
-                $this->db->where('trans_id <=', $block[1]);
-                $this->db->group_end();
-            }
-        }
-
-        $this->db->group_end();
-        $user_query = $this->db->get('ingest_state');
-
-        if ($user_query && $user_query->num_rows() > 0) {
-            foreach ($user_query->result() as $row) {
-                $trans_prop_lookup[$row->transaction]['eus_person_id'] = $row->person_id;
-            }
-        }
-
-        // var_dump($trans_prop_lookup);
-        return $trans_prop_lookup;
-
-    }//end get_info_for_transactions()
-
 
 }//end class

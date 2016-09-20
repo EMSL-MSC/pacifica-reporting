@@ -1,16 +1,27 @@
 <?php
 /**
- * Ajax Controller
+ * Pacifica
+ *
+ * Pacifica is an open-source data management framework designed
+ * for the curation and storage of raw and processed scientific
+ * data. It is based on the [CodeIgniter web framework](http://codeigniter.com).
+ *
+ *  The Pacifica-Reporting module provides an interface for
+ *  concerned and interested parties to view the current
+ *  contribution status of any and all instruments in the
+ *  system. The reporting interface can be customized and
+ *  filtered streamline the report to fit any level of user,
+ *  from managers through instrument operators.
  *
  * PHP version 5.5
  *
- * @category Page_Controller
- * @package  Pacifica-reporting
- * @author   Ken Auberry <kenneth.auberry@pnnl.gov>
- * @license  BSD https://opensource.org/licenses/BSD-3-Clause
- * @link     http://github.com/EMSL-MSC/Pacifica-reporting
+ * @package Pacifica-reporting
+ *
+ * @author  Ken Auberry <kenneth.auberry@pnnl.gov>
+ * @license BSD https://opensource.org/licenses/BSD-3-Clause
+ *
+ * @link http://github.com/EMSL-MSC/Pacifica-reporting
  */
-
 
 defined('BASEPATH') OR exit('No direct script access allowed');
 require_once 'Baseline_controller.php';
@@ -29,7 +40,7 @@ require_once 'Baseline_controller.php';
  * @link    http://github.com/EMSL-MSC/Pacifica-reporting
 
  * @uses   Reporting_model
- * @uses   Group_Info_Model
+ * @uses   Group_info_model
  * @uses   Summary_model
  * @uses   EUS               EUS Database access library
  * @see    https://github.com/EMSL-MSC/pacifica-reporting
@@ -53,7 +64,7 @@ class Ajax extends Baseline_controller
     {
         parent::__construct();
         $this->load->model('Reporting_model', 'rep');
-        $this->load->model('Group_Info_Model', 'gm');
+        $this->load->model('Group_info_model', 'gm');
         $this->load->model('Summary_model', 'summary');
         $this->load->library('EUS', '', 'eus');
         // $this->load->helper(array('network','file_info','inflector','time','item','search_term','cookie'));
@@ -305,7 +316,7 @@ class Ajax extends Baseline_controller
      *
      * @author Ken Auberry <kenneth.auberry@pnnl.gov>
      */
-    public function update_object_preferences($object_type, $group_id = FALSE)
+    public function update_object_preferences($object_type, $group_id)
     {
         if ($this->input->post()) {
             $object_list = $this->input->post();

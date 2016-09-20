@@ -6,6 +6,9 @@
 		<exclude name="PEAR.Functions.FunctionDeclaration.NewlineBeforeOpenBrace"/>
 		<exclude name="PEAR.ControlStructures.ControlSignature"/>
 		<exclude name="PEAR.NamingConventions.ValidFunctionName.ScopeNotCamelCaps"/>
+		<exclude name="PEAR.Commenting.FileComment.MissingCategoryTag"/>
+		<exclude name="PEAR.NamingConventions.ValidClassName.Invalid"/>
+		<exclude name="PEAR.NamingConventions.ValidFunctionName.NotCamelCaps"/>
 	</rule>
 	<!-- Constants should always be fully uppercase -->
 	<rule ref="Generic.NamingConventions.UpperCaseConstantName"/>

@@ -1,25 +1,34 @@
 <?php
- /**
-  * Baseline Controller
-  *
-  * Lots of common functionality for setting up new pages and pre-filling them
-  *  with useful data
-  *
-  * PHP version 5.5
-  *
-  * @category Page_Controller
-  * @package  Pacifica-reporting
-  * @author   Ken Auberry <kenneth.auberry@pnnl.gov>
-  * @license  BSD https://opensource.org/licenses/BSD-3-Clause
-  * @link     http://github.com/EMSL-MSC/Pacifica-reporting
-  */
+/**
+ * Pacifica
+ *
+ * Pacifica is an open-source data management framework designed
+ * for the curation and storage of raw and processed scientific
+ * data. It is based on the [CodeIgniter web framework](http://codeigniter.com).
+ *
+ *  The Pacifica-Reporting module provides an interface for
+ *  concerned and interested parties to view the current
+ *  contribution status of any and all instruments in the
+ *  system. The reporting interface can be customized and
+ *  filtered streamline the report to fit any level of user,
+ *  from managers through instrument operators.
+ *
+ * PHP version 5.5
+ *
+ * @package Pacifica-reporting
+ *
+ * @author  Ken Auberry <kenneth.auberry@pnnl.gov>
+ * @license BSD https://opensource.org/licenses/BSD-3-Clause
+ *
+ * @link http://github.com/EMSL-MSC/Pacifica-reporting
+ */
 
 ini_set('memory_limit', '2048M');
 ini_set('set_time_limit', 120);
 ini_set('max_execution_time', 120);
 
 /**
- *  Baseline_Controller is a CI controller class that extends CI_controller
+ *  Baseline_controller is a CI controller class that extends CI_controller
  *
  *  The *Baseline Controller* class provides low-level common functionality that
  *  is used by all of the other page controllers in the site
@@ -32,7 +41,7 @@ ini_set('max_execution_time', 120);
  * @link    http://github.com/EMSL-MSC/Pacifica-reporting
  * @access  public
  */
-class Baseline_Controller extends CI_Controller
+class Baseline_controller extends CI_Controller
 {
     /**
      * Sets up the basics, loads up some common variables, defines a few
