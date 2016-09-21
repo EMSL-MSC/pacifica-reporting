@@ -29,8 +29,8 @@
   *  Group Info Model
   *
   *  The **Group_info_model** class contains functionality for
-  *  summarizing upload and activity data. It pulls data from
-  *  both the MyEMSL and website_prefs databases
+  *  retrieving and updating information about object groups.
+  *  It pulls data from both the MyEMSL and website_prefs databases.
   *
   * @category CI_Model
   * @package  Pacifica-reporting

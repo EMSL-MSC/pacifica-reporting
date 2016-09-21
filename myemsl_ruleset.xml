@@ -9,6 +9,8 @@
 		<exclude name="PEAR.Commenting.FileComment.MissingCategoryTag"/>
 		<exclude name="PEAR.NamingConventions.ValidClassName.Invalid"/>
 		<exclude name="PEAR.NamingConventions.ValidFunctionName.NotCamelCaps"/>
+		<exclude name="PEAR.NamingConventions.ValidFunctionName.FunctionNoCapital"/>
+		<exclude name="Generic.PHP.DisallowShortOpenTag.EchoFound"/>
 	</rule>
 	<!-- Constants should always be fully uppercase -->
 	<rule ref="Generic.NamingConventions.UpperCaseConstantName"/>

@@ -7,10 +7,58 @@
 /*             functionality for dealing with EUS supplied data                */
 /*                                                                             */
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+
+/**
+ * Pacifica
+ *
+ * Pacifica is an open-source data management framework designed
+ * for the curation and storage of raw and processed scientific
+ * data. It is based on the [CodeIgniter web framework](http://codeigniter.com).
+ *
+ *  The Pacifica-Reporting module provides an interface for
+ *  concerned and interested parties to view the current
+ *  contribution status of any and all instruments in the
+ *  system. The reporting interface can be customized and
+ *  filtered streamline the report to fit any level of user,
+ *  from managers through instrument operators.
+ *
+ *  This file contains a number of common functions related to
+ *  file info and handling.
+ *
+ * PHP version 5.5
+ *
+ * @package Pacifica-reporting
+ *
+ * @author  Ken Auberry <kenneth.auberry@pnnl.gov>
+ * @license BSD https://opensource.org/licenses/BSD-3-Clause
+ *
+ * @link http://github.com/EMSL-MSC/Pacifica-reporting
+ */
 class EUS
 {
+    /**
+     *  Class level var for the existing
+     *  CodeIgniter object instance
+     *
+     *  @var object
+     */
     protected $CI;
+
+    /**
+     *  Configuration container array
+     *
+     *  @var array
+     */
     protected $myemsl_array;
+
+    /**
+     *  Class constructor
+     *
+     *  Sets up the various table names and database
+     *  connection information for talking to EUS
+     *
+     *  @author Ken Auberry <kenneth.auberry@pnnl.gov>
+     */
     public function __construct()
     {
         $this->CI = &get_instance();
@@ -39,8 +87,17 @@ class EUS
         }
     }
 
-    // private function
-
+    /**
+     *  Retrieve a filtered list of instruments as listed in
+     *  the EMSL Resource System (ERS)
+     *
+     *  @param boolean $unused_only only return the inactive instruments
+     *  @param string  $filter      search term for the search
+     *
+     *  @return array
+     *
+     *  @author Ken Auberry <kenneth.auberry@pnnl.gov>
+     */
     public function get_ers_instruments_list($unused_only = FALSE, $filter = '')
     {
         $DB_ers = $this->CI->load->database('eus_for_myemsl', true);
@@ -87,6 +144,15 @@ class EUS
         return $categorized_results;
     }
 
+    /**
+     *  Retrieve a filtered list of users from EUS
+     *
+     *  @param string $filter search term string
+     *
+     *  @return array
+     *
+     *  @author Ken Auberry <kenneth.auberry@pnnl.gov>
+     */
     public function get_eus_user_list($filter = '')
     {
         $DB_ers = $this->CI->load->database('eus_for_myemsl', true);
@@ -141,6 +207,17 @@ class EUS
         return $results_array;
     }
 
+    /**
+     *  Retrieve a filtered list of instruments that are associated
+     *  with a given EUS proposal
+     *
+     *  @param string $eus_proposal_id proposal id in question
+     *  @param string $filter          search term string
+     *
+     *  @return array
+     *
+     *  @author Ken Auberry <kenneth.auberry@pnnl.gov>
+     */
     public function get_instruments_for_proposal($eus_proposal_id, $filter = '')
     {
         $DB_ers = $this->CI->load->database('eus_for_myemsl', true);
@@ -197,6 +274,16 @@ class EUS
         return $result_array;
     }
 
+    /**
+     * Retrieve a filtered list of instruments that are associated
+     *  with a given Instrument ID
+     *  @param    [type]   $eus_instrument_id   [description]
+     *  @param    string   $filter   [description]
+     *
+     *  @return   [type]   [description]
+     *
+     *  @author Ken Auberry <kenneth.auberry@pnnl.gov>
+     */
     public function get_proposals_for_instrument($eus_instrument_id, $filter = '')
     {
         $DB_ers = $this->CI->load->database('eus_for_myemsl', true);
@@ -245,6 +332,15 @@ class EUS
         return $result_array;
     }
 
+    /**
+     *  Retrieve the title of the proposal having the specified ID
+     *
+     *  @param string $eus_proposal_id specified proposal id
+     *
+     *  @return string
+     *
+     *  @author Ken Auberry <kenneth.auberry@pnnl.gov>
+     */
     public function get_proposal_name($eus_proposal_id)
     {
         $result = FALSE;
@@ -256,6 +352,21 @@ class EUS
         return $result;
     }
 
+    /**
+     *  Retrieves a list of EUS items (instruments/proposals/users)
+     *  based on object type and a series of ID's to use in a
+     *  *where_in* clause. Can also be restricted to only the set of
+     *  objects that are directly associated with the current user
+     *
+     *  @param string  $object_type  the type of object to be retrieved
+     *  @param array   $search_terms an array of object ID's to search
+     *  @param boolean $my_objects   restrict results to current user's
+     *                               objects only
+     *
+     *  @return array
+     *
+     *  @author Ken Auberry <kenneth.auberry@pnnl.gov>
+     */
     public function get_object_list($object_type, $search_terms = FALSE, $my_objects = FALSE)
     {
         $DB_ers = $this->CI->load->database('eus_for_myemsl', true);
@@ -293,6 +404,16 @@ class EUS
         return $results;
     }
 
+    /**
+     *  Retrieve information for a series of objects as specified
+     *
+     *  @param array  $object_id_list object id's to retrieve
+     *  @param string $object_type    type of object to restrict the search by
+     *
+     *  @return array
+     *
+     *  @author Ken Auberry <kenneth.auberry@pnnl.gov>
+     */
     public function get_object_info($object_id_list, $object_type)
     {
         $results = array();
@@ -311,6 +432,16 @@ class EUS
         return $results;
     }
 
+    /**
+     *  Retrieve a display-ready name info array
+     *  from a given person ID
+     *
+     *  @param integer $eus_id the person ID to retrieve
+     *
+     *  @return array
+     *
+     *  @author Ken Auberry <kenneth.auberry@pnnl.gov>
+     */
     public function get_name_from_eus_id($eus_id)
     {
         // echo "eus_id => {$eus_id}";
@@ -340,6 +471,16 @@ class EUS
         return $result;
     }
 
+    /**
+     *  Retrieve all the proposals that are associated with
+     *  a given person ID
+     *
+     *  @param integer $eus_user_id person id to search
+     *
+     *  @return array
+     *
+     *  @author Ken Auberry <kenneth.auberry@pnnl.gov>
+     */
     public function get_proposals_for_user($eus_user_id)
     {
         $is_emsl_staff = $this->CI->is_emsl_staff;
@@ -362,15 +503,19 @@ class EUS
     }
 
     /**
-     * Backing function that talks to the local clone of the EUS database to get a current list
-     * of proposals and their info when given a particular fragment of the proposal name.
+     * Backing function that talks to the local clone
+     * of the EUS database to get a current list
+     * of proposals and their info when given a
+     * particular fragment of the proposal name.
      *
      * @param string $proposal_name_fragment the search term to use
-     * @param string $active                 active/inactive proposal switch (active/inactive)
+     * @param string $active                 active/inactive proposal
+     *                                       switch (active/inactive)
      *
      * @used-by Group::get_proposals
      *
-     * @return array hierarchical array of proposal_id's with their accompanying data underneath
+     * @return array hierarchical array of proposal_id's
+     *               with their accompanying data underneath
      */
     public function get_proposals_by_name($proposal_name_fragment, $is_active = 'active')
     {
@@ -417,6 +562,16 @@ class EUS
         return $results;
     }
 
+    /**
+     *  Retrieve a display-ready name for the instrument
+     *  specified
+     *
+     *  @param integer $eus_instrument_id the instrument id to search
+     *
+     *  @return array
+     *
+     *  @author Ken Auberry <kenneth.auberry@pnnl.gov>
+     */
     public function get_instrument_name($eus_instrument_id)
     {
         $DB_ers = $this->CI->load->database('eus_for_myemsl', true);
@@ -429,23 +584,4 @@ class EUS
 
         return $results;
     }
-
-    // public function is_emsl_staff($eus_user_id = FALSE){
-    //     $user_id = !$eus_user_id ? $this->CI->user_id : $eus_user_id;
-    //     $DB_ers = $this->CI->load->database('eus_for_myemsl',true);
-    //     $is_staff = FALSE;
-    //     $select_array = array('person_id');
-    //     $where_array = array(
-    //         'emsl_employee' => 'Y',
-    //         'person_id' => $user_id
-    //     );
-    //     $query = $DB_ers->select($select_array)->get_where(USERS_TABLE, $where_array, 1);
-    //     if($query){
-    //         if($query->num_rows() > 0){
-    //             $is_staff = true;
-    //         }
-    //     }
-    //     return $is_staff;
-    // }
-
 }

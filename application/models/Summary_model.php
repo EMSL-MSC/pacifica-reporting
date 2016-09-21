@@ -95,7 +95,7 @@ class Summary_model extends CI_Model
      *  @param string  $end_date           ending date (YYYY-MM-DD)
      *  @param boolean $make_day_graph     toggle to control whether or not
      *                                     per day totals are included
-     *  @param boolean $time_basis         one of created_date, modified_date,
+     *  @param string  $time_basis         one of created_date, modified_date,
      *                                     submitted_date
      *
      *  @return array
@@ -119,7 +119,7 @@ class Summary_model extends CI_Model
      *  @param string  $end_date             ending date (YYYY-MM-DD)
      *  @param boolean $make_day_graph       toggle to control whether or not
      *                                       per day totals are included
-     *  @param boolean $time_basis           one of created_date, modified_date,
+     *  @param string  $time_basis           one of created_date, modified_date,
      *                                       submitted_date
      *
      *  @return array
@@ -143,7 +143,7 @@ class Summary_model extends CI_Model
      *  @param string  $end_date               ending date (YYYY-MM-DD)
      *  @param boolean $make_day_graph         toggle to control whether or not
      *                                         per day totals are included
-     *  @param boolean $time_basis             one of created_date, modified_date,
+     *  @param string  $time_basis             one of created_date, modified_date,
      *                                         submitted_date
      *
      *  @return array
@@ -167,7 +167,7 @@ class Summary_model extends CI_Model
      *  @param string  $end_date       ending date (YYYY-MM-DD)
      *  @param boolean $make_day_graph toggle to control whether or not
      *                                 per day totals are included
-     *  @param boolean $time_basis     one of created_date, modified_date,
+     *  @param string  $time_basis     one of created_date, modified_date,
      *                                 submitted_date
      *  @param string  $group_type     type of group to summarize over
      *
@@ -180,7 +180,7 @@ class Summary_model extends CI_Model
         extract($this->canonicalize_date_range($start_date, $end_date));
         $start_date_obj  = new DateTime($start_date);
         $end_date_obj    = new DateTime($end_date);
-        $available_dates = $this->generate_available_dates($start_date_obj, $end_date_obj);
+        $available_dates = $this->_generate_available_dates($start_date_obj, $end_date_obj);
 
         if($group_type == 'instrument' OR $group_type == 'proposal') {
             $group_list_retrieval_fn_name = "get_{$group_type}_group_list";
@@ -195,15 +195,15 @@ class Summary_model extends CI_Model
                 // no results returned for group list => bail out
             }
 
-            $temp_totals  = $this->get_summary_totals_from_group_list($group_list, $start_date_obj, $end_date_obj, $time_basis, $group_type);
-            $temp_results = $this->get_per_day_totals_from_group_list($group_list, $start_date_obj, $end_date_obj, $time_basis, $group_type);
+            $temp_totals  = $this->_get_summary_totals_from_group_list($group_list, $start_date_obj, $end_date_obj, $time_basis, $group_type);
+            $temp_results = $this->_get_per_day_totals_from_group_list($group_list, $start_date_obj, $end_date_obj, $time_basis, $group_type);
         }else if($group_type == 'user') {
-            $temp_totals  = $this->get_summary_totals_from_user_list($id_list, $start_date_obj, $end_date_obj, $time_basis, $group_type);
-            $temp_results = $this->get_per_day_totals_from_user_list($id_list, $start_date_obj, $end_date_obj, $time_basis, $group_type);
+            $temp_totals  = $this->_get_summary_totals_from_user_list($id_list, $start_date_obj, $end_date_obj, $time_basis);
+            $temp_results = $this->get_per_day_totals_from_user_list($id_list, $start_date_obj, $end_date_obj, $time_basis);
         }
 
         $this->results['day_graph']['by_date']['available_dates'] = $available_dates;
-        $this->results['day_graph']['by_date'] = $this->temp_stats_to_output($temp_results['aggregate'], $available_dates);
+        $this->results['day_graph']['by_date'] = $this->_temp_stats_to_output($temp_results['aggregate'], $available_dates);
         $this->results['summary_totals']       = $temp_results['totals'];
         $this->results['summary_totals']['upload_stats'] = $temp_totals['results'];
 
@@ -213,13 +213,16 @@ class Summary_model extends CI_Model
 
 
     /**
-     *  [get_per_day_totals_from_user_list description]
+     *  Calculates the distribution of uploaded files and file volumes
+     *  as contributed to the system by a given group of users,
+     *  spread across a series of days. Also provides total file count
+     *  and file volume across the entire date range specified.
      *
-     *  @param array   $eus_user_id_list list of user id's to include
-     *  @param string  $start_date       starting date (YYYY-MM-DD)
-     *  @param string  $end_date         ending date (YYYY-MM-DD)
-     *  @param boolean $time_basis       one of created_date, modified_date,
-     *                                   submitted_date
+     *  @param array  $eus_user_id_list list of user id's to include
+     *  @param string $start_date       starting date (YYYY-MM-DD)
+     *  @param string $end_date         ending date (YYYY-MM-DD)
+     *  @param string $time_basis       one of created_date, modified_date,
+     *                                  submitted_date
      *
      *  @return array
      *
@@ -278,7 +281,7 @@ class Summary_model extends CI_Model
                         "group_type"       => 'instrument',
                        );
 
-        $transactions_by_day = $this->get_user_transactions_by_date($eus_user_id_list, $where_array, $time_basis);
+        $transactions_by_day = $this->_get_filtered_transactions_by_user($eus_user_id_list, $where_array, $time_basis);
         // var_dump($transactions_by_day);
         foreach($transactions_by_day as $date_key => $transaction_list){
             $temp_results['aggregate'][$date_key]['transactions'] = $transaction_list;
@@ -288,8 +291,22 @@ class Summary_model extends CI_Model
 
     }//end get_per_day_totals_from_user_list()
 
-
-    private function get_summary_totals_from_user_list($eus_user_id_list,$start_date,$end_date,$time_basis,$group_type)
+    /**
+     *  Retrieves a summary of the data available for a given set
+     *  of users, split up by object type (instrument/proposal/user)
+     *  over a given period of time.
+     *
+     *  @param array  $eus_user_id_list user list to summarize
+     *  @param string $start_date       starting date (YYYY-MM-DD)
+     *  @param string $end_date         ending date (YYYY-MM-DD)
+     *  @param string $time_basis       one of created_date, modified_date,
+     *                                  submitted_date
+     *
+     *  @return array
+     *
+     *  @author Ken Auberry <kenneth.auberry@pnnl.gov>
+     */
+    private function _get_summary_totals_from_user_list($eus_user_id_list,$start_date,$end_date,$time_basis)
     {
         $start_date_object = is_object($start_date) ? $start_date : new DateTime($start_date);
         $end_date_object   = is_object($end_date) ? $end_date : new DateTime($end_date);
@@ -317,7 +334,6 @@ class Summary_model extends CI_Model
                     'instrument' => array(),
                     'user'       => array(),
                    );
-        // echo $this->db->last_query();
         $available_proposals = !$this->is_emsl_staff ? $this->eus->get_proposals_for_user($this->user_id) : FALSE;
 
         if($query && $query->num_rows() > 0) {
@@ -360,10 +376,25 @@ class Summary_model extends CI_Model
 
         return array('results' => $results);
 
-    }//end get_summary_totals_from_user_list()
+    }//end _get_summary_totals_from_user_list()
 
-
-    private function get_summary_totals_from_group_list($group_list,$start_date,$end_date,$time_basis,$group_type)
+    /**
+     *  Retrieves a summary of the data available for a given set
+     *  of internal group items, split up by object type
+     *  (instrument/proposal/user) over a given period of time.
+     *
+     *  @param array  $group_list list of groups to aggregate
+     *  @param string $start_date starting date (YYYY-MM-DD)
+     *  @param string $end_date   ending date (YYYY-MM-DD)
+     *  @param string $time_basis one of created_date, modified_date,
+     *                            submitted_date
+     *  @param string $group_type type of group to filter by
+     *
+     *  @return array
+     *
+     *  @author Ken Auberry <kenneth.auberry@pnnl.gov>
+     */
+    private function _get_summary_totals_from_group_list($group_list,$start_date,$end_date,$time_basis,$group_type)
     {
         $start_date_object    = is_object($start_date) ? $start_date : new DateTime($start_date);
         $end_date_object      = is_object($end_date) ? $end_date : new DateTime($end_date);
@@ -451,8 +482,21 @@ class Summary_model extends CI_Model
 
     }//end get_summary_totals_from_group_list()
 
-
-    private function get_per_day_totals_from_group_list($group_list,$start_date,$end_date,$time_basis,$group_type)
+    /**
+     *  [_get_per_day_totals_from_group_list description]
+     *
+     *  @param array  $group_list list of groups to aggregate
+     *  @param string $start_date starting date (YYYY-MM-DD)
+     *  @param string $end_date   ending date (YYYY-MM-DD)
+     *  @param string $time_basis one of created_date, modified_date,
+     *                            submitted_date
+     *  @param string $group_type type of group to filter by
+     *
+     *  @return array
+     *
+     *  @author Ken Auberry <kenneth.auberry@pnnl.gov>
+     */
+    private function _get_per_day_totals_from_group_list($group_list,$start_date,$end_date,$time_basis,$group_type)
     {
         $start_date_object = is_object($start_date) ? $start_date : new DateTime($start_date);
         $end_date_object   = is_object($end_date) ? $end_date : new DateTime($end_date);
@@ -494,17 +538,30 @@ class Summary_model extends CI_Model
             $temp_results['totals']['total_size_string'] = format_bytes($temp_results['totals']['total_size_bytes']);
         }
 
-        $transactions_by_day = $this->get_transactions_by_date($group_list, $where_array, $time_basis);
+        $transactions_by_day = $this->_get_filtered_transactions_by_group($group_list, $where_array, $time_basis);
         foreach($transactions_by_day as $date_key => $transaction_list){
             $temp_results['aggregate'][$date_key]['transactions'] = $transaction_list;
         }
 
         return $temp_results;
 
-    }//end get_per_day_totals_from_group_list()
+    }//end _get_per_day_totals_from_group_list()
 
-
-    private function get_transactions_by_date($group_id_list, $where_array, $time_basis)
+    /**
+     *  Pull a full listing of all the transactions for a given
+     *  group list, further filtered on a provided active record
+     *  *where* array and time_basis type
+     *
+     *  @param array  $group_id_list group id's to consider
+     *  @param array  $where_array   collection of where clause components
+     *  @param string $time_basis    one of created_date, modified_date,
+     *                               submitted_date
+     *
+     *  @return array
+     *
+     *  @author Ken Auberry <kenneth.auberry@pnnl.gov>
+     */
+    private function _get_filtered_transactions_by_group($group_id_list, $where_array, $time_basis)
     {
         $select_array = array(
                          'transaction',
@@ -522,10 +579,23 @@ class Summary_model extends CI_Model
 
         return $results;
 
-    }//end get_transactions_by_date()
+    }//end _get_filtered_transactions()
 
-
-    private function get_user_transactions_by_date($eus_id_list, $where_array, $time_basis)
+    /**
+     *  Pull a full listing of all the transactions for a given
+     *  user list, further filtered on a provided active record
+     *  *where* array and time_basis type
+     *
+     *  @param array  $eus_id_list user id's to consider
+     *  @param array  $where_array collection of where clause components
+     *  @param string $time_basis  one of created_date, modified_date,
+     *                             submitted_date
+     *
+     *  @return array
+     *
+     *  @author Ken Auberry <kenneth.auberry@pnnl.gov>
+     */
+    private function _get_filtered_transactions_by_user($eus_id_list, $where_array, $time_basis)
     {
         $select_array = array(
                          'transaction',
@@ -543,10 +613,22 @@ class Summary_model extends CI_Model
 
         return $results;
 
-    }//end get_user_transactions_by_date()
+    }//end _get_filtered_transactions_by_user()
 
-
-    private function temp_stats_to_output($temp_results,$available_dates)
+    /**
+     *  Format all the retrieved statistical information
+     *  into a more easily-parseable array block that also
+     *  fills in any missing dates with zeroed out data
+     *
+     *  @param array $temp_results    sparse gathered results
+     *  @param array $available_dates all the possible date entries
+     *                                between two given date
+     *
+     *  @return array
+     *
+     *  @author Ken Auberry <kenneth.auberry@pnnl.gov>
+     */
+    private function _temp_stats_to_output($temp_results,$available_dates)
     {
         if(!isset($file_count)) {
             $file_count = array();
@@ -593,9 +675,27 @@ class Summary_model extends CI_Model
                         );
         return $return_array;
 
-    }//end temp_stats_to_output()
+    }//end _temp_stats_to_output()
 
-
+    /**
+     *  Takes a passed time period specifier (1 week, 1-month, etc)
+     *  and parses it into a date range array (with today's date
+     *  as the latest date). If a start/end date are specified,
+     *  those are used preferentially and are cleaned up and
+     *  formatted properly into an array date pair.
+     *
+     *  @param string $time_range       human-parsable time period
+     *                                  (1-week, 1 month, 3_days)
+     *  @param string $start_date       starting date (YYYY-MM-DD)
+     *  @param string $end_date         ending date (YYYY-MM-DD)
+     *  @param array  $valid_date_range represents the earliest/latest
+     *                                  available dates for the
+     *                                  group under consideration
+     *
+     *  @return array
+     *
+     *  @author Ken Auberry <kenneth.auberry@pnnl.gov>
+     */
     public function fix_time_range($time_range, $start_date, $end_date, $valid_date_range = FALSE)
     {
         if (!empty($start_date) && !empty($end_date)) {
@@ -625,8 +725,18 @@ class Summary_model extends CI_Model
 
     }//end fix_time_range()
 
-
-    private function generate_available_dates($start_date, $end_date)
+    /**
+     *  Given a starting and ending date, generate all of the
+     *  available dates between them, inclusive
+     *
+     *  @param string $start_date starting date (YYYY-MM-DD)
+     *  @param string $end_date   ending date (YYYY-MM-DD)
+     *
+     *  @return array
+     *
+     *  @author Ken Auberry <kenneth.auberry@pnnl.gov>
+     */
+    private function _generate_available_dates($start_date, $end_date)
     {
         $results           = array();
         $start_date_object = is_object($start_date) ? $start_date : new DateTime($start_date);
@@ -641,13 +751,23 @@ class Summary_model extends CI_Model
 
         return $results;
 
-    }//end generate_available_dates()
+    }//end _generate_available_dates()
 
-
+    /**
+     *  For any two given dates, clean the up and format them
+     *  as an array of start/end time objects and strings
+     *
+     *  @param string $start_date starting date (YYYY-MM-DD)
+     *  @param string $end_date   ending date (YYYY-MM-DD)
+     *
+     *  @return array
+     *
+     *  @author Ken Auberry <kenneth.auberry@pnnl.gov>
+     */
     public function canonicalize_date_range($start_date, $end_date)
     {
-        $start_date = $this->convert_short_date($start_date);
-        $end_date   = $this->convert_short_date($end_date, 'end');
+        $start_date = $this->_convert_short_date($start_date);
+        $end_date   = $this->_convert_short_date($end_date, 'end');
         $start_time = strtotime($start_date) ? date_create($start_date)->setTime(0, 0, 0) : date_create('1983-01-01 00:00:00');
         $end_time   = strtotime($end_date) ? date_create($end_date) : new DateTime();
         $end_time->setTime(23, 59, 59);
@@ -667,8 +787,22 @@ class Summary_model extends CI_Model
 
     }//end canonicalize_date_range()
 
-
-    private function convert_short_date($date_string, $type = 'start')
+    /**
+     *  Takes a short date format ('2014', '2015-12')
+     *  and expands to the full form of the start or end
+     *  of the range, i.e.
+     *  ('2014','start') -> '2014-01-01'
+     *  ('2015-12','end') -> '2015-12-31'
+     *
+     *  @param string $date_string the short date to expand
+     *  @param string $type        'endedness' of the result
+     *                             to return (start/end)
+     *
+     *  @return string the expanded version of the date
+     *
+     *  @author Ken Auberry <kenneth.auberry@pnnl.gov>
+     */
+    private function _convert_short_date($date_string, $type = 'start')
     {
         if (preg_match('/(\d{4})$/', $date_string, $matches)) {
             $date_string = $type == 'start' ? "{$matches[1]}-01-01" : "{$matches[1]}-12-31";
@@ -678,7 +812,7 @@ class Summary_model extends CI_Model
 
         return $date_string;
 
-    }//end convert_short_date()
+    }//end _convert_short_date()
 
 
 }//end class

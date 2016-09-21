@@ -512,11 +512,14 @@ class Group extends Baseline_controller
 
 
     /**
-     * Set up hints that show what types of things make for acceptable search criteria
+     * Set up hints that show what types of
+     * things make for acceptable search criteria
      *
-     * @param string $object_type type of object to be hinted (instrument/proposal/user)
+     * @param string $object_type type of object to be hinted
+     *                            (instrument/proposal/user)
      *
-     * @return array simple array with search criteria descriptions for display
+     * @return array simple array with search criteria
+     *               descriptions for display
      */
     public function add_objects_instructions($object_type)
     {
