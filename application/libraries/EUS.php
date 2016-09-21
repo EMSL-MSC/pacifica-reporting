@@ -1,13 +1,4 @@
 <?php
-
-/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-/*                                                                             */
-/*     EUS_Library                                                             */
-/*                                                                             */
-/*             functionality for dealing with EUS supplied data                */
-/*                                                                             */
-/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-
 /**
  * Pacifica
  *
@@ -33,6 +24,22 @@
  * @license BSD https://opensource.org/licenses/BSD-3-Clause
  *
  * @link http://github.com/EMSL-MSC/Pacifica-reporting
+ */
+
+ /**
+ *  EUS Access Library
+ *
+ *  The **EUS** library contains functionality
+ *  for retrieving data from the EMSL User System.
+ *
+ * @category CI_Library
+ * @package  Pacifica-reporting
+ * @author   Ken Auberry <kenneth.auberry@pnnl.gov>
+ *
+ * @license BSD https://opensource.org/licenses/BSD-3-Clause
+ * @link    http://github.com/EMSL-MSC/Pacifica-reporting
+ *
+ * @access public
  */
 class EUS
 {
