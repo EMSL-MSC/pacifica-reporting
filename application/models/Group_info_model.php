@@ -93,6 +93,7 @@ class Group_info_model extends CI_Model
 
             $group_info   = $query->row_array();
             $member_query = $DB_prefs->select('item_id')->get_where('reporting_selection_prefs', array('group_id' => $group_id));
+            // echo $DB_prefs->last_query();
             // var_dump($member_query->result_array());
             // echo "<br /><br />";
             if ($member_query && $member_query->num_rows() > 0) {
@@ -126,7 +127,7 @@ class Group_info_model extends CI_Model
      */
     public function get_group_info($group_id)
     {
-        $group_info['options_list'] = $this->get_group_options($group_id);
+        $group_info = $this->get_group_options($group_id);
 
         $earliest_latest = $this->earliest_latest_data_for_list(
             $group_info['group_type'],

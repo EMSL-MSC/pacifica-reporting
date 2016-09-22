@@ -40,7 +40,6 @@ date_default_timezone_set('America/Los_Angeles');
 */
 $protocol = isset($_SERVER["HTTPS"]) && $_SERVER["HTTPS"] == "on" ? "https" : "http";
 $rooted = getenv('CI_ROOTED');
-echo "rooted => {$rooted}";
 $rooted = !empty($rooted) && $rooted == TRUE ? TRUE : FALSE;
 // $rooted = isset($_SERVER["CI_ROOTED"]) && $_SERVER["CI_ROOTED"] == TRUE ? TRUE : FALSE;
 $basedir = $rooted ? '' : '/myemsl/reporting';
