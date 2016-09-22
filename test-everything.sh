@@ -2,4 +2,4 @@
 
 # basic syntax check against all php files
 #find -name '*.php' | xargs -n 1 php -l
-find application/ -iname '*.php' -and ! \( -ipath '*libraries*' -or -ipath '*migrations*' \) | xargs -n 1 phpcs -n -s --standard=myemsl_ruleset.xml
+find -ipath '*application*' -and -iname '*.php' -and ! \( -ipath '*libraries*' -or -ipath '*migrations*' \) | xargs -n 1 phpcs -n --standard=myemsl_ruleset.xml
