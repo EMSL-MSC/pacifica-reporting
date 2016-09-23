@@ -2,8 +2,7 @@ language: php
 php:
   - "5.6"
 env:
-  - CI_ENV=unit_testing
-  - CI_ROOTED=true
+  - CI_ENV=unit_testing CI_ROOTED=true
 install:
 - pyrus install pear/PHP_CodeSniffer
 - phpenv rehash
