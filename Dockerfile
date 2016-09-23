@@ -12,8 +12,8 @@ RUN apt-get update && \
     #DEBIAN_FRONTEND=noninteractive apt-get -y upgrade
 
 RUN a2enmod rewrite
-ENV CI_ENV unit_testing
-ENV CI_ROOTED true
+#ENV CI_ENV unit_testing
+#ENV CI_ROOTED true
 
 ENV APACHE_RUN_USER   www-data
 ENV APACHE_RUN_GROUP  www-data
@@ -30,8 +30,8 @@ COPY tests /var/www/html/tests
 RUN cat tests/database/myemsl_metadata-eus.sql | sqlite3 tests/database/myemsl_metadata-eus.sqlite3
 RUN cat tests/database/myemsl_metadata-myemsl.sql | sqlite3 tests/database/myemsl_metadata-myemsl.sqlite3
 RUN cat tests/database/myemsl_metadata-website_prefs.sql | sqlite3 tests/database/myemsl_metadata-website_prefs.sqlite3
-COPY apache_conf/modules /etc/apache2/conf-enabled/
-COPY apache_conf/sites/myemsl-reporting.conf /etc/apache2/sites-available/
+COPY tests/apache_conf/modules /etc/apache2/conf-enabled/
+COPY tests/apache_conf/sites/myemsl-reporting.conf /etc/apache2/sites-available/
 RUN ln -s /etc/apache2/sites-available/myemsl-reporting.conf /etc/apache2/sites-enabled/
 COPY config_files/general.ini /etc/myemsl/
 RUN ln -s /var/www/html/application/resources /var/www/html/project_resources

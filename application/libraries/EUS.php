@@ -550,7 +550,7 @@ class EUS
                 $end_date = strtotime($row->end_date) ? date_create($row->end_date) : FALSE;
 
                 $currently_active = $start_date && $start_date->getTimestamp() < time() ? true : FALSE;
-                $currently_active = $currently_active && (!$end_date OR $end_date->getTimestamp() >= time()) ? true : FALSE;
+                $currently_active = $currently_active && (!$end_date || $end_date->getTimestamp() >= time()) ? true : FALSE;
 
                 if ($is_active == 'active' && !$currently_active) {
                     continue;
