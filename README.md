@@ -1,5 +1,8 @@
 ## Pacifica Reporting Module
 [![Build Status](https://travis-ci.org/EMSL-MSC/pacifica-reporting.svg?branch=master)](https://travis-ci.org/EMSL-MSC/pacifica-reporting)
+[![Code Climate](https://codeclimate.com/github/EMSL-MSC/pacifica-metadata/badges/gpa.svg)](https://codeclimate.com/github/EMSL-MSC/pacifica-metadata)
+[![Test Coverage](https://codeclimate.com/github/EMSL-MSC/pacifica-metadata/badges/coverage.svg)](https://codeclimate.com/github/EMSL-MSC/pacifica-metadata/coverage)
+[![Issue Count](https://codeclimate.com/github/EMSL-MSC/pacifica-metadata/badges/issue_count.svg)](https://codeclimate.com/github/EMSL-MSC/pacifica-metadata)
 
 ---
 ### Overview
