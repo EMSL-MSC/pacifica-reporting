@@ -23,7 +23,7 @@
  * @link http://github.com/EMSL-MSC/Pacifica-reporting
  */
 
-defined('BASEPATH') OR exit('No direct script access allowed');
+defined('BASEPATH') || exit('No direct script access allowed');
 require_once 'Baseline_controller.php';
 
 /**
@@ -267,7 +267,7 @@ class Item extends Baseline_controller
                 $times = time_range_to_date_pair($time_range, $available_time_range);
             }
         } else { //time_range is apparently valid
-            if (($valid_st OR $valid_et) && !($valid_st && $valid_et)) {
+            if (($valid_st || $valid_et) && !($valid_st && $valid_et)) {
                 //looks like we want an offset time either start or finish
                 $times = time_range_to_date_pair($time_range, $available_time_range, $start_date, $end_date);
             } else {

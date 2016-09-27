@@ -168,28 +168,28 @@ ALTER TABLE ONLY reporting_selection_prefs
 -- Name: trg_rog_opt_set_updated; Type: TRIGGER; Schema: website_prefs; Owner: metadata_admins
 --
 
-CREATE TRIGGER trg_rog_opt_set_updated BEFORE INSERT OR UPDATE ON reporting_object_group_options FOR EACH ROW EXECUTE PROCEDURE set_updated_time();
+CREATE TRIGGER trg_rog_opt_set_updated BEF||E INSERT || UPDATE ON reporting_object_group_options F|| EACH ROW EXECUTE PROCEDURE set_updated_time();
 
 
 --
 -- Name: trg_rogod_set_updated; Type: TRIGGER; Schema: website_prefs; Owner: metadata_admins
 --
 
-CREATE TRIGGER trg_rogod_set_updated BEFORE INSERT OR UPDATE ON reporting_object_group_option_defaults FOR EACH ROW EXECUTE PROCEDURE set_updated_time();
+CREATE TRIGGER trg_rogod_set_updated BEF||E INSERT || UPDATE ON reporting_object_group_option_defaults F|| EACH ROW EXECUTE PROCEDURE set_updated_time();
 
 
 --
 -- Name: trg_rsp_set_updated; Type: TRIGGER; Schema: website_prefs; Owner: metadata_admins
 --
 
-CREATE TRIGGER trg_rsp_set_updated BEFORE INSERT OR UPDATE ON reporting_selection_prefs FOR EACH ROW EXECUTE PROCEDURE set_updated_time();
+CREATE TRIGGER trg_rsp_set_updated BEF||E INSERT || UPDATE ON reporting_selection_prefs F|| EACH ROW EXECUTE PROCEDURE set_updated_time();
 
 
 --
 -- Name: trg_rsp_set_updated; Type: TRIGGER; Schema: website_prefs; Owner: metadata_admins
 --
 
-CREATE TRIGGER trg_rsp_set_updated BEFORE INSERT OR UPDATE ON reporting_object_groups FOR EACH ROW EXECUTE PROCEDURE set_updated_time();
+CREATE TRIGGER trg_rsp_set_updated BEF||E INSERT || UPDATE ON reporting_object_groups F|| EACH ROW EXECUTE PROCEDURE set_updated_time();
 
 
 --

@@ -1140,8 +1140,8 @@ INSERT INTO "files" VALUES ('Micropillar #6_019.tif', 'Proposal 45796/NMR 600 NM
 INSERT INTO "files" VALUES ('Micropillar #6_027.tif', 'Proposal 45796/NMR 600 NMR - (Hood)/08-31-2016', '47', '2016-09-06 11:54:03', '2016-09-06 12:01:15.233051', 't', 'f', '976149', '761', '2016-08-31 14:03:52');
 INSERT INTO "files" VALUES ('Micropillar #6_026.tif', 'Proposal 45796/NMR 600 NMR - (Hood)/08-31-2016', '47', '2016-09-06 11:54:03', '2016-09-06 12:01:15.27347', 't', 'f', '976121', '760', '2016-08-31 14:00:55');
 INSERT INTO "files" VALUES ('Micropillar #6_029.tif', 'Proposal 45796/NMR 600 NMR - (Hood)/08-31-2016', '47', '2016-09-06 11:54:03', '2016-09-06 12:01:15.639812', 't', 'f', '976123', '763', '2016-08-31 14:18:40');
-INSERT INTO "files" VALUES ('New Text Document.txt - Shortcut.lnk', 'Proposal 49515/STORM/Break stuff', '51', '2016-09-13 15:30:55', '2016-09-13 16:01:04.927804', 't', 'f', '1291', '772', '2016-08-17 13:58:08');
-INSERT INTO "files" VALUES ('New Text Document.txt - Shortcut.lnk', 'Proposal 49515/STORM/Break stuff', '48', '2016-09-12 17:01:43', '2016-09-12 18:01:05.196892', 't', 'f', '1291', '769', '2016-08-17 13:58:08');
+INSERT INTO "files" VALUES ('New Text Document.txt - Shortcut.lnk', 'Proposal 49515/ST||M/Break stuff', '51', '2016-09-13 15:30:55', '2016-09-13 16:01:04.927804', 't', 'f', '1291', '772', '2016-08-17 13:58:08');
+INSERT INTO "files" VALUES ('New Text Document.txt - Shortcut.lnk', 'Proposal 49515/ST||M/Break stuff', '48', '2016-09-12 17:01:43', '2016-09-12 18:01:05.196892', 't', 'f', '1291', '769', '2016-08-17 13:58:08');
 INSERT INTO "files" VALUES ('12.12.31 Drift corrected spectrum imagebest2.emi', 'Proposal 45796/NMR 600 NMR - (Hood)/2013/Chongmin_Wang/Proposal_48922/Instrument_34075/2013-11-26/STEM image', '22', '2016-07-26 18:17:08', '2016-07-26 19:01:11.225254', 't', 'f', '3569517', '286', '2013-11-26 12:18:59');
 INSERT INTO "files" VALUES ('12.20.40 Drift corrected spectrum image-best3_1.ser', 'Proposal 45796/NMR 600 NMR - (Hood)/2013/Chongmin_Wang/Proposal_48922/Instrument_34075/2013-11-26/STEM image', '22', '2016-07-26 18:17:09', '2016-07-26 19:01:11.561306', 't', 'f', '1320122', '289', '2013-11-26 12:27:16');
 INSERT INTO "files" VALUES ('12.12.31 Drift corrected spectrum imagebest2_1.ser', 'Proposal 45796/NMR 600 NMR - (Hood)/2013/Chongmin_Wang/Proposal_48922/Instrument_34075/2013-11-26/STEM image', '22', '2016-07-26 18:17:09', '2016-07-26 19:01:11.587166', 't', 'f', '1320122', '287', '2013-11-26 12:18:59');
@@ -1163,8 +1163,8 @@ INSERT INTO "files" VALUES ('Resist_004.tif', 'Proposal 45796/NMR 600 NMR - (Hoo
 INSERT INTO "files" VALUES ('Micropillar-1_011.tif', 'Proposal 45796/NMR 600 NMR - (Hood)/08-24-2016', '46', '2016-09-06 11:53:35', '2016-09-06 12:01:09.850681', 't', 'f', '976184', '725', '2016-08-24 14:32:17');
 INSERT INTO "files" VALUES ('Micropillar #6_006.tif', 'Proposal 45796/NMR 600 NMR - (Hood)/08-31-2016', '47', '2016-09-06 11:54:01', '2016-09-06 12:01:12.952997', 't', 'f', '976204', '740', '2016-08-31 10:02:03');
 INSERT INTO "files" VALUES ('Micropillar #6_017.tif', 'Proposal 45796/NMR 600 NMR - (Hood)/08-31-2016', '47', '2016-09-06 11:54:02', '2016-09-06 12:01:14.483736', 't', 'f', '976121', '751', '2016-08-31 11:41:17');
-INSERT INTO "files" VALUES ('New Text Document.txt - Shortcut.lnk', 'Proposal 49515/STORM/Break stuff', '49', '2016-09-12 17:02:42', '2016-09-12 18:01:05.227763', 't', 'f', '1291', '770', '2016-08-17 13:58:08');
-INSERT INTO "files" VALUES ('New Text Document.txt - Shortcut.lnk', 'Proposal 49515/STORM/Break stuff', '53', '2016-09-13 17:22:41', '2016-09-13 18:01:23.742729', 't', 'f', '1291', '773', '2016-08-17 13:58:08');
+INSERT INTO "files" VALUES ('New Text Document.txt - Shortcut.lnk', 'Proposal 49515/ST||M/Break stuff', '49', '2016-09-12 17:02:42', '2016-09-12 18:01:05.227763', 't', 'f', '1291', '770', '2016-08-17 13:58:08');
+INSERT INTO "files" VALUES ('New Text Document.txt - Shortcut.lnk', 'Proposal 49515/ST||M/Break stuff', '53', '2016-09-13 17:22:41', '2016-09-13 18:01:23.742729', 't', 'f', '1291', '773', '2016-08-17 13:58:08');
 INSERT INTO "files" VALUES ('Scanning Search_2.ser', 'Proposal 45796/NMR 600 NMR - (Hood)/2013/Chongmin_Wang/Proposal_48922/Instrument_34075/2013-11-26/STEM image', '22', '2016-07-26 18:17:11', '2016-07-26 19:01:15.16069', 't', 'f', '76', '304', '2013-11-26 11:03:08');
 INSERT INTO "files" VALUES ('Scanning Search_3.ser', 'Proposal 45796/NMR 600 NMR - (Hood)/2013/Chongmin_Wang/Proposal_48922/Instrument_34075/2013-11-26/STEM image', '22', '2016-07-26 18:17:11', '2016-07-26 19:01:15.168667', 't', 'f', '50062', '305', '2013-11-26 11:03:01');
 INSERT INTO "files" VALUES ('Scanning Search_1.ser', 'Proposal 45796/NMR 600 NMR - (Hood)/2013/Chongmin_Wang/Proposal_48922/Instrument_34075/2013-11-26/STEM image', '22', '2016-07-26 18:17:11', '2016-07-26 19:01:15.186137', 't', 'f', '524422', '303', '2013-11-26 11:02:59');
@@ -1192,9 +1192,9 @@ INSERT INTO "files" VALUES ('Micropillar #6_020.tif', 'Proposal 45796/NMR 600 NM
 INSERT INTO "files" VALUES ('100micW_Glass_Ag10_1mMBPDT_1micLAgNPs_1s_100spec_14_p45.SPE', 'Proposal 45796/Sequencer A/2014/Feb_13_2014', '42', '2016-08-25 13:49:51', '2016-08-25 14:01:06.877167', 't', 'f', '15100', '566', '2014-02-13 15:25:29');
 INSERT INTO "files" VALUES ('100micW_Glass_Ag10_1mMBPDT_1micLAgNPs_1s_50spec_20.SPE', 'Proposal 45796/Sequencer A/2014/Feb_13_2014', '42', '2016-08-25 13:49:52', '2016-08-25 14:01:09.084918', 't', 'f', '114100', '575', '2014-02-13 16:59:20');
 INSERT INTO "files" VALUES ('100micW_Glass_Ag10_1mMBPDT_1micLAgNPs_p1s_500spec_15.SPE', 'Proposal 45796/Sequencer A/2014/Feb_13_2014', '42', '2016-08-25 13:49:53', '2016-08-25 14:01:09.471166', 't', 'f', '1068900', '580', '2014-02-13 16:01:53');
-INSERT INTO "files" VALUES ('New Text Document.txt - Shortcut.lnk', 'Proposal 49515/STORM/Break stuff', '50', '2016-09-12 17:12:05', '2016-09-12 18:01:05.198322', 't', 'f', '1291', '771', '2016-08-17 13:58:08');
+INSERT INTO "files" VALUES ('New Text Document.txt - Shortcut.lnk', 'Proposal 49515/ST||M/Break stuff', '50', '2016-09-12 17:12:05', '2016-09-12 18:01:05.198322', 't', 'f', '1291', '771', '2016-08-17 13:58:08');
 INSERT INTO "files" VALUES ('100micW_Glass_Ag10_1mMBPDT_1s_50spec_3.SPE', 'Proposal 45796/Sequencer A/2014/Feb_13_2014/OnAG', '42', '2016-08-25 13:49:54', '2016-08-25 14:01:10.561919', 't', 'f', '118500', '590', '2014-02-13 14:25:08');
-INSERT INTO "files" VALUES ('New Text Document.txt - Shortcut.lnk', 'Proposal 49515/STORM/Break stuff', '54', '2016-09-13 17:24:28', '2016-09-13 18:01:23.749252', 't', 'f', '1291', '774', '2016-08-17 13:58:08');
+INSERT INTO "files" VALUES ('New Text Document.txt - Shortcut.lnk', 'Proposal 49515/ST||M/Break stuff', '54', '2016-09-13 17:24:28', '2016-09-13 18:01:23.749252', 't', 'f', '1291', '774', '2016-08-17 13:58:08');
 INSERT INTO "files" VALUES ('100micW_Glass_Ag10_1mMBPDT_1s_50spec_5.SPE', 'Proposal 45796/Sequencer A/2014/Feb_13_2014/OnAG', '42', '2016-08-25 13:49:54', '2016-08-25 14:01:10.931288', 't', 'f', '111900', '592', '2014-02-13 14:29:10');
 INSERT INTO "files" VALUES ('11.23.18 Drift corrected spectrum image1_1.ser', 'Proposal 45796/NMR 600 NMR - (Hood)/2013/Chongmin_Wang/Proposal_48922/Instrument_34075/2013-11-26/STEM image', '23', '2016-07-26 18:19:52', '2016-07-26 19:01:18.15501', 't', 'f', '1856372', '326', '2013-11-26 11:28:57');
 INSERT INTO "files" VALUES ('11.23.18 Drift corrected spectrum image1.emi', 'Proposal 45796/NMR 600 NMR - (Hood)/2013/Chongmin_Wang/Proposal_48922/Instrument_34075/2013-11-26/STEM image', '23', '2016-07-26 18:19:52', '2016-07-26 19:01:18.300436', 't', 'f', '3573166', '325', '2013-11-26 11:28:57');
@@ -12050,7 +12050,7 @@ INSERT INTO "groups" VALUES ('7361', 49642, 'proposal');
 INSERT INTO "groups" VALUES ('7362', 49643, 'proposal');
 INSERT INTO "groups" VALUES ('7363', 49644, 'proposal');
 INSERT INTO "groups" VALUES ('7364', 49645, 'proposal');
-INSERT INTO "groups" VALUES ('7365', 'STORM/PALM - Super Resolution Fluorescence Microscope', 'Instrument.34119');
+INSERT INTO "groups" VALUES ('7365', 'ST||M/PALM - Super Resolution Fluorescence Microscope', 'Instrument.34119');
 INSERT INTO "groups" VALUES ('7369', 'Arkin, Adam', 'EMSL User');
 INSERT INTO "groups" VALUES ('7395', 49646, 'proposal');
 INSERT INTO "groups" VALUES ('7396', 49647, 'proposal');
@@ -12879,11 +12879,11 @@ INSERT INTO "ingest_state" VALUES ('dev2.my.emsl.pnl.gov', '2000029', '29', '340
 invalid syntax (__init__.py, line 181)
 <traceback object at 0x7f594e263cf8>
 Traceback%20%28most%20recent%20call%20last%29%3A%0A%20%20File%20%22%2Fusr%2Flib%2Fpython2.6%2Fsite-packages%2Fmyemsl%2Fcatchall.py%22%2C%20line%2041%2C%20in%20main%0A%20%20%20%20exec%20%27execfile%28%20%22%25s%22%29%27%20%25%20mainpyfile%20in%20globals%2C%20locals%0A%20%20File%20%22%3Cstring%3E%22%2C%20line%201%2C%20in%20%3Cmodule%3E%0A%20%20File%20%22%2Fusr%2Flibexec%2Fmyemsl%2Fingest%2Fingest_job%22%2C%20line%2031%2C%20in%20%3Cmodule%3E%0A%20%20%20%20import%20myemsl.permission%0A%20%20File%20%22%2Fusr%2Flib%2Fpython2.6%2Fsite-packages%2Fmyemsl%2Fpermission%2F__init__.py%22%2C%20line%20181%0A%20%20%20%20%20inst_match%20%3D%20inst_re.match%28group%5B%27type%27%5D%29%3A%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%5E%0A%20SyntaxError%3A%20invalid%20syntax%0A
-', 'ERROR', '2016-08-04 15:03:17.163904-07', null);
+', 'ERR||', '2016-08-04 15:03:17.163904-07', null);
 INSERT INTO "ingest_state" VALUES ('dev2.my.emsl.pnl.gov', '2000003', '3', '50724', '5', 'completed', 'SUCCESS', '2016-07-07 15:07:09.895352-07', null);
 INSERT INTO "ingest_state" VALUES ('dev2.my.emsl.pnl.gov', '2000027', '27', '41853', '5', 'completed', 'SUCCESS', '2016-07-29 14:44:49.499592-07', null);
 INSERT INTO "ingest_state" VALUES ('dev2.my.emsl.pnl.gov', '2000022', '22', '41853', '5', 'completed', 'SUCCESS', '2016-07-26 18:16:59.434728-07', null);
-INSERT INTO "ingest_state" VALUES ('dev2.my.emsl.pnl.gov', '2000039', '39', '34002', '4', 'error ''ERROR:  duplicate key value violates unique constraint "item_time_cache_by_transaction_pkey"
+INSERT INTO "ingest_state" VALUES ('dev2.my.emsl.pnl.gov', '2000039', '39', '34002', '4', 'error ''ERR||:  duplicate key value violates unique constraint "item_time_cache_by_transaction_pkey"
 DETAIL:  Key (item_id, group_id)=(549, 4468) already exists.
 CONTEXT:  SQL statement "INSERT INTO myemsl.item_time_cache_by_transaction
 SELECT f.item_id,
@@ -12908,11 +12908,11 @@ as group_type
 ''omics.dms.instrument_id'',
 ''EMSL User'',
 ''proposal''
-) OR g . type ilike ''instrument%'') AND t.transaction = transaction_id"
+) || g . type ilike ''instrument%'') AND t.transaction = transaction_id"
 PL/pgSQL function myemsl.fill_item_time_cache_by_transaction(bigint) line 6 at SQL statement
 '' in ''
         select myemsl.fill_item_time_cache_by_transaction(39);
-        ''', 'ERROR', '2016-08-04 15:34:44.234177-07', null);
+        ''', 'ERR||', '2016-08-04 15:34:44.234177-07', null);
 INSERT INTO "ingest_state" VALUES ('dev2.my.emsl.pnl.gov', '2000004', '4', '50724', '5', 'completed', 'SUCCESS', '2016-07-07 15:08:19.214024-07', null);
 INSERT INTO "ingest_state" VALUES ('dev2.my.emsl.pnl.gov', '2000014', '14', '50724', '5', 'completed', 'SUCCESS', '2016-07-19 10:35:30.021791-07', null);
 INSERT INTO "ingest_state" VALUES ('dev2.my.emsl.pnl.gov', '2000018', '18', '50724', '5', 'completed', 'SUCCESS', '2016-07-20 16:42:36.836416-07', null);
@@ -12931,7 +12931,7 @@ INSERT INTO "ingest_state" VALUES ('dev2.my.emsl.pnl.gov', '2000028', '28', '340
 invalid syntax (__init__.py, line 181)
 <traceback object at 0x7f70ff703cf8>
 Traceback%20%28most%20recent%20call%20last%29%3A%0A%20%20File%20%22%2Fusr%2Flib%2Fpython2.6%2Fsite-packages%2Fmyemsl%2Fcatchall.py%22%2C%20line%2041%2C%20in%20main%0A%20%20%20%20exec%20%27execfile%28%20%22%25s%22%29%27%20%25%20mainpyfile%20in%20globals%2C%20locals%0A%20%20File%20%22%3Cstring%3E%22%2C%20line%201%2C%20in%20%3Cmodule%3E%0A%20%20File%20%22%2Fusr%2Flibexec%2Fmyemsl%2Fingest%2Fingest_job%22%2C%20line%2031%2C%20in%20%3Cmodule%3E%0A%20%20%20%20import%20myemsl.permission%0A%20%20File%20%22%2Fusr%2Flib%2Fpython2.6%2Fsite-packages%2Fmyemsl%2Fpermission%2F__init__.py%22%2C%20line%20181%0A%20%20%20%20%20if%20inst_match%20%3D%20inst_re.match%28group%5B%27type%27%5D%29%3A%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%5E%0A%20SyntaxError%3A%20invalid%20syntax%0A
-', 'ERROR', '2016-08-04 14:59:14.977926-07', null);
+', 'ERR||', '2016-08-04 14:59:14.977926-07', null);
 INSERT INTO "ingest_state" VALUES ('dev2.my.emsl.pnl.gov', '2000008', '8', '50724', '5', 'completed', 'SUCCESS', '2016-07-18 16:36:54.457638-07', null);
 INSERT INTO "ingest_state" VALUES ('dev1.my.emsl.pnl.gov', '2000048', '48', '41853', '5', 'completed', 'SUCCESS', '2016-09-12 17:01:42.212154-07', null);
 INSERT INTO "ingest_state" VALUES ('dev2.my.emsl.pnl.gov', '2000021', '21', '50724', '5', 'completed', 'SUCCESS', '2016-07-25 09:12:36.170897-07', null);
@@ -12940,42 +12940,42 @@ INSERT INTO "ingest_state" VALUES ('dev2.my.emsl.pnl.gov', '2000024', '24', '418
 INSERT INTO "ingest_state" VALUES ('dev1.my.emsl.pnl.gov', '2000016', '16', '41853', '5', 'completed', 'SUCCESS', '2016-07-19 13:15:26.428929-07', null);
 INSERT INTO "ingest_state" VALUES ('dev2.my.emsl.pnl.gov', '2000025', '25', '41853', '5', 'completed', 'SUCCESS', '2016-07-29 14:30:45.764489-07', null);
 INSERT INTO "ingest_state" VALUES ('dev2.my.emsl.pnl.gov', '2000026', '26', '41853', '5', 'completed', 'SUCCESS', '2016-07-29 14:43:43.272574-07', null);
-INSERT INTO "ingest_state" VALUES ('dev2.my.emsl.pnl.gov', '2000031', '31', '34002', '4', 'local variable ''rows'' referenced before assignment', 'ERROR', '2016-08-04 15:06:58.046993-07', null);
+INSERT INTO "ingest_state" VALUES ('dev2.my.emsl.pnl.gov', '2000031', '31', '34002', '4', 'local variable ''rows'' referenced before assignment', 'ERR||', '2016-08-04 15:06:58.046993-07', null);
 INSERT INTO "ingest_state" VALUES ('dev2.my.emsl.pnl.gov', '2000030', '30', '34002', '0', '<class ''pg.OperationalError''>
 internal error in ''INIT'': %d format: a number is required, not str
 <traceback object at 0x7fa4a9a79fc8>
 Traceback%20%28most%20recent%20call%20last%29%3A%0A%20%20File%20%22%2Fusr%2Flib%2Fpython2.6%2Fsite-packages%2Fmyemsl%2Fcatchall.py%22%2C%20line%2041%2C%20in%20main%0A%20%20%20%20exec%20%27execfile%28%20%22%25s%22%29%27%20%25%20mainpyfile%20in%20globals%2C%20locals%0A%20%20File%20%22%3Cstring%3E%22%2C%20line%201%2C%20in%20%3Cmodule%3E%0A%20%20File%20%22%2Fusr%2Flibexec%2Fmyemsl%2Fingest%2Fingest_job%22%2C%20line%20193%2C%20in%20%3Cmodule%3E%0A%20%20%20%20if%20not%20myemsl.permission.get_permission_ingest%28metadata%2C%20options.username%29%3A%0A%20%20File%20%22%2Fusr%2Flib%2Fpython2.6%2Fsite-packages%2Fmyemsl%2Fpermission%2F__init__.py%22%2C%20line%20168%2C%20in%20get_permission_ingest%0A%20%20%20%20my_data%20%3D%20get_policy_userinfo%28userid%29%0A%20%20File%20%22%2Fusr%2Flib%2Fpython2.6%2Fsite-packages%2Fmyemsl%2Fpolicy%2F__init__.py%22%2C%20line%2022%2C%20in%20get_policy_userinfo%0A%20%20%20%20user_info%20%3D%20get_user_info%28userid%29%0A%20%20File%20%22%2Fusr%2Flib%2Fpython2.6%2Fsite-packages%2Fmyemsl%2Fmetadata%2F__init__.py%22%2C%20line%20235%2C%20in%20get_user_info%0A%20%20%20%20cursor.execute%28sql%2C%20%7B%27person_id%27%3Auserid%7D%29%0A%20%20File%20%22%2Fusr%2Flib64%2Fpython2.6%2Fsite-packages%2Fpgdb.py%22%2C%20line%20174%2C%20in%20execute%0A%20%20%20%20self.executemany%28operation%2C%20%28params%2C%29%29%0A%20%20File%20%22%2Fusr%2Flib64%2Fpython2.6%2Fsite-packages%2Fpgdb.py%22%2C%20line%20197%2C%20in%20executemany%0A%20%20%20%20raise%20OperationalError%2C%20%22internal%20error%20in%20%27%25s%27%3A%20%25s%22%20%25%20%28sql%2Cerr%29%0AOperationalError%3A%20internal%20error%20in%20%27INIT%27%3A%20%25d%20format%3A%20a%20number%20is%20required%2C%20not%20str%0A
-', 'ERROR', '2016-08-04 15:04:09.2399-07', null);
+', 'ERR||', '2016-08-04 15:04:09.2399-07', null);
 INSERT INTO "ingest_state" VALUES ('dev1.my.emsl.pnl.gov', '2000052', '52', '41853', '0', '<type ''exceptions.ValueError''>
 No JSON object could be decoded
 <traceback object at 0x7fbb6cd985f0>
 Traceback%20%28most%20recent%20call%20last%29%3A%0A%20%20File%20%22%2Fusr%2Flib%2Fpython2.6%2Fsite-packages%2Fmyemsl%2Fcatchall.py%22%2C%20line%2041%2C%20in%20main%0A%20%20%20%20exec%20%27execfile%28%20%22%25s%22%29%27%20%25%20mainpyfile%20in%20globals%2C%20locals%0A%20%20File%20%22%3Cstring%3E%22%2C%20line%201%2C%20in%20%3Cmodule%3E%0A%20%20File%20%22%2Fusr%2Flibexec%2Fmyemsl%2Fingest%2Fingest_job%22%2C%20line%2092%2C%20in%20%3Cmodule%3E%0A%20%20%20%20metadata%20%3D%20simplejson.load%28open%28metadatafilename%2C%20%22r%22%29%29%0A%20%20File%20%22%2Fusr%2Flib64%2Fpython2.6%2Fsite-packages%2Fsimplejson%2F__init__.py%22%2C%20line%20267%2C%20in%20load%0A%20%20%20%20parse_constant%3Dparse_constant%2C%20%2A%2Akw%29%0A%20%20File%20%22%2Fusr%2Flib64%2Fpython2.6%2Fsite-packages%2Fsimplejson%2F__init__.py%22%2C%20line%20307%2C%20in%20loads%0A%20%20%20%20return%20_default_decoder.decode%28s%29%0A%20%20File%20%22%2Fusr%2Flib64%2Fpython2.6%2Fsite-packages%2Fsimplejson%2Fdecoder.py%22%2C%20line%20335%2C%20in%20decode%0A%20%20%20%20obj%2C%20end%20%3D%20self.raw_decode%28s%2C%20idx%3D_w%28s%2C%200%29.end%28%29%29%0A%20%20File%20%22%2Fusr%2Flib64%2Fpython2.6%2Fsite-packages%2Fsimplejson%2Fdecoder.py%22%2C%20line%20353%2C%20in%20raw_decode%0A%20%20%20%20raise%20ValueError%28%22No%20JSON%20object%20could%20be%20decoded%22%29%0AValueError%3A%20No%20JSON%20object%20could%20be%20decoded%0A
-', 'ERROR', '2016-09-13 16:05:40.728232-07', null);
+', 'ERR||', '2016-09-13 16:05:40.728232-07', null);
 INSERT INTO "ingest_state" VALUES ('dev2.my.emsl.pnl.gov', '2000043', '43', '50724', '5', 'completed', 'SUCCESS', '2016-08-25 13:50:42.025239-07', null);
 INSERT INTO "ingest_state" VALUES ('dev2.my.emsl.pnl.gov', '2000034', '34', '34002', '3', 'completed', 'SUCCESS', '2016-08-04 15:27:38.804899-07', null);
 INSERT INTO "ingest_state" VALUES ('dev1.my.emsl.pnl.gov', '2000054', '54', '41853', '5', 'completed', 'SUCCESS', '2016-09-13 17:24:27.503727-07', null);
-INSERT INTO "ingest_state" VALUES ('dev2.my.emsl.pnl.gov', '2000036', '36', '34002', '4', 'error ''ERROR:  function fill_item_time_cache_by_transaction(unknown) does not exist
+INSERT INTO "ingest_state" VALUES ('dev2.my.emsl.pnl.gov', '2000036', '36', '34002', '4', 'error ''ERR||:  function fill_item_time_cache_by_transaction(unknown) does not exist
 LINE 2:         select fill_item_time_cache_by_transaction(''36'');
                        ^
 HINT:  No function matches the given name and argument types. You might need to add explicit type casts.
 '' in ''
         select fill_item_time_cache_by_transaction(''36'');
-        ''', 'ERROR', '2016-08-04 15:32:33.646159-07', null);
+        ''', 'ERR||', '2016-08-04 15:32:33.646159-07', null);
 INSERT INTO "ingest_state" VALUES ('dev2.my.emsl.pnl.gov', '2000046', '46', '50724', '5', 'completed', 'SUCCESS', '2016-09-06 11:53:33.641262-07', null);
-INSERT INTO "ingest_state" VALUES ('dev2.my.emsl.pnl.gov', '2000038', '38', '34002', '4', 'internal error in ''INIT'': %d format: a number is required, not str', 'ERROR', '2016-08-04 15:34:17.996756-07', null);
+INSERT INTO "ingest_state" VALUES ('dev2.my.emsl.pnl.gov', '2000038', '38', '34002', '4', 'internal error in ''INIT'': %d format: a number is required, not str', 'ERR||', '2016-08-04 15:34:17.996756-07', null);
 INSERT INTO "ingest_state" VALUES ('dev1.my.emsl.pnl.gov', '2000049', '49', '41853', '5', 'completed', 'SUCCESS', '2016-09-12 17:02:39.348488-07', null);
 INSERT INTO "ingest_state" VALUES ('dev2.my.emsl.pnl.gov', '2000040', '40', '34002', '0', '<type ''exceptions.TypeError''>
 string indices must be integers, not str
 <traceback object at 0x7f4a0e33a1b8>
 Traceback%20%28most%20recent%20call%20last%29%3A%0A%20%20File%20%22%2Fusr%2Flib%2Fpython2.6%2Fsite-packages%2Fmyemsl%2Fcatchall.py%22%2C%20line%2041%2C%20in%20main%0A%20%20%20%20exec%20%27execfile%28%20%22%25s%22%29%27%20%25%20mainpyfile%20in%20globals%2C%20locals%0A%20%20File%20%22%3Cstring%3E%22%2C%20line%201%2C%20in%20%3Cmodule%3E%0A%20%20File%20%22%2Fusr%2Flibexec%2Fmyemsl%2Fingest%2Fingest_job%22%2C%20line%20193%2C%20in%20%3Cmodule%3E%0A%20%20%20%20if%20not%20myemsl.permission.get_permission_ingest%28metadata%2C%20options.username%29%3A%0A%20%20File%20%22%2Fusr%2Flib%2Fpython2.6%2Fsite-packages%2Fmyemsl%2Fpermission%2F__init__.py%22%2C%20line%20169%2C%20in%20get_permission_ingest%0A%20%20%20%20my_proposals%20%3D%20%5B%20x%5B%27proposal_id%27%5D%20for%20x%20in%20my_data%5B%27proposals%27%5D%20%5D%0ATypeError%3A%20string%20indices%20must%20be%20integers%2C%20not%20str%0A
-', 'ERROR', '2016-08-23 13:57:00.367399-07', null);
-INSERT INTO "ingest_state" VALUES ('dev2.my.emsl.pnl.gov', '2000032', '32', '34002', '4', 'local variable ''rows'' referenced before assignment', 'ERROR', '2016-08-04 15:12:28.360476-07', null);
-INSERT INTO "ingest_state" VALUES ('dev2.my.emsl.pnl.gov', '2000033', '33', '34002', '4', 'local variable ''rows'' referenced before assignment', 'ERROR', '2016-08-04 15:23:18.191827-07', null);
+', 'ERR||', '2016-08-23 13:57:00.367399-07', null);
+INSERT INTO "ingest_state" VALUES ('dev2.my.emsl.pnl.gov', '2000032', '32', '34002', '4', 'local variable ''rows'' referenced before assignment', 'ERR||', '2016-08-04 15:12:28.360476-07', null);
+INSERT INTO "ingest_state" VALUES ('dev2.my.emsl.pnl.gov', '2000033', '33', '34002', '4', 'local variable ''rows'' referenced before assignment', 'ERR||', '2016-08-04 15:23:18.191827-07', null);
 INSERT INTO "ingest_state" VALUES ('dev2.my.emsl.pnl.gov', '2000044', '44', '50724', '5', 'completed', 'SUCCESS', '2016-09-06 11:52:39.591853-07', null);
 INSERT INTO "ingest_state" VALUES ('dev1.my.emsl.pnl.gov', '2000053', '53', '41853', '5', 'completed', 'SUCCESS', '2016-09-13 17:22:40.614488-07', null);
-INSERT INTO "ingest_state" VALUES ('dev2.my.emsl.pnl.gov', '2000035', '35', '34002', '4', 'local variable ''rows'' referenced before assignment', 'ERROR', '2016-08-04 15:28:21.084551-07', null);
+INSERT INTO "ingest_state" VALUES ('dev2.my.emsl.pnl.gov', '2000035', '35', '34002', '4', 'local variable ''rows'' referenced before assignment', 'ERR||', '2016-08-04 15:28:21.084551-07', null);
 INSERT INTO "ingest_state" VALUES ('dev2.my.emsl.pnl.gov', '2000047', '47', '50724', '5', 'completed', 'SUCCESS', '2016-09-06 11:53:59.637156-07', null);
-INSERT INTO "ingest_state" VALUES ('dev2.my.emsl.pnl.gov', '2000037', '37', '34002', '4', 'error ''ERROR:  duplicate key value violates unique constraint "item_time_cache_by_transaction_pkey"
+INSERT INTO "ingest_state" VALUES ('dev2.my.emsl.pnl.gov', '2000037', '37', '34002', '4', 'error ''ERR||:  duplicate key value violates unique constraint "item_time_cache_by_transaction_pkey"
 DETAIL:  Key (item_id, group_id)=(547, 4468) already exists.
 CONTEXT:  SQL statement "INSERT INTO myemsl.item_time_cache_by_transaction
 SELECT f.item_id,
@@ -13000,11 +13000,11 @@ as group_type
 ''omics.dms.instrument_id'',
 ''EMSL User'',
 ''proposal''
-) OR g . type ilike ''instrument%'') AND t.transaction = transaction_id"
+) || g . type ilike ''instrument%'') AND t.transaction = transaction_id"
 PL/pgSQL function myemsl.fill_item_time_cache_by_transaction(bigint) line 6 at SQL statement
 '' in ''
         select myemsl.fill_item_time_cache_by_transaction(''37'');
-        ''', 'ERROR', '2016-08-04 15:33:25.484248-07', null);
+        ''', 'ERR||', '2016-08-04 15:33:25.484248-07', null);
 INSERT INTO "ingest_state" VALUES ('dev1.my.emsl.pnl.gov', '2000050', '50', '41853', '5', 'completed', 'SUCCESS', '2016-09-12 17:12:04.229292-07', null);
 INSERT INTO "ingest_state" VALUES ('dev2.my.emsl.pnl.gov', '2000041', '41', '34002', '5', 'completed', 'SUCCESS', '2016-08-23 14:45:27.696501-07', null);
 INSERT INTO "ingest_state" VALUES ('dev1.my.emsl.pnl.gov', '2000051', '51', '41853', '5', 'completed', 'SUCCESS', '2016-09-13 15:30:53.48039-07', null);
