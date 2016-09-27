@@ -4,12 +4,22 @@ engines:
     enabled: true
     config:
       languages:
-      - python
+      - php
+      - javascript
+  eslint:
+    enabled: true
   fixme:
     enabled: true
   radon:
     enabled: true
 ratings:
   paths:
-  - "**.py"
-exclude_paths: []
+  - "**.php"
+  - "**.js"
+  - "**.inc"
+  - "**.css"
+exclude_paths:
+ - tests/
+ - system/
+ - websystem/
+ - resources/
