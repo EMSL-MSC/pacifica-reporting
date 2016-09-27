@@ -23,7 +23,7 @@
  * @link http://github.com/EMSL-MSC/Pacifica-reporting
  */
 
-defined('BASEPATH') || exit('No direct script access allowed');
+defined('BASEPATH') OR exit('No direct script access allowed');
 
 /**
  *  Reporting is a CI controller class that extends Baseline_controller

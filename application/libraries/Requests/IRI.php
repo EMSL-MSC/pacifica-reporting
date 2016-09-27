@@ -26,15 +26,15 @@
  *       may be used to endorse or promote products derived from this software
  *       without specific prior written permission.
  *
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUT||S "AS IS"
- * AND ANY EXPRESS || IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
- * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS F|| A PARTICULAR PURPOSE
- * ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDERS AND CONTRIBUT||S BE
- * LIABLE F|| ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, ||
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+ * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+ * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+ * ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDERS AND CONTRIBUTORS BE
+ * LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
  * CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
- * SUBSTITUTE GOODS || SERVICES; LOSS OF USE, DATA, || PROFITS; || BUSINESS
- * INTERRUPTION) HOWEVER CAUSED AND ON ANY THE||Y OF LIABILITY, WHETHER IN
- * CONTRACT, STRICT LIABILITY, || T||T (INCLUDING NEGLIGENCE || OTHERWISE)
+ * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+ * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+ * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  *
@@ -145,11 +145,11 @@ class Requests_IRI
         }
         elseif (
                $name === 'iauthority'
-            || $name === 'iuserinfo'
-            || $name === 'ihost'
-            || $name === 'ipath'
-            || $name === 'iquery'
-            || $name === 'ifragment'
+            OR $name === 'iuserinfo'
+            OR $name === 'ihost'
+            OR $name === 'ipath'
+            OR $name === 'iquery'
+            OR $name === 'ifragment'
         )
         {
             call_user_func(array($this, 'set_' . substr($name, 1)), $value);
@@ -169,9 +169,9 @@ class Requests_IRI
         $props = get_object_vars($this);
 
         if (
-            $name === 'iri' ||
-            $name === 'uri' ||
-            $name === 'iauthority' ||
+            $name === 'iri' OR
+            $name === 'uri' OR
+            $name === 'iauthority' OR
             $name === 'authority'
         )
         {
@@ -217,7 +217,7 @@ class Requests_IRI
      */
     public function __isset($name)
     {
-        if (method_exists($this, 'get_' . $name) || isset($this->$name))
+        if (method_exists($this, 'get_' . $name) OR isset($this->$name))
         {
             return true;
         }
@@ -283,7 +283,7 @@ class Requests_IRI
             {
                 if ($relative->get_iri() !== '')
                 {
-                    if ($relative->iuserinfo !== null || $relative->ihost !== null || $relative->port !== null)
+                    if ($relative->iuserinfo !== null OR $relative->ihost !== null OR $relative->port !== null)
                     {
                         $target = clone $relative;
                         $target->scheme = $base->scheme;
@@ -301,7 +301,7 @@ class Requests_IRI
                             {
                                 $target->ipath = $relative->ipath;
                             }
-                            elseif (($base->iuserinfo !== null || $base->ihost !== null || $base->port !== null) && $base->ipath === '')
+                            elseif (($base->iuserinfo !== null OR $base->ihost !== null OR $base->port !== null) && $base->ipath === '')
                             {
                                 $target->ipath = '/' . $relative->ipath;
                             }
@@ -361,7 +361,7 @@ class Requests_IRI
             {
                 $match['scheme'] = null;
             }
-            if (!isset($match[3]) || $match[3] === '')
+            if (!isset($match[3]) OR $match[3] === '')
             {
                 $match['authority'] = null;
             }
@@ -369,11 +369,11 @@ class Requests_IRI
             {
                 $match['path'] = '';
             }
-            if (!isset($match[6]) || $match[6] === '')
+            if (!isset($match[6]) OR $match[6] === '')
             {
                 $match['query'] = null;
             }
-            if (!isset($match[8]) || $match[8] === '')
+            if (!isset($match[8]) OR $match[8] === '')
             {
                 $match['fragment'] = null;
             }
@@ -381,7 +381,7 @@ class Requests_IRI
         }
         else
         {
-            trigger_error('This should never happen', E_USER_ERR||);
+            trigger_error('This should never happen', E_USER_ERROR);
             die;
         }
     }
@@ -395,7 +395,7 @@ class Requests_IRI
     protected function remove_dot_segments($input)
     {
         $output = '';
-        while (strpos($input, './') !== FALSE || strpos($input, '/.') !== FALSE || $input === '.' || $input === '..')
+        while (strpos($input, './') !== FALSE OR strpos($input, '/.') !== FALSE OR $input === '.' OR $input === '..')
         {
             // A: If the input buffer begins with a prefix of "../" or "./", then remove that prefix from the input buffer; otherwise,
             if (strpos($input, '../') === 0)
@@ -427,7 +427,7 @@ class Requests_IRI
                 $output = substr_replace($output, '', strrpos($output, '/'));
             }
             // D: if the input buffer consists only of "." or "..", then remove that from the input buffer; otherwise,
-            elseif ($input === '.' || $input === '..')
+            elseif ($input === '.' OR $input === '..')
             {
                 $input = '';
             }
@@ -544,24 +544,24 @@ class Requests_IRI
                 // Invalid sequences
                 !$valid
                 // Non-shortest form sequences are invalid
-                || $length > 1 && $character <= 0x7F
-                || $length > 2 && $character <= 0x7FF
-                || $length > 3 && $character <= 0xFFFF
+                OR $length > 1 && $character <= 0x7F
+                OR $length > 2 && $character <= 0x7FF
+                OR $length > 3 && $character <= 0xFFFF
                 // Outside of range of ucschar codepoints
                 // Noncharacters
-                || ($character & 0xFFFE) === 0xFFFE
-                || $character >= 0xFDD0 && $character <= 0xFDEF
-                || (
+                OR ($character & 0xFFFE) === 0xFFFE
+                OR $character >= 0xFDD0 && $character <= 0xFDEF
+                OR (
                     // Everything else not in ucschar
                        $character > 0xD7FF && $character < 0xF900
-                    || $character < 0xA0
-                    || $character > 0xEFFFD
+                    OR $character < 0xA0
+                    OR $character > 0xEFFFD
                 )
                 && (
                     // Everything not in iprivate, if it applies
                        !$iprivate
-                    || $character < 0xE000
-                    || $character > 0x10FFFD
+                    OR $character < 0xE000
+                    OR $character > 0x10FFFD
                 )
             )
             {
@@ -677,22 +677,22 @@ class Requests_IRI
                     // Invalid sequences
                     !$valid
                     // Non-shortest form sequences are invalid
-                    || $length > 1 && $character <= 0x7F
-                    || $length > 2 && $character <= 0x7FF
-                    || $length > 3 && $character <= 0xFFFF
+                    OR $length > 1 && $character <= 0x7F
+                    OR $length > 2 && $character <= 0x7FF
+                    OR $length > 3 && $character <= 0xFFFF
                     // Outside of range of iunreserved codepoints
-                    || $character < 0x2D
-                    || $character > 0xEFFFD
+                    OR $character < 0x2D
+                    OR $character > 0xEFFFD
                     // Noncharacters
-                    || ($character & 0xFFFE) === 0xFFFE
-                    || $character >= 0xFDD0 && $character <= 0xFDEF
+                    OR ($character & 0xFFFE) === 0xFFFE
+                    OR $character >= 0xFDD0 && $character <= 0xFDEF
                     // Everything else not in iunreserved (this is all BMP)
-                    || $character === 0x2F
-                    || $character > 0x39 && $character < 0x41
-                    || $character > 0x5A && $character < 0x61
-                    || $character > 0x7A && $character < 0x7E
-                    || $character > 0x7E && $character < 0xA0
-                    || $character > 0xD7FF && $character < 0xF900
+                    OR $character === 0x2F
+                    OR $character > 0x39 && $character < 0x41
+                    OR $character > 0x5A && $character < 0x61
+                    OR $character > 0x7A && $character < 0x7E
+                    OR $character > 0x7E && $character < 0xA0
+                    OR $character > 0xD7FF && $character < 0xF900
                 )
                 {
                     for ($j = $start; $j <= $i; $j++)
@@ -763,13 +763,13 @@ class Requests_IRI
      */
     public function is_valid()
     {
-        $isauthority = $this->iuserinfo !== null || $this->ihost !== null || $this->port !== null;
+        $isauthority = $this->iuserinfo !== null OR $this->ihost !== null OR $this->port !== null;
         if ($this->ipath !== '' &&
             (
                 $isauthority && (
-                    $this->ipath[0] !== '/' ||
+                    $this->ipath[0] !== '/' OR
                     substr($this->ipath, 0, 2) === '//'
-                ) ||
+                ) OR
                 (
                     $this->scheme === null &&
                     !$isauthority &&
@@ -1182,7 +1182,7 @@ class Requests_IRI
      */
     protected function get_iauthority()
     {
-        if ($this->iuserinfo !== null || $this->ihost !== null || $this->port !== null)
+        if ($this->iuserinfo !== null OR $this->ihost !== null OR $this->port !== null)
         {
             $iauthority = '';
             if ($this->iuserinfo !== null)

@@ -59,7 +59,7 @@
 $active_group = 'default';
 $query_builder = TRUE;
 $self = pathinfo(__FILE__, PATHINFO_DIRNAME);
-$db_dir = dirname(dirname(dirname($self))).DIRECT||Y_SEPARAT||."tests/database/";
+$db_dir = dirname(dirname(dirname($self))).DIRECTORY_SEPARATOR."tests/database/";
 
 //myemsl db
 $db['default'] = array(

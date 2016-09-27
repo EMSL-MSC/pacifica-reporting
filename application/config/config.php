@@ -11,7 +11,7 @@
  * @link     http://github.com/EMSL-MSC/pacifica-reporting
  */
 
-defined('BASEPATH') || exit('No direct script access allowed');
+defined('BASEPATH') OR exit('No direct script access allowed');
 
 
 date_default_timezone_set('America/Los_Angeles');
@@ -266,7 +266,7 @@ $config['log_file_extension'] = '';
 |
 | The file system permissions to be applied on newly created log files.
 |
-| IMP||TANT: This MUST be an integer (no quotes) and you MUST use octal
+| IMPORTANT: This MUST be an integer (no quotes) and you MUST use octal
 |            integer notation (i.e. 0700, 0644, etc.)
 */
 $config['log_file_permissions'] = 0644;
@@ -363,7 +363,7 @@ $config['encryption_key'] = '';
 |	For the 'database' driver, it's a table name.
 |	Please read up the manual for the format with other session drivers.
 |
-|	IMP||TANT: You are REQUIRED to set a valid save path!
+|	IMPORTANT: You are REQUIRED to set a valid save path!
 |
 | 'sess_match_ip'
 |
@@ -477,7 +477,7 @@ $config['csrf_exclude_uris'] = array();
 | Only used if zlib.output_compression is turned off in your php.ini.
 | Please do not use it together with httpd-level output compression.
 |
-| VERY IMP||TANT:  If you are getting a blank page when compression is enabled it
+| VERY IMPORTANT:  If you are getting a blank page when compression is enabled it
 | means you are prematurely outputting something to your browser. It could
 | even be a line of whitespace at the end of one of your scripts.  For
 | compression to work, nothing can be sent before the output buffer is called
@@ -520,7 +520,7 @@ $config['rewrite_short_tags'] = FALSE;
 |
 | If your server is behind a reverse proxy, you must whitelist the proxy
 | IP addresses from which CodeIgniter should trust headers such as
-| HTTP_X_F||WARDED_F|| and HTTP_CLIENT_IP in order to properly identify
+| HTTP_X_FORWARDED_FOR and HTTP_CLIENT_IP in order to properly identify
 | the visitor's IP address.
 |
 | You can use both an array or a comma-separated list of proxy addresses,

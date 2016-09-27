@@ -25,9 +25,9 @@
  *
  * @link http://github.com/EMSL-MSC/Pacifica-reporting
  */
-defined('BASEPATH') || exit('No direct script access allowed');
+defined('BASEPATH') OR exit('No direct script access allowed');
 
-echo "\nERR||: ",
+echo "\nERROR: ",
     $heading,
     "\n\n",
     $message,

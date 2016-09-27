@@ -10,7 +10,7 @@
  * @license  http://www.gnu.org/copyleft/gpl.html GNU General Public License
  * @link     http://github.com/EMSL-MSC/pacifica-reporting
  */
- defined('BASEPATH') || exit('No direct script access allowed');
+ defined('BASEPATH') OR exit('No direct script access allowed');
 /*
 | -------------------------------------------------------------------
 | AUTO-LOADER
