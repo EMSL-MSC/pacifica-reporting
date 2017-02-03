@@ -90,7 +90,33 @@ class Summary_api_model extends CI_Model
     public function summarize_uploads($group_type, $id_list, $iso_start_date, $iso_end_date, $make_day_graph, $time_basis){
         //returns array that extracts to $start_date_object, $end_date_object, $start_time, $end_time
         extract(canonicalize_date_range($iso_start_date, $iso_end_date));
-        $available_dates = generate_available_dates($start_date_object, $end_date_object)
+        $this->results['day_graph']['by_date']['available_dates'] = generate_available_dates(
+            $start_date_object, $end_date_object
+        );
+        $this->results['summary_totals']['upload_stats'] = $this->_generate_summary_totals(
+            $group_type, $id_list, $start_date, $end_date, $time_basis_type
+        );
+
+    }
+
+
+    private function _generate_summary_totals($group_type, $id_list, $start_date, $end_date, $time_basis_type)
+    {
+        $transaction_url = "{$this->policy_base_url}/status/transactions/search/";
+        $allowed_group_types = array('instrument', 'proposal', 'user');
+        if(in_array($group_type, $allowed_group_types)){
+            foreach($id in $id_list){
+                $url_args_array = array(
+                    $group_type => $id,
+                    'start' => $start_date->format('Y-m-d H:i:s'),
+                    'end' => $end_date->format('Y-m-d H:i:s')
+                );
+                $url = $transaction_url;
+                $url .= http_build_query($url_args_array, '', '&');
+                $query = Requests::get($url, array('Accept' => 'application/json'));
+                $results = json_decode($query->body, TRUE);
+            }
+        }
 
     }
 
