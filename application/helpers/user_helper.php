@@ -40,10 +40,10 @@ if(!defined('BASEPATH')) {
  */
 function get_user()
 {
-    if(array_key_exists('PHP_AUTH_USER', $_SERVER)){
+    if(array_key_exists('PHP_AUTH_USER', $_SERVER)) {
         $raw_user = isset($_SERVER['PHP_AUTH_USER']) ? $_SERVER['PHP_AUTH_USER'] : '';
     }
-    if(array_key_exists('REMOTE_USER', $_SERVER)){
+    if(array_key_exists('REMOTE_USER', $_SERVER)) {
         $raw_user = isset($_SERVER['REMOTE_USER']) ? $_SERVER['REMOTE_USER'] : '';
     }
 

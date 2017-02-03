@@ -162,6 +162,95 @@ function format_cart_display_time_element($time_obj)
 
 }
 
+/**
+ *  For any two given dates, clean the up and format them
+ *  as an array of start/end time objects and strings
+ *
+ *  @param string $start_date starting date (YYYY-MM-DD)
+ *  @param string $end_date   ending date (YYYY-MM-DD)
+ *
+ *  @return array
+ *
+ *  @author Ken Auberry <kenneth.auberry@pnnl.gov>
+ */
+function canonicalize_date_range($start_date, $end_date)
+{
+    $start_date = $this->_convert_short_date($start_date);
+    $end_date   = $this->_convert_short_date($end_date, 'end');
+    $start_time = strtotime($start_date) ? date_create($start_date)->setTime(0, 0, 0) : date_create('1983-01-01 00:00:00');
+    $end_time   = strtotime($end_date) ? date_create($end_date) : new DateTime();
+    $end_time->setTime(23, 59, 59);
+
+    if ($end_time < $start_time && !empty($end_time)) {
+        $temp_start = $end_time ? clone $end_time : FALSE;
+        $end_time   = clone $start_time;
+        $start_time = $temp_start;
+    }
+
+    return array(
+            'start_time_object' => $start_time,
+            'end_time_object'   => $end_time,
+            'start_time'        => $start_time->format('Y-m-d H:i:s'),
+            'end_time'          => $end_time ? $end_time->format('Y-m-d H:i:s') : FALSE,
+           );
+
+}//end canonicalize_date_range()
+
+/**
+ *  Takes a short date format ('2014', '2015-12')
+ *  and expands to the full form of the start or end
+ *  of the range, i.e.
+ *  ('2014','start') -> '2014-01-01'
+ *  ('2015-12','end') -> '2015-12-31'
+ *
+ *  @param string $date_string the short date to expand
+ *  @param string $type        'endedness' of the result
+ *                             to return (start/end)
+ *
+ *  @return string the expanded version of the date
+ *
+ *  @author Ken Auberry <kenneth.auberry@pnnl.gov>
+ */
+function convert_short_date($date_string, $type = 'start')
+{
+    if (preg_match('/(\d{4})$/', $date_string, $matches)) {
+        $date_string = $type == 'start' ? "{$matches[1]}-01-01" : "{$matches[1]}-12-31";
+    } else if (preg_match('/^(\d{4})-(\d{1,2})$/', $date_string, $matches)) {
+        $date_string = $type == 'start' ? "{$matches[1]}-{$matches[2]}-01" : "{$matches[1]}-{$matches[2]}-31";
+    }
+
+    return $date_string;
+
+}//end _convert_short_date()
+
+/**
+ *  Given a starting and ending date, generate all of the
+ *  available dates between them, inclusive
+ *
+ *  @param string $start_date starting date (YYYY-MM-DD)
+ *  @param string $end_date   ending date (YYYY-MM-DD)
+ *
+ *  @return array
+ *
+ *  @author Ken Auberry <kenneth.auberry@pnnl.gov>
+ */
+function generate_available_dates($start_date, $end_date)
+{
+    $results           = array();
+    $start_date_object = is_object($start_date) ? $start_date : new DateTime($start_date);
+    $end_date_object   = is_object($end_date) ? $end_date : new DateTime($end_date);
+    $current_date      = clone $start_date_object;
+    while($current_date->getTimestamp() <= $end_date_object->getTimestamp()){
+        $date_key           = $current_date->format('Y-m-d');
+        $date_code          = $current_date->format('D M j');
+        $results[$date_key] = $date_code;
+        $current_date->modify('+1 day');
+    }
+
+    return $results;
+
+}//end _generate_available_dates()
+
  /**
   *  Takes a passed time period specifier (1 week, 1-month, etc)
   *  and parses it into a date range array (with today's date
