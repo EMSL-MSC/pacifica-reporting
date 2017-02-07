@@ -105,7 +105,7 @@ class Summary_api_model extends CI_Model
         $transaction_url = "{$this->policy_base_url}/status/transactions/search/";
         $allowed_group_types = array('instrument', 'proposal', 'user');
         if(in_array($group_type, $allowed_group_types)){
-            foreach($id in $id_list){
+            foreach($id_list as $id){
                 $url_args_array = array(
                     $group_type => $id,
                     'start' => $start_date->format('Y-m-d H:i:s'),
