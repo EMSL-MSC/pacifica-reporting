@@ -13,7 +13,7 @@ services:
         environment:
             METADATA_PORT: tcp://metadata:8121
             POLICY_PORT: tcp://policy:8181
-            PREFSDB_ADDR: cartdb
+            PREFSDB_ADDR: prefsdb
             PREFSDB_PORT: 5432
             PREFSDB_USER: pacifica
             PREFSDB_PASSWORD: pacifica
@@ -24,7 +24,7 @@ services:
         image: postgres
         environment:
             POSTGRES_PASSWORD: pacifica
-            POSTGRES_DB: postgres
+            POSTGRES_DB: pacifica_reporting
             POSTGRES_USER: pacifica
         ports:
             - 55432:5432

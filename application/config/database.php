@@ -58,15 +58,12 @@
 | the active record class
 */
 
-$active_group = 'website_prefs';
-// $active_record = TRUE;
-$query_builder = TRUE;
 
-$db['website_prefs'] = array(
-  'hostname' => getenv('CARTDB_ADDR'),
-  'username' => getenv('CARTDB_USER'),
-  'password' => getenv('CARTDB_PASSWORD'),
-  'database' => getenv('CARTDB_DB_NAME'),
+$db['default'] = array(
+  'hostname' => getenv('PREFSDB_ADDR'),
+  'username' => getenv('PREFSDB_USER'),
+  'password' => getenv('PREFSDB_PASSWORD'),
+  'database' => getenv('PREFSDB_DB_NAME'),
   'dbdriver' => "postgre",
   'dbprefix' => "",
   'pconnect' => FALSE,
@@ -74,3 +71,6 @@ $db['website_prefs'] = array(
   'cache_on' => FALSE,
   'cachedir' => ""
 );
+
+// $active_record = TRUE;
+$query_builder = TRUE;

@@ -95,7 +95,7 @@ class Item extends Baseline_controller
           '/resources/scripts/select2/select2.css',
           '/resources/scripts/bootstrap/css/bootstrap.css',
           '/resources/scripts/bootstrap-daterangepicker/daterangepicker.css',
-          APPPATH.'resources/stylesheets/reporting.css',
+          '/project_resources/stylesheets/reporting.css',
         );
         $this->page_data['script_uris'] = array(
           '/resources/scripts/spinner/spin.min.js',
@@ -104,7 +104,7 @@ class Item extends Baseline_controller
           '/resources/scripts/bootstrap-daterangepicker/daterangepicker.js',
           '/resources/scripts/jquery-typewatch/jquery.typewatch.js',
           '/resources/scripts/highcharts/js/highcharts.js',
-          APPPATH.'resources/scripts/reporting.js',
+          '/project_resources/scripts/reporting.js',
         );
         $this->page_data['js'] = "var object_type = '{$object_type}'; var time_range = '{$time_range}'";
         $time_range = str_replace(array('-', '_', '+'), ' ', $time_range);

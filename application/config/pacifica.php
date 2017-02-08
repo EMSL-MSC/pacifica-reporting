@@ -13,6 +13,8 @@
 
 defined('BASEPATH') OR exit('No direct script access allowed');
 
+$config['local_timezone'] = 'America/Los_Angeles';
+
 $config['application_config_file_path'] = '/etc/myemsl/';
 
 $config['template'] = 'emsl';

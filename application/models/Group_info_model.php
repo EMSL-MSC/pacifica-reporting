@@ -56,9 +56,9 @@ class Group_info_model extends CI_Model
     {
         parent::__construct();
         $this->load->helper(array('item'));
-        $this->load->library('EUS', '', 'eus');
+        // $this->load->library('EUS', '', 'eus');
         $this->debug = $this->config->item('debug_enabled');
-
+        $this->load->database('website_prefs');
     }//end __construct()
 
     /**
@@ -80,11 +80,11 @@ class Group_info_model extends CI_Model
     public function get_group_options($group_id)
     {
         $option_defaults = $this->get_group_option_defaults();
-        $DB_prefs        = $this->load->database('website_prefs', TRUE);
-        $query           = $DB_prefs->get_where('reporting_object_groups', array('group_id' => $group_id), 1);
+        // $DB_prefs        = $this->load->database('website_prefs', TRUE);
+        $query           = $this->db->get_where('reporting_object_groups', array('group_id' => $group_id), 1);
         $options         = array();
         if ($query && $query->num_rows() > 0) {
-            $options_query = $DB_prefs->get_where('reporting_object_group_options', array('group_id' => $group_id));
+            $options_query = $this->db->get_where('reporting_object_group_options', array('group_id' => $group_id));
             if ($options_query && $options_query->num_rows() > 0) {
                 foreach ($options_query->result() as $option_row) {
                     $options[$option_row->option_type] = $option_row->option_value;
@@ -92,7 +92,7 @@ class Group_info_model extends CI_Model
             }
 
             $group_info   = $query->row_array();
-            $member_query = $DB_prefs->select('item_id')->get_where('reporting_selection_prefs', array('group_id' => $group_id));
+            $member_query = $this->db->select('item_id')->get_where('reporting_selection_prefs', array('group_id' => $group_id));
             // echo $DB_prefs->last_query();
             // var_dump($member_query->result_array());
             // echo "<br /><br />";
@@ -180,8 +180,8 @@ class Group_info_model extends CI_Model
      */
     public function get_group_option_defaults()
     {
-        $DB_prefs = $this->load->database('website_prefs', TRUE);
-        $query    = $DB_prefs->get('reporting_object_group_option_defaults');
+        // $DB_prefs = $this->load->database('website_prefs', TRUE);
+        $query    = $this->db->get('reporting_object_group_option_defaults');
         $defaults = array();
         if ($query && $query->num_rows() > 0) {
             foreach ($query->result() as $row) {
@@ -216,9 +216,9 @@ class Group_info_model extends CI_Model
      */
     public function get_items_for_group($group_id)
     {
-        $DB_prefs = $this->load->database('website_prefs', TRUE);
-        $DB_prefs->select(array('item_type', 'item_id'));
-        $query   = $DB_prefs->get_where('reporting_selection_prefs', array('group_id' => $group_id));
+        // $DB_prefs = $this->load->database('website_prefs', TRUE);
+        $this->db->select(array('item_type', 'item_id'));
+        $query   = $this->db->get_where('reporting_selection_prefs', array('group_id' => $group_id));
         $results = array();
         if ($query && $query->num_rows() > 0) {
             foreach ($query->result() as $row) {
@@ -248,7 +248,7 @@ class Group_info_model extends CI_Model
      */
     public function make_new_group($object_type, $eus_person_id, $group_name = FALSE)
     {
-        $DB_prefs   = $this->load->database('website_prefs', TRUE);
+        // $DB_prefs   = $this->load->database('website_prefs', TRUE);
         $table_name = 'reporting_object_groups';
         // check the name and make sure it's unique for this user_id
         if (!$group_name) {
@@ -259,7 +259,7 @@ class Group_info_model extends CI_Model
                         'person_id'  => $eus_person_id,
                         'group_name' => $group_name,
                        );
-        $check_query = $DB_prefs->where($where_array)->get($table_name);
+        $check_query = $this->db->where($where_array)->get($table_name);
         if ($check_query && $check_query->num_rows() > 0) {
             $d           = new DateTime();
             $group_name .= ' ['.$d->format('Y-m-d H:i:s').']';
@@ -270,9 +270,9 @@ class Group_info_model extends CI_Model
                         'group_name' => $group_name,
                         'group_type' => $object_type,
                        );
-        $DB_prefs->insert($table_name, $insert_data);
-        if ($DB_prefs->affected_rows() > 0) {
-            $group_id   = $DB_prefs->insert_id();
+        $this->db->insert($table_name, $insert_data);
+        if ($this->db->affected_rows() > 0) {
+            $group_id   = $this->db->insert_id();
             $group_info = $this->get_group_info($group_id);
 
             return $group_info;
@@ -296,11 +296,11 @@ class Group_info_model extends CI_Model
     public function change_group_name($group_id, $group_name)
     {
         $new_group_info = FALSE;
-        $DB_prefs       = $this->load->database('website_prefs', TRUE);
+        // $DB_prefs       = $this->load->database('website_prefs', TRUE);
         $update_array   = array('group_name' => $group_name);
-        $DB_prefs->where('group_id', $group_id)->set('group_name', $group_name);
-        $DB_prefs->update('reporting_object_groups', $update_array);
-        if ($DB_prefs->affected_rows() > 0) {
+        $this->db->where('group_id', $group_id)->set('group_name', $group_name);
+        $this->db->update('reporting_object_groups', $update_array);
+        if ($this->db->affected_rows() > 0) {
             $new_group_info = $this->get_group_info($group_id);
         }
 
@@ -322,21 +322,21 @@ class Group_info_model extends CI_Model
      */
     public function change_group_option($group_id, $option_type, $value)
     {
-        $DB_prefs     = $this->load->database('website_prefs', TRUE);
+        // $DB_prefs     = $this->load->database('website_prefs', TRUE);
         $table_name   = 'reporting_object_group_options';
         $where_array  = array(
                          'group_id'    => $group_id,
                          'option_type' => $option_type,
                         );
         $update_array = array('option_value' => $value);
-        $query        = $DB_prefs->where($where_array)->get($table_name);
+        $query        = $this->db->where($where_array)->get($table_name);
         if ($query && $query->num_rows() > 0) {
-            $DB_prefs->where($where_array)->update($table_name, $update_array);
+            $this->db->where($where_array)->update($table_name, $update_array);
         } else {
-            $DB_prefs->insert($table_name, ($update_array + $where_array));
+            $this->db->insert($table_name, ($update_array + $where_array));
         }
 
-        if ($DB_prefs->affected_rows() > 0) {
+        if ($this->db->affected_rows() > 0) {
             return ($update_array + $where_array);
         }
 
@@ -359,19 +359,19 @@ class Group_info_model extends CI_Model
      */
     public function get_selected_objects($eus_person_id, $restrict_type = FALSE, $group_id = FALSE)
     {
-        $DB_prefs = $this->load->database('website_prefs', TRUE);
-        $DB_prefs->select(array('eus_person_id', 'item_type', 'item_id', 'group_id'));
-        $DB_prefs->where('deleted is null');
+        // $DB_prefs = $this->load->database('website_prefs', TRUE);
+        $this->db->select(array('eus_person_id', 'item_type', 'item_id', 'group_id'));
+        $this->db->where('deleted is null');
         if (!empty($group_id)) {
-            $DB_prefs->where('group_id', $group_id);
+            $this->db->where('group_id', $group_id);
         }
 
         if (!empty($restrict_type)) {
-            $DB_prefs->where('item_type', $restrict_type);
+            $this->db->where('item_type', $restrict_type);
         }
 
-        $DB_prefs->order_by('item_type');
-        $query   = $DB_prefs->get_where('reporting_selection_prefs', array('eus_person_id' => $eus_person_id));
+        $this->db->order_by('item_type');
+        $query   = $this->db->get_where('reporting_selection_prefs', array('eus_person_id' => $eus_person_id));
         $results = array();
         if ($query && $query->num_rows() > 0) {
             foreach ($query->result() as $row) {
@@ -413,17 +413,17 @@ class Group_info_model extends CI_Model
     {
         $this->benchmark->mark('get_selected_groups_start');
         $results  = array();
-        $DB_prefs = $this->load->database('website_prefs', TRUE);
-        $DB_prefs->select('g.group_id');
+        // $DB_prefs = $this->load->database('website_prefs', TRUE);
+        $this->db->select('g.group_id');
         $person_array = array($eus_person_id);
-        $DB_prefs->where_in('g.person_id', $person_array);
-        $DB_prefs->where('g.deleted is NULL');
+        $this->db->where_in('g.person_id', $person_array);
+        $this->db->where('g.deleted is NULL');
         if ($restrict_type) {
-            $DB_prefs->where('g.group_type', $restrict_type);
+            $this->db->where('g.group_type', $restrict_type);
         }
 
-        $DB_prefs->order_by('ordering ASC');
-        $query         = $DB_prefs->get('reporting_object_groups g');
+        $this->db->order_by('ordering ASC');
+        $query         = $this->db->get('reporting_object_groups g');
         $group_id_list = array();
         if ($query && $query->num_rows() > 0) {
             foreach ($query->result() as $row) {
@@ -465,15 +465,15 @@ class Group_info_model extends CI_Model
                          'reporting_selection_prefs',
                          'reporting_object_groups',
                         );
-        $DB_prefs     = $this->load->database('website_prefs', TRUE);
+        // $DB_prefs     = $this->load->database('website_prefs', TRUE);
         $where_clause = array('group_id' => $group_id);
 
         if ($full_delete) {
-            $DB_prefs->delete($tables, $where_clause);
+            $this->db->delete($tables, $where_clause);
         } else {
             // just update deleted_at column
             foreach ($tables as $table_name) {
-                $DB_prefs->update($table_name, array('deleted' => 'now()'), $where_clause);
+                $this->db->update($table_name, array('deleted' => 'now()'), $where_clause);
             }
         }
 
@@ -495,7 +495,7 @@ class Group_info_model extends CI_Model
     public function update_object_preferences($object_type, $object_list, $group_id)
     {
         $table        = 'reporting_selection_prefs';
-        $DB_prefs     = $this->load->database('website_prefs', TRUE);
+        // $DB_prefs     = $this->load->database('website_prefs', TRUE);
         $additions    = array();
         $removals     = array();
         $existing     = array();
@@ -508,8 +508,8 @@ class Group_info_model extends CI_Model
             $where_clause['group_id'] = $group_id;
         }
 
-        $DB_prefs->select('item_id');
-        $check_query = $DB_prefs->get_where($table, $where_clause);
+        $this->db->select('item_id');
+        $check_query = $this->db->get_where($table, $where_clause);
         if ($check_query && $check_query->num_rows() > 0) {
             foreach ($check_query->result() as $row) {
                 $existing[] = $row->item_id;
@@ -537,8 +537,8 @@ class Group_info_model extends CI_Model
                                       'item_id'       => strval($object_id),
                                       'group_id'      => $group_id,
                                      );
-                    $DB_prefs->insert($table, $insert_object);
-                    if($DB_prefs->affected_rows() > 0) {
+                    $this->db->insert($table, $insert_object);
+                    if($this->db->affected_rows() > 0) {
                         $status = TRUE;
                     }
                 }
@@ -548,8 +548,8 @@ class Group_info_model extends CI_Model
                 $my_where = $where_clause;
                 foreach ($removals as $object_id) {
                     $my_where['item_id'] = strval($object_id);
-                    $DB_prefs->where($my_where)->delete($table);
-                    if($DB_prefs->affected_rows() > 0) {
+                    $this->db->where($my_where)->delete($table);
+                    if($this->db->affected_rows() > 0) {
                         $status = TRUE;
                     }
                 }

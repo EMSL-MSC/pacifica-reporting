@@ -53,18 +53,15 @@ class Baseline_api_controller extends CI_Controller
      */
     public function __construct()
     {
-        date_default_timezone_set('America/Los_Angeles');
         parent::__construct();
+        date_default_timezone_set($this->config->item('local_timezone'));
+        $this->load->model('System_setup_model', 'setup');
         $this->application_version = $this->config->item('application_version');
-        $this->load->helper(array('user', 'url', 'html', 'myemsl', 'file_info'));
-        define('ITEM_CACHE', 'item_time_cache_by_transaction');
-        if(getenv('CI_ENV') !== 'unit_testing') {
-            $this->user_id = get_user();
-        }else
-        {
-            $this->user_id = 43751;
-        }
-        if (!$this->user_id) {
+        $this->metadata_url_base = $this->config->item('metadata_server_base_url');
+        $this->policy_url_base = $this->config->item('policy_server_base_url');
+        $this->load->helper(array('user', 'url', 'html', 'myemsl_api', 'file_info'));
+
+        if (!$this->user_id = get_user()) {
             //something is wrong with the authentication system or the user's log in
             $message = 'Unable to retrieve username from [REMOTE_USER]';
             show_error($message, 500, 'User Authorization Error or Server Misconfiguration in Auth System');
@@ -72,7 +69,7 @@ class Baseline_api_controller extends CI_Controller
 
         $this->page_address = implode('/', $this->uri->rsegments);
 
-        $user_info = get_user_details_myemsl($this->user_id);
+        $user_info = get_user_details($this->user_id);
         if (!$user_info) {
             $message = "Could not find a user with an EUS Person ID of {$this->user_id}";
             show_error($message, 401, 'User Authorization Error');

@@ -24,7 +24,7 @@
  */
 
 defined('BASEPATH') OR exit('No direct script access allowed');
-require_once 'Baseline_controller.php';
+require_once 'Baseline_api_controller.php';
 
 /**
  *  Group is a CI controller class that extends Baseline_controller
@@ -49,7 +49,7 @@ require_once 'Baseline_controller.php';
  * @see    https://github.com/EMSL-MSC/pacifica-reporting
  * @access public
  */
-class Group extends Baseline_controller
+class Group extends Baseline_api_controller
 {
     /**
      * The timestamp when this file was last modified
@@ -67,10 +67,10 @@ class Group extends Baseline_controller
     public function __construct()
     {
         parent::__construct();
-        $this->load->model('Reporting_model', 'rep');
+        // $this->load->model('Reporting_model', 'rep');
         $this->load->model('Group_info_model', 'gm');
-        $this->load->model('Summary_model', 'summary');
-        $this->load->library('EUS', '', 'eus');
+        $this->load->model('Summary_api_model', 'summary');
+        // $this->load->library('EUS', '', 'eus');
         $this->load->helper(
             array(
              'network',
@@ -80,6 +80,7 @@ class Group extends Baseline_controller
              'item',
              'search_term',
              'cookie',
+             'proposal'
             )
         );
         $this->last_update_time = get_last_update(APPPATH);
