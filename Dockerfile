@@ -17,6 +17,7 @@ EXPOSE 80
 
 COPY . /var/www/html/
 COPY websystem/system /var/www/html/system
+COPY websystem/index.php /var/www/html/
 COPY tests/apache_conf/modules /etc/apache2/conf-enabled/
 COPY tests/apache_conf/sites/myemsl-reporting.conf /etc/apache2/sites-available/
 RUN ln -s /etc/apache2/sites-available/myemsl-reporting.conf /etc/apache2/sites-enabled/

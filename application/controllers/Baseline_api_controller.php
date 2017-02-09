@@ -60,13 +60,11 @@ class Baseline_api_controller extends CI_Controller
         $this->metadata_url_base = $this->config->item('metadata_server_base_url');
         $this->policy_url_base = $this->config->item('policy_server_base_url');
         $this->load->helper(array('user', 'url', 'html', 'myemsl_api', 'file_info'));
-
         if (!$this->user_id = get_user()) {
             //something is wrong with the authentication system or the user's log in
             $message = 'Unable to retrieve username from [REMOTE_USER]';
             show_error($message, 500, 'User Authorization Error or Server Misconfiguration in Auth System');
         }
-
         $this->page_address = implode('/', $this->uri->rsegments);
 
         $user_info = get_user_details($this->user_id);
