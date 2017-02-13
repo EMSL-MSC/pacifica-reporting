@@ -177,7 +177,7 @@ class Summary_model extends CI_Model
      */
     public function summarize_uploads_general($id_list, $start_date, $end_date, $make_day_graph, $time_basis, $group_type)
     {
-        extract($this->canonicalize_date_range($start_date, $end_date));
+        extract(canonicalize_date_range($start_date, $end_date));
         $start_date_obj  = new DateTime($start_date);
         $end_date_obj    = new DateTime($end_date);
         $available_dates = $this->_generate_available_dates($start_date_obj, $end_date_obj);
@@ -677,53 +677,6 @@ class Summary_model extends CI_Model
 
     }//end _temp_stats_to_output()
 
-    /**
-     *  Takes a passed time period specifier (1 week, 1-month, etc)
-     *  and parses it into a date range array (with today's date
-     *  as the latest date). If a start/end date are specified,
-     *  those are used preferentially and are cleaned up and
-     *  formatted properly into an array date pair.
-     *
-     *  @param string $time_range       human-parsable time period
-     *                                  (1-week, 1 month, 3_days)
-     *  @param string $start_date       starting date (YYYY-MM-DD)
-     *  @param string $end_date         ending date (YYYY-MM-DD)
-     *  @param array  $valid_date_range represents the earliest/latest
-     *                                  available dates for the
-     *                                  group under consideration
-     *
-     *  @return array
-     *
-     *  @author Ken Auberry <kenneth.auberry@pnnl.gov>
-     */
-    public function fix_time_range($time_range, $start_date, $end_date, $valid_date_range = FALSE)
-    {
-        if (!empty($start_date) && !empty($end_date)) {
-            $times = $this->canonicalize_date_range($start_date, $end_date);
-
-            return $times;
-        }
-
-        $time_range = str_replace(array('-', '_', '+'), ' ', $time_range);
-        if (!strtotime($time_range)) {
-            if ($time_range == 'custom' && strtotime($start_date) && strtotime($end_date)) {
-                // custom date_range, just leave them. Canonicalize will fix them
-            } else {
-                // looks like the time range is borked, pick the default
-                $time_range = '1 week';
-                $times      = time_range_to_date_pair($time_range, $valid_date_range);
-                extract($times);
-            }
-        } else {
-            $times = time_range_to_date_pair($time_range, $valid_date_range);
-            extract($times);
-        }
-
-        $times = $this->canonicalize_date_range($start_date, $end_date);
-
-        return $times;
-
-    }//end fix_time_range()
 
     /**
      *  Given a starting and ending date, generate all of the

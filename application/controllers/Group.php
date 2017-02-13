@@ -80,14 +80,15 @@ class Group extends Baseline_api_controller
              'item',
              'search_term',
              'cookie',
-             'proposal'
+             'proposal',
+             'myemsl'
             )
         );
         $this->last_update_time = get_last_update(APPPATH);
         $this->accepted_object_types = array(
                                         'instrument',
                                         'user',
-                                        'proposal',
+                                        'proposal'
                                        );
         $this->accepted_time_basis_types = array(
                                             'submit_time',
@@ -196,7 +197,7 @@ class Group extends Baseline_api_controller
                 $valid_date_range = $this->gm->earliest_latest_data_for_list(
                     $object_type, $group_info['item_list'], $time_basis
                 );
-                $my_times = $this->summary->fix_time_range(
+                $my_times = fix_time_range(
                     $time_range,
                     $my_start_date,
                     $my_end_date,
@@ -509,42 +510,4 @@ class Group extends Baseline_api_controller
         send_json_array($results);
 
     }//end get_proposals()
-
-
-    /**
-     * Set up hints that show what types of
-     * things make for acceptable search criteria
-     *
-     * @param string $object_type type of object to be hinted
-     *                            (instrument/proposal/user)
-     *
-     * @return array simple array with search criteria
-     *               descriptions for display
-     */
-    public function add_objects_instructions($object_type)
-    {
-        $object_examples = array(
-                            'instrument' => array(),
-                            'proposal'   => array(),
-                            'user'       => array(),
-                           );
-        $object_examples['instrument'] = array(
-                                          "'nmr' returns a list of all instruments with 'nmr' somewhere in the name or description",
-                                          "'34075' returns the instrument having an ID of '34075' in the EUS database",
-                                          "'nmr nittany' returns anything with 'nmr' and 'nittany' somewhere in the name or description",
-                                         );
-        $object_examples['proposal']   = array(
-                                          "'phos' returns a list of all proposals having the term 'phos' somewhere in the title or description",
-                                          "'49164' returns a proposal having an ID of '49164' in the EUS database",
-                                         );
-        $object_examples['user']       = array(
-                                          "'jones' returns a list of EUS users having 'jones' somewhere in their first name, last name or email",
-                                          "'36846' returns a user having the ID of '36846' in the EUS database",
-                                         );
-
-        return $object_examples[$object_type];
-
-    }//end add_objects_instructions()
-
-
 }//end class

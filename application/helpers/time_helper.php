@@ -175,8 +175,8 @@ function format_cart_display_time_element($time_obj)
  */
 function canonicalize_date_range($start_date, $end_date)
 {
-    $start_date = $this->_convert_short_date($start_date);
-    $end_date   = $this->_convert_short_date($end_date, 'end');
+    $start_date = convert_short_date($start_date);
+    $end_date   = convert_short_date($end_date, 'end');
     $start_time = strtotime($start_date) ? date_create($start_date)->setTime(0, 0, 0) : date_create('1983-01-01 00:00:00');
     $end_time   = strtotime($end_date) ? date_create($end_date) : new DateTime();
     $end_time->setTime(23, 59, 59);
@@ -380,6 +380,50 @@ function day_graph_to_series($day_graph_info, $start_date = FALSE, $end_date = F
     return $results;
 }
 
+/**
+ *  Takes a passed time period specifier (1 week, 1-month, etc)
+ *  and parses it into a date range array (with today's date
+ *  as the latest date). If a start/end date are specified,
+ *  those are used preferentially and are cleaned up and
+ *  formatted properly into an array date pair.
+ *
+ *  @param string $time_range       human-parsable time period
+ *                                  (1-week, 1 month, 3_days)
+ *  @param string $start_date       starting date (YYYY-MM-DD)
+ *  @param string $end_date         ending date (YYYY-MM-DD)
+ *  @param array  $valid_date_range represents the earliest/latest
+ *                                  available dates for the
+ *                                  group under consideration
+ *
+ *  @return array
+ *
+ *  @author Ken Auberry <kenneth.auberry@pnnl.gov>
+ */
+function fix_time_range($time_range, $start_date, $end_date, $valid_date_range = FALSE)
+{
+    if (!empty($start_date) && !empty($end_date)) {
+        $times = canonicalize_date_range($start_date, $end_date);
 
+        return $times;
+    }
 
-?>
+    $time_range = str_replace(array('-', '_', '+'), ' ', $time_range);
+    if (!strtotime($time_range)) {
+        if ($time_range == 'custom' && strtotime($start_date) && strtotime($end_date)) {
+            // custom date_range, just leave them. Canonicalize will fix them
+        } else {
+            // looks like the time range is borked, pick the default
+            $time_range = '1 week';
+            $times      = time_range_to_date_pair($time_range, $valid_date_range);
+            extract($times);
+        }
+    } else {
+        $times = time_range_to_date_pair($time_range, $valid_date_range);
+        extract($times);
+    }
+
+    $times = canonicalize_date_range($start_date, $end_date);
+
+    return $times;
+
+}//end fix_time_range()

@@ -27,7 +27,8 @@
  */
  if (!defined('BASEPATH')) exit('No direct script access allowed');
 
-function get_proposals_by_name($name_fragment, $active){
+function get_proposals_by_name($name_fragment, $active)
+{
     $CI =& get_instance();
     $CI->load->library('PHPRequests');
     $md_url = $CI->metadata_url_base;

@@ -106,6 +106,34 @@ class System_setup_model extends CI_Model
                 'reporting_object_group_option_defaults' => array('option_type', 'option_default'),
                 'reporting_object_group_options' => array('group_id', 'option_type')
             ),
+            'defaults' => array(
+                'reporting_object_group_option_defaults' => array(
+                    array(
+                        'option_type' => 'time_range',
+                        'option_default' => '3-months',
+                        'created' => 'now()',
+                        'updated' => 'now()',
+                    ),
+                    array(
+                        'option_type' => 'start_time',
+                        'option_default' => 0,
+                        'created' => 'now()',
+                        'updated' => 'now()',
+                    ),
+                    array(
+                        'option_type' => 'end_time',
+                        'option_default' => 0,
+                        'created' => 'now()',
+                        'updated' => 'now()',
+                    ),
+                    array(
+                        'option_type' => 'time_basis',
+                        'option_default' => 'modified_time',
+                        'created' => 'now()',
+                        'updated' => 'now()',
+                    )
+                )
+            ),
             'tables' => array(
                 'reporting_object_groups' => array(
                     'group_id' => array(
@@ -122,7 +150,8 @@ class System_setup_model extends CI_Model
                         'type' => 'VARCHAR'
                     ),
                     'ordering' => array(
-                        'type' => 'INTEGER'
+                        'type' => 'INTEGER',
+                        'default' => 0
                     ),
                     'created' => array(
                         'type' => 'TIMESTAMP',
@@ -206,17 +235,19 @@ class System_setup_model extends CI_Model
             )
         );
 
-
         foreach($db_create_object['tables'] as $table_name => $table_def){
-            if(!$this->db->table_exists($table_name)){
+            if(!$this->db->table_exists($table_name)) {
                 $this->dbforge->add_field($table_def);
-                if(array_key_exists($table_name, $db_create_object['keys'])){
+                if(array_key_exists($table_name, $db_create_object['keys'])) {
                     foreach($db_create_object['keys'][$table_name] as $key){
                         $this->dbforge->add_key($key, TRUE);
                     }
                 }
                 if($this->dbforge->create_table($table_name)) {
                     log_message("info", "Created '{$table_name}' table...");
+                }
+                if(array_key_exists($table_name, $db_create_object['defaults'])) {
+                    $this->db->insert_batch($table_name, $db_create_object['defaults'][$table_name]);
                 }
             }
         }

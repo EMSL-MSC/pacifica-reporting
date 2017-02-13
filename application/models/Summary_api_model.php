@@ -87,7 +87,8 @@ class Summary_api_model extends CI_Model
     }//end __construct()
 
 
-    public function summarize_uploads($group_type, $id_list, $iso_start_date, $iso_end_date, $make_day_graph, $time_basis){
+    public function summarize_uploads($group_type, $id_list, $iso_start_date, $iso_end_date, $make_day_graph, $time_basis)
+    {
         //returns array that extracts to $start_date_object, $end_date_object, $start_time, $end_time
         extract(canonicalize_date_range($iso_start_date, $iso_end_date));
         $this->results['day_graph']['by_date']['available_dates'] = generate_available_dates(
@@ -104,7 +105,7 @@ class Summary_api_model extends CI_Model
     {
         $transaction_url = "{$this->policy_base_url}/status/transactions/search/";
         $allowed_group_types = array('instrument', 'proposal', 'user');
-        if(in_array($group_type, $allowed_group_types)){
+        if(in_array($group_type, $allowed_group_types)) {
             foreach($id_list as $id){
                 $url_args_array = array(
                     $group_type => $id,

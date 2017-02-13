@@ -83,6 +83,7 @@ class Group_info_model extends CI_Model
         // $DB_prefs        = $this->load->database('website_prefs', TRUE);
         $query           = $this->db->get_where('reporting_object_groups', array('group_id' => $group_id), 1);
         $options         = array();
+        $group_info = FALSE;
         if ($query && $query->num_rows() > 0) {
             $options_query = $this->db->get_where('reporting_object_group_options', array('group_id' => $group_id));
             if ($options_query && $options_query->num_rows() > 0) {
@@ -129,6 +130,9 @@ class Group_info_model extends CI_Model
     {
         $group_info = $this->get_group_options($group_id);
 
+        if(!$group_info) {
+            return array();
+        }
         $earliest_latest = $this->earliest_latest_data_for_list(
             $group_info['group_type'],
             $group_info['item_list'],
@@ -269,6 +273,9 @@ class Group_info_model extends CI_Model
                         'person_id'  => $eus_person_id,
                         'group_name' => $group_name,
                         'group_type' => $object_type,
+                        'ordering' => 0,
+                        'created' => 'now()',
+                        'updated' => 'now()'
                        );
         $this->db->insert($table_name, $insert_data);
         if ($this->db->affected_rows() > 0) {
@@ -328,7 +335,7 @@ class Group_info_model extends CI_Model
                          'group_id'    => $group_id,
                          'option_type' => $option_type,
                         );
-        $update_array = array('option_value' => $value);
+        $update_array = array('option_value' => $value, 'updated' => 'now()');
         $query        = $this->db->where($where_array)->get($table_name);
         if ($query && $query->num_rows() > 0) {
             $this->db->where($where_array)->update($table_name, $update_array);

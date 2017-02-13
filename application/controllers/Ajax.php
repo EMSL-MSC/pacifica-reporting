@@ -24,7 +24,7 @@
  */
 
 defined('BASEPATH') OR exit('No direct script access allowed');
-require_once 'Baseline_controller.php';
+require_once 'Baseline_api_controller.php';
 
 /**
  *  Ajax is a CI controller class that extends Baseline_controller
@@ -46,7 +46,7 @@ require_once 'Baseline_controller.php';
  * @see    https://github.com/EMSL-MSC/pacifica-reporting
  * @access public
  */
-class Ajax extends Baseline_controller
+class Ajax extends Baseline_api_controller
 {
     /**
      * Contains the timestamp when this file was last modified
@@ -63,12 +63,12 @@ class Ajax extends Baseline_controller
     public function __construct()
     {
         parent::__construct();
-        $this->load->model('Reporting_model', 'rep');
+        // $this->load->model('Reporting_model', 'rep');
         $this->load->model('Group_info_model', 'gm');
-        $this->load->model('Summary_model', 'summary');
-        $this->load->library('EUS', '', 'eus');
+        // $this->load->model('Summary_model', 'summary');
+        // $this->load->library('EUS', '', 'eus');
         // $this->load->helper(array('network','file_info','inflector','time','item','search_term','cookie'));
-        $this->load->helper(array('network','search_term','inflector'));
+        $this->load->helper(array('network','search_term','inflector','time', 'myemsl'));
         $this->accepted_object_types = array('instrument', 'user', 'proposal');
         $this->accepted_time_basis_types = array('submit_time', 'create_time', 'modified_time');
         $this->local_resources_folder = $this->config->item('local_resources_folder');
@@ -256,6 +256,11 @@ class Ajax extends Baseline_controller
     public function get_group_container($object_type, $group_id, $time_range = FALSE, $start_date = FALSE, $end_date = FALSE, $time_basis = FALSE)
     {
         $group_info = $this->gm->get_group_info($group_id);
+        if(empty($group_info)) {
+            $this->output->set_status_header(404, "Group ID {$group_id} was not found");
+            send_json_array(array());
+            return;
+        }
         $options_list = $group_info['options_list'];
         $item_list = $group_info['item_list'];
         $time_range = !empty($time_range) ? $time_range : $options_list['time_range'];
@@ -267,7 +272,7 @@ class Ajax extends Baseline_controller
         $accepted_object_types = array('instrument', 'proposal', 'user');
 
         $valid_date_range = $this->gm->earliest_latest_data_for_list($object_type, $group_info['item_list'], $time_basis);
-        $my_times = $this->summary->fix_time_range($time_range, $start_date, $end_date, $valid_date_range);
+        $my_times = fix_time_range($time_range, $start_date, $end_date, $valid_date_range);
         $latest_available_date = new DateTime($valid_date_range['latest']);
         $earliest_available_date = new DateTime($valid_date_range['earliest']);
 
@@ -300,7 +305,7 @@ class Ajax extends Baseline_controller
             $this->page_data['examples'] = add_objects_instructions($object_type);
         }
         else {
-            $this->page_data['placeholder_info'][$group_id]['times'] = $this->summary->fix_time_range($time_range, $start_date, $end_date);
+            $this->page_data['placeholder_info'][$group_id]['times'] = fix_time_range($time_range, $start_date, $end_date);
         }
         $this->load->view('object_types/group.html', $this->page_data);
     }
