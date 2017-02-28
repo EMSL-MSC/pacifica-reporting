@@ -27,6 +27,16 @@
  */
  if (!defined('BASEPATH')) exit('No direct script access allowed');
 
+/**
+ * [get_proposals_by_name description]
+ *
+ * @param string  $name_fragment search terms for the search
+ * @param boolean $active        is the proposal active or not
+ *
+ * @return void
+ *
+ * @author Ken Auberry <kenneth.auberry@pnnl.gov>
+ */
 function get_proposals_by_name($name_fragment, $active)
 {
     $CI =& get_instance();

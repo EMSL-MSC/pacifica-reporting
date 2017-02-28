@@ -87,6 +87,20 @@ class Summary_api_model extends CI_Model
     }//end __construct()
 
 
+    /**
+     * Generate summary results for a set of objects
+     *
+     * @param string  $group_type     type of objects to summarize
+     * @param array   $id_list        object id's to include
+     * @param string  $iso_start_date datestring
+     * @param string  $iso_end_date   datestring
+     * @param boolean $make_day_graph should we generate the graph?
+     * @param string  $time_basis     which date to use?
+     *
+     * @return void
+     *
+     * @author Ken Auberry <kenneth.auberry@pnnl.gov>
+     */
     public function summarize_uploads($group_type, $id_list, $iso_start_date, $iso_end_date, $make_day_graph, $time_basis)
     {
         //returns array that extracts to $start_date_object, $end_date_object, $start_time, $end_time
@@ -100,7 +114,19 @@ class Summary_api_model extends CI_Model
 
     }
 
-
+    /**
+     * Generate overall totals from the summary above
+     *
+     * @param string $group_type      type of objects to summarize
+     * @param array  $id_list         object id's to include
+     * @param string $start_date      datestring
+     * @param string $end_date        datestring
+     * @param string $time_basis_type which date to use?
+     *
+     * @return void
+     *
+     * @author Ken Auberry <kenneth.auberry@pnnl.gov>
+     */
     private function _generate_summary_totals($group_type, $id_list, $start_date, $end_date, $time_basis_type)
     {
         $transaction_url = "{$this->policy_base_url}/status/transactions/search/";

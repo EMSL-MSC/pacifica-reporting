@@ -137,7 +137,19 @@ class Myemsl_model extends CI_Model
 
     }//end get_user_info()
 
-    function get_object_list($object_type, $search_terms, $my_objects = FALSE){
+    /**
+     * Grab a list of objects by search term from the md api
+     *
+     * @param string $object_type  what type of object to return
+     * @param string $search_terms filters
+     * @param array  $my_objects   collection of objects to exclude
+     *
+     * @return array array of objects
+     *
+     * @author Ken Auberry <kenneth.auberry@pnnl.gov>
+     */
+    function get_object_list($object_type, $search_terms, $my_objects = FALSE)
+    {
         $acceptable_object_types = array(
             'instrument' => 'instruments',
             'proposal' => 'proposals',
@@ -148,10 +160,10 @@ class Myemsl_model extends CI_Model
             'message' => '',
             'results' => array()
         );
-        if(!array_key_exists($object_type, $acceptable_object_types)){
+        if(!array_key_exists($object_type, $acceptable_object_types)) {
             return array();
         }
-        if(is_array($search_terms)){
+        if(is_array($search_terms)) {
             $search_term_string = implode('+', $search_terms);
         }else{
             $search_term_string = $search_terms;
@@ -165,7 +177,7 @@ class Myemsl_model extends CI_Model
         $query_url .= http_build_query($url_args_array, '', '&');
         $query = Requests::get($query_url, array('Accept' => 'application/json'));
         $results_body = $query->body;
-        if($query->status_code == 200){
+        if($query->status_code == 200) {
             $results_json['results'] = json_decode($results_body, TRUE);
             $results_json['success'] = TRUE;
         }
