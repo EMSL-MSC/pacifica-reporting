@@ -61,7 +61,6 @@ services:
             POSTGRES_PORT_5432_TCP_PORT: 5432
             POSTGRES_ENV_POSTGRES_PASSWORD: pacifica
 
-
     policyserver:
         build:
             context: ../policy
