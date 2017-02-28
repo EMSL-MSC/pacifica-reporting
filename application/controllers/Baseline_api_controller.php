@@ -55,6 +55,8 @@ class Baseline_api_controller extends CI_Controller
     {
         parent::__construct();
         date_default_timezone_set($this->config->item('local_timezone'));
+        $this->metadata_url_base = str_replace('tcp:', 'http:', getenv('METADATA_PORT'));
+        $this->policy_url_base = str_replace('tcp:', 'http:', getenv('POLICY_PORT'));
         $this->load->model('System_setup_model', 'setup');
         $this->application_version = $this->config->item('application_version');
         $this->metadata_url_base = $this->config->item('metadata_server_base_url');
@@ -66,7 +68,6 @@ class Baseline_api_controller extends CI_Controller
             show_error($message, 500, 'User Authorization Error or Server Misconfiguration in Auth System');
         }
         $this->page_address = implode('/', $this->uri->rsegments);
-
         $user_info = get_user_details($this->user_id);
         if (!$user_info) {
             $message = "Could not find a user with an EUS Person ID of {$this->user_id}";

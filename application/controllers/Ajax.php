@@ -65,6 +65,7 @@ class Ajax extends Baseline_api_controller
         parent::__construct();
         // $this->load->model('Reporting_model', 'rep');
         $this->load->model('Group_info_model', 'gm');
+        $this->load->model('Myemsl_model', 'myemsl');
         // $this->load->model('Summary_model', 'summary');
         // $this->load->library('EUS', '', 'eus');
         // $this->load->helper(array('network','file_info','inflector','time','item','search_term','cookie'));
@@ -87,21 +88,18 @@ class Ajax extends Baseline_api_controller
      */
     public function make_new_group($object_type)
     {
-        if ($this->input->post()) {
-              $group_name = $this->input->post('group_name');
-        }
-        elseif ($this->input->is_ajax_request() || $this->input->raw_input_stream) {
-            $post_info = json_decode($this->input->raw_input_stream, TRUE);
+        if ($this->input->is_ajax_request() || file_get_contents('php://input')) {
+            $http_raw_post_data = file_get_contents('php://input');
+            $post_info = json_decode($http_raw_post_data, TRUE);
             // $post_info = $post_info[0];
             $group_name = array_key_exists('group_name', $post_info) ? $post_info['group_name'] : FALSE;
-        }
             $group_info = $this->gm->make_new_group($object_type, $this->user_id, $group_name);
-        if ($group_info && is_array($group_info)) {
-            send_json_array($group_info);
-        }
-        else {
-            $this->output->set_status_header(500, "Could not make a new group called '{$group_name}'");
-
+            if ($group_info && is_array($group_info)) {
+                send_json_array($group_info);
+            }
+            else {
+                $this->output->set_status_header(500, "Could not make a new group called '{$group_name}'");
+            }
             return;
         }
     }
@@ -395,13 +393,13 @@ class Ajax extends Baseline_api_controller
             $my_objects[$object_type] = array();
         }
         $filter = parse_search_term($filter);
-        $results = $this->eus->get_object_list($object_type, $filter, $my_objects[$object_type]);
-        $this->page_data['results'] = $results;
+        $results = $this->myemsl->get_object_list($object_type, $filter, $my_objects[$object_type]);
+        $this->page_data['results'] = $results['results'];
         $this->page_data['object_type'] = $object_type;
         $this->page_data['filter_text'] = $filter;
         $this->page_data['my_objects'] = $my_objects[$object_type];
         $this->page_data['js'] = '$(function(){ setup_search_checkboxes(); })';
-        if (!empty($results)) {
+        if (!empty($results['results'])) {
             $this->load->view("object_types/search_results/{$object_type}_results.html", $this->page_data);
         }
         else {

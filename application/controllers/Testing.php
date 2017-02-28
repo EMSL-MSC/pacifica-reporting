@@ -23,7 +23,7 @@
  * @link http://github.com/EMSL-MSC/Pacifica-reporting
  */
 defined('BASEPATH') or exit('No direct script access allowed');
-require_once 'Baseline_controller.php';
+require_once 'Baseline_api_controller.php';
 
 /**
  *  Testing is a CI controller class that extends Baseline_controller.
@@ -60,7 +60,7 @@ class Testing extends Baseline_api_controller
         // $this->load->model('Summary_model', 'summary');
         $this->load->model('Summary_api_model', 'summary');
         $this->load->model('Myemsl_model', 'myemsl');
-        $this->load->library('EUS', '', 'eus');
+        // $this->load->library('EUS', '', 'eus');
         $this->load->helper(array('network', 'file_info', 'inflector', 'time', 'item', 'search_term', 'cookie'));
         $this->accepted_object_types = array('instrument', 'user', 'proposal');
         $this->accepted_time_basis_types = array('submit_time', 'create_time', 'modified_time');
@@ -196,8 +196,8 @@ class Testing extends Baseline_api_controller
      */
     public function test_get_object_list($object_type, $filter = '')
     {
-        $filter = parse_search_term($filter);
-        $results = $this->eus->get_object_list($object_type, $filter);
+        // $filter = parse_search_term($filter);
+        $results = $this->myemsl->get_object_list($object_type, $filter);
         echo '<pre>';
         var_dump($results);
         echo '</pre>';
