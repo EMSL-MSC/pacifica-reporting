@@ -59,6 +59,9 @@ class Group_info_model extends CI_Model
         // $this->load->library('EUS', '', 'eus');
         $this->debug = $this->config->item('debug_enabled');
         $this->load->database('website_prefs');
+        $this->load->library('PHPRequests');
+        $this->metadata_url_base = $this->config->item('metadata_server_base_url');
+        $this->policy_url_base = $this->config->item('policy_server_base_url');
     }//end __construct()
 
     /**
@@ -382,17 +385,7 @@ class Group_info_model extends CI_Model
         $results = array();
         if ($query && $query->num_rows() > 0) {
             foreach ($query->result() as $row) {
-                switch ($row->item_type) {
-                case 'instrument':
-                    $group_list = $this->get_instrument_group_list($row->item_id);
-                    break;
-                case 'proposal':
-                    $group_list = $this->get_proposal_group_list($row->item_id);
-                    break;
-                default:
-                    $group_list = $row->item_id;
-                }
-
+                $group_list = $row->item_id;
                 $item_id = strval($row->item_id);
                 $results[$row->item_type][$item_id] = $group_list;
             }
@@ -502,7 +495,6 @@ class Group_info_model extends CI_Model
     public function update_object_preferences($object_type, $object_list, $group_id)
     {
         $table        = 'reporting_selection_prefs';
-        // $DB_prefs     = $this->load->database('website_prefs', TRUE);
         $additions    = array();
         $removals     = array();
         $existing     = array();
@@ -537,12 +529,14 @@ class Group_info_model extends CI_Model
             $removals  = array_intersect($removals, $existing);
 
             if (!empty($additions)) {
+                $now_utc = gmstrftime('%F %T');
                 foreach ($additions as $object_id) {
                     $insert_object = array(
                                       'eus_person_id' => $this->user_id,
                                       'item_type'     => $object_type,
                                       'item_id'       => strval($object_id),
                                       'group_id'      => $group_id,
+                                      'updated'       => $now_utc
                                      );
                     $this->db->insert($table, $insert_object);
                     if($this->db->affected_rows() > 0) {
@@ -584,40 +578,6 @@ class Group_info_model extends CI_Model
      */
     public function earliest_latest_data_for_list($object_type, $object_id_list, $time_basis)
     {
-        $group_list_retrieval_fn_name = "get_{$object_type}_group_list";
-        $time_basis = str_replace('_time', '_date', $time_basis);
-
-        $spread = $this->_available_item_spread_general(
-            $object_id_list,
-            $time_basis,
-            $object_type,
-            $group_list_retrieval_fn_name
-        );
-
-        return $spread;
-
-    }//end earliest_latest_data_for_list()
-
-
-    /**
-     * Private worker function to get the earliest/latest items
-     * in a given list of objects
-     *
-     * @param array  $object_id_list               [description]
-     * @param string $time_basis                   one of created_date, modified_date
-     *                                             submitted_date
-     * @param string $group_type                   instrument/proposal/user
-     * @param string $group_list_retrieval_fn_name the name of the function to calls
-     *                                             upon to get the myemsl internal
-     *                                             groups associated with a given
-     *                                             object
-     *
-     * @return array
-     *
-     * @author Ken Auberry <kenneth.auberry@pnnl.gov>
-     */
-    private function _available_item_spread_general($object_id_list, $time_basis, $group_type, $group_list_retrieval_fn_name = FALSE)
-    {
         $return_array = FALSE;
         if (empty($object_id_list)) {
             return FALSE;
@@ -625,147 +585,20 @@ class Group_info_model extends CI_Model
 
         $latest_time   = FALSE;
         $earliest_time = FALSE;
-        if (in_array($group_type, array('instrument', 'proposal'))) {
-            $group_collection = array();
-            // echo "\n* * * * * * * group_list * * * * * * \n\n";
-            foreach ($object_id_list as $object_id) {
-                $group_collection += $this->$group_list_retrieval_fn_name($object_id);
-                // var_dump($group_collection);
-            }
 
-            $group_list = array_keys($group_collection);
-            if(empty($group_list)) {
-                return FALSE;
-            }
-
-            $this->db->where_in('group_id', $group_list);
-        } else if ($group_type == 'user') {
-            $this->db->where_in('submitter', $object_id_list);
-        }
-
-        $this->db->select(
-            array(
-            // "'2000-01-01' as earliest",
-             "MIN({$time_basis}) as earliest",
-             "MAX({$time_basis}) as latest",
-            )
+        $el_url = "{$this->metadata_url_base}/fileinfo/earliest_latest/{$object_type}/{$time_basis}";
+        $header_list = array(
+            'Content-Type' => 'application/json',
+            'Accept' => 'application/json',
         );
-        $query = $this->db->get(ITEM_CACHE);
-        // echo $this->db->last_query();
-        if ($query && $query->num_rows() > 0 || !empty($query->row()->latest_upload)) {
-            $row           = $query->row_array();
-            $earliest_time = !empty($row['earliest']) ? new DateTime($row['earliest']) : FALSE;
-            $latest_time   = !empty($row['latest']) ? new DateTime($row['latest']) : FALSE;
-            if (!$earliest_time && !$latest_time) {
-                return FALSE;
-            }
-
-            $return_array = array(
-                             'earliest' => $earliest_time->format('Y-m-d H:i'),
-                             'latest'   => $latest_time->format('Y-m-d H:i'),
-                            );
+        $query = Requests::post($el_url, $header_list, json_encode($object_id_list));
+        if ($query->status_code == 200 && intval($query->headers['content-length']) > 0) {
+            $return_array = json_decode($query->body, TRUE);
         }
 
         return $return_array;
 
-    }//end _available_item_spread_general()
-
-
-    /**
-     * Helper function to get the earliest/latest
-     * spread for a given set of instruments.
-     *
-     * @param array  $object_id_list list of instruments to scan
-     * @param string $time_basis     one of created_date, modified_date
-     *                                submitted_date
-     *
-     * @uses   Group_info_model::_available_item_spread_general
-     * @return array
-     *
-     * @author Ken Auberry <kenneth.auberry@pnnl.gov>
-     */
-    private function _available_instrument_data_spread($object_id_list, $time_basis)
-    {
-        $group_list_retrieval_fn_name = 'get_instrument_group_list';
-
-        return $this->_available_item_spread_general($object_id_list, $time_basis, 'instrument', $group_list_retrieval_fn_name);
-
-    }//end _available_instrument_data_spread()
-
-
-    /**
-     * Helper function to get the earliest/latest
-     * spread for a given set of proposals.
-     *
-     * @param array  $object_id_list list of proposals to scan
-     * @param string $time_basis     one of created_date, modified_date
-     *                                submitted_date
-     *
-     * @uses   Group_info_model::_available_item_spread_general
-     * @return array
-     *
-     * @author Ken Auberry <kenneth.auberry@pnnl.gov>
-     */
-    private function _available_proposal_data_spread($object_id_list, $time_basis)
-    {
-        $group_list_retrieval_fn_name = 'get_proposal_group_list';
-
-        return $this->_available_item_spread_general($object_id_list, $time_basis, 'proposal', $group_list_retrieval_fn_name);
-
-    }//end _available_proposal_data_spread()
-
-
-    /**
-     * Helper function to get the earliest/latest
-     * spread for a given set of users.
-     *
-     * @param array  $object_id_list list of users to scan
-     * @param string $time_basis     one of created_date, modified_date
-     *                                submitted_date
-     *
-     * @uses   Group_info_model::_available_item_spread_general
-     * @return array
-     *
-     * @author Ken Auberry <kenneth.auberry@pnnl.gov>
-     */
-    private function _available_user_data_spread($object_id_list, $time_basis)
-    {
-        $return_array = FALSE;
-        if (empty($object_id_list)) {
-            return FALSE;
-        }
-
-        $this->db->select(
-            array(
-             "earliest_{$time_basis} as earliest",
-             "latest_{$time_basis} as latest",
-            )
-        );
-
-        $this->db->where('t.stime is not null');
-        $this->db->where_in('submitter', $object_id_list);
-        $this->db->from('transactions t')->limit(1);
-        $this->db->join('files f', 't.transaction = f.transaction');
-        $query = $this->db->get();
-
-        if ($query && $query->num_rows() > 0 || !empty($query->row()->latest_upload)) {
-            $row           = $query->row_array();
-            $earliest_time = !empty($row['earliest']) ? new DateTime($row['earliest']) : FALSE;
-            $latest_time   = !empty($row['latest']) ? new DateTime($row['latest']) : FALSE;
-            if (!$earliest_time && !$latest_time) {
-                return FALSE;
-            }
-
-            $return_array = array(
-                             'earliest' => $earliest_time->format('Y-m-d H:i'),
-                             'latest'   => $latest_time->format('Y-m-d H:i'),
-                            );
-        }
-
-        return $return_array;
-
-    }//end _available_user_data_spread()
-
+    }//end earliest_latest_data_for_list()
 
     /**
      * Retrieve a list of pertinent Myemsl internal groups
@@ -778,42 +611,42 @@ class Group_info_model extends CI_Model
      *
      * @author Ken Auberry <kenneth.auberry@pnnl.gov>
      */
-    public function get_proposal_group_list($proposal_id_filter = '')
-    {
-        $is_emsl_staff = $this->is_emsl_staff;
-        $DB_myemsl = $this->load->database('default', TRUE);
-        $DB_myemsl->select(array('group_id', 'name as proposal_id'))->where('type', 'proposal');
-        $proposals_available = FALSE;
-        if(!$is_emsl_staff) {
-            $proposals_available = $this->eus->get_proposals_for_user($this->user_id);
-        }
-
-        if (!empty($proposal_id_filter)) {
-            if (is_array($proposal_id_filter)) {
-                $DB_myemsl->where_in('name', $proposal_id_filter);
-            } else {
-                $DB_myemsl->where('name', $proposal_id_filter);
-            }
-        }
-
-        $query = $DB_myemsl->get('groups');
-
-        $results_by_proposal = array();
-        if ($query && $query->num_rows()) {
-            foreach ($query->result() as $row) {
-                if(!$is_emsl_staff && in_array($row->proposal_id, $proposals_available)) {
-                    $results_by_proposal[$row->group_id] = $row->proposal_id;
-                }else if($is_emsl_staff) {
-                    $results_by_proposal[$row->group_id] = $row->proposal_id;
-                }
-            }
-        }
-
-        $this->group_id_list = $results_by_proposal;
-
-        return $results_by_proposal;
-
-    }//end get_proposal_group_list()
+    // public function get_proposal_group_list($proposal_id_filter = '')
+    // {
+    //     $is_emsl_staff = $this->is_emsl_staff;
+    //     $DB_myemsl = $this->load->database('default', TRUE);
+    //     $DB_myemsl->select(array('group_id', 'name as proposal_id'))->where('type', 'proposal');
+    //     $proposals_available = FALSE;
+    //     if(!$is_emsl_staff) {
+    //         $proposals_available = $this->eus->get_proposals_for_user($this->user_id);
+    //     }
+    //
+    //     if (!empty($proposal_id_filter)) {
+    //         if (is_array($proposal_id_filter)) {
+    //             $DB_myemsl->where_in('name', $proposal_id_filter);
+    //         } else {
+    //             $DB_myemsl->where('name', $proposal_id_filter);
+    //         }
+    //     }
+    //
+    //     $query = $DB_myemsl->get('groups');
+    //
+    //     $results_by_proposal = array();
+    //     if ($query && $query->num_rows()) {
+    //         foreach ($query->result() as $row) {
+    //             if(!$is_emsl_staff && in_array($row->proposal_id, $proposals_available)) {
+    //                 $results_by_proposal[$row->group_id] = $row->proposal_id;
+    //             }else if($is_emsl_staff) {
+    //                 $results_by_proposal[$row->group_id] = $row->proposal_id;
+    //             }
+    //         }
+    //     }
+    //
+    //     $this->group_id_list = $results_by_proposal;
+    //
+    //     return $results_by_proposal;
+    //
+    // }//end get_proposal_group_list()
 
 
     /**
@@ -827,50 +660,23 @@ class Group_info_model extends CI_Model
      *
      * @author Ken Auberry <kenneth.auberry@pnnl.gov>
      */
-    public function get_instrument_group_list($inst_id_filter = '')
-    {
-        // $e = new Exception();
-        // var_dump($e->getTraceAsString());
-        $DB_myemsl = $this->load->database('default', TRUE);
-        $DB_myemsl->select(array('group_id', 'name', 'type'));
-        if (!empty($inst_id_filter)) {
-            $where_clause = array(
-                             'type' => 'omics.dms.instrument_id',
-                             'name' => $inst_id_filter,
-                            );
-            $DB_myemsl->where($where_clause);
-            $DB_myemsl->or_where('type', "Instrument.{$inst_id_filter}");
-        } else {
-            $where_clause = "(type = 'omics.dms.instrument_id' or type ilike 'instrument.%') and name not in ('foo')";
-            $DB_myemsl->where($where_clause);
-        }
-
-        $query = $DB_myemsl->order_by('name')->get('groups');
-        $results_by_inst_id = array();
-        if ($query && $query->num_rows() > 0) {
-            foreach ($query->result() as $row) {
-                if ($row->type == 'omics.dms.instrument_id') {
-                    $inst_id = intval($row->name);
-                } else if (strpos($row->type, 'Instrument.') >= 0) {
-                    $inst_id = intval(str_replace('Instrument.', '', $row->type));
-                } else {
-                    continue;
-                }
-
-                $results_by_inst_id[$inst_id][$row->group_id] = $row->name;
-            }
-        }
-
-        if (!empty($inst_id_filter) && is_numeric($inst_id_filter) && array_key_exists($inst_id_filter, $results_by_inst_id)) {
-            $results = $results_by_inst_id[$inst_id_filter];
-        } else {
-            $results = $results_by_inst_id;
-        }
-
-        $this->group_id_list = $results;
-
-        return $results;
-
-    }//end get_instrument_group_list()
+    // public function get_instrument_group_list($inst_id)
+    // {
+    //     $DB_myemsl = $this->load->database('default', TRUE);
+    //     $DB_myemsl->select(array('group_id', 'name', 'type'));
+    //     $results_by_inst_id = array();
+    //     $results_by_inst_id[$inst_id] = $inst_id;
+    //
+    //     if (!empty($inst_id_filter) && is_numeric($inst_id_filter) && array_key_exists($inst_id_filter, $results_by_inst_id)) {
+    //         $results = $results_by_inst_id[$inst_id_filter];
+    //     } else {
+    //         $results = $results_by_inst_id;
+    //     }
+    //
+    //     $this->group_id_list = $results;
+    //
+    //     return $results;
+    //
+    // }//end get_instrument_group_list()
 
 }//end class

@@ -103,10 +103,16 @@ class Summary_model extends CI_Model
      *  @uses   Summary_model::summarize_uploads_general
      *  @author Ken Auberry <kenneth.auberry@pnnl.gov>
      */
-    public function summarize_uploads_by_user_list($eus_person_id_list, $start_date, $end_date, $make_day_graph, $time_basis = FALSE)
+    public function summarize_uploads_by_user_list(
+        $eus_person_id_list, $start_date, $end_date,
+        $make_day_graph, $time_basis = FALSE
+    )
     {
         $group_type = 'user';
-        return $this->summarize_uploads_general($eus_person_id_list, $start_date, $end_date, $make_day_graph, $time_basis, $group_type);
+        return $this->summarize_uploads_general(
+            $eus_person_id_list, $start_date, $end_date,
+            $make_day_graph, $time_basis, $group_type
+        );
 
     }//end summarize_uploads_by_user_list()
 
@@ -127,10 +133,16 @@ class Summary_model extends CI_Model
      *  @uses   Summary_model::summarize_uploads_general
      *  @author Ken Auberry <kenneth.auberry@pnnl.gov>
      */
-    public function summarize_uploads_by_proposal_list($eus_proposal_id_list, $start_date, $end_date, $make_day_graph, $time_basis = FALSE)
+    public function summarize_uploads_by_proposal_list(
+        $eus_proposal_id_list, $start_date, $end_date,
+        $make_day_graph, $time_basis = FALSE
+    )
     {
         $group_type = 'proposal';
-        return $this->summarize_uploads_general($eus_proposal_id_list, $start_date, $end_date, $make_day_graph, $time_basis, $group_type);
+        return $this->summarize_uploads_general(
+            $eus_proposal_id_list, $start_date, $end_date,
+            $make_day_graph, $time_basis, $group_type
+        );
 
     }//end summarize_uploads_by_proposal_list()
 
@@ -151,10 +163,16 @@ class Summary_model extends CI_Model
      *  @uses   Summary_model::summarize_uploads_general
      *  @author Ken Auberry <kenneth.auberry@pnnl.gov>
      */
-    public function summarize_uploads_by_instrument_list($eus_instrument_id_list, $start_date, $end_date, $make_day_graph, $time_basis = FALSE)
+    public function summarize_uploads_by_instrument_list(
+        $eus_instrument_id_list, $start_date, $end_date,
+        $make_day_graph, $time_basis = FALSE
+    )
     {
         $group_type = 'instrument';
-        return $this->summarize_uploads_general($eus_instrument_id_list, $start_date, $end_date, $make_day_graph, $time_basis, $group_type);
+        return $this->summarize_uploads_general(
+            $eus_instrument_id_list, $start_date, $end_date,
+            $make_day_graph, $time_basis, $group_type
+        );
 
     }//end summarize_uploads_by_instrument_list()
 
@@ -175,7 +193,10 @@ class Summary_model extends CI_Model
      *
      *  @author Ken Auberry <kenneth.auberry@pnnl.gov>
      */
-    public function summarize_uploads_general($id_list, $start_date, $end_date, $make_day_graph, $time_basis, $group_type)
+    public function summarize_uploads_general(
+        $id_list, $start_date, $end_date, $make_day_graph,
+        $time_basis, $group_type
+    )
     {
         extract(canonicalize_date_range($start_date, $end_date));
         $start_date_obj  = new DateTime($start_date);

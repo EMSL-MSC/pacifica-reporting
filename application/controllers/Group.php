@@ -81,7 +81,7 @@ class Group extends Baseline_api_controller
              'search_term',
              'cookie',
              'proposal',
-             'myemsl'
+             'myemsl_api'
             )
         );
         $this->last_update_time = get_last_update(APPPATH);
@@ -284,7 +284,7 @@ class Group extends Baseline_api_controller
             $transaction_list   = json_decode($http_raw_post_data, TRUE);
         }
 
-        $results = $this->rep->detailed_transaction_list($transaction_list);
+        $results = $this->summary->detailed_transaction_list($transaction_list);
         $this->page_data['transaction_info'] = $results;
 
         $this->load->view('object_types/transaction_details_insert.html', $this->page_data);
@@ -307,9 +307,16 @@ class Group extends Baseline_api_controller
      *  @method get_reporting_info_list
      *  @author Ken Auberry <kenneth.auberry@pnnl.gov>
      */
-    public function get_reporting_info_list($object_type, $group_id, $time_basis = FALSE, $time_range = FALSE, $start_date = FALSE, $end_date = FALSE, $with_timeline = TRUE)
+    public function get_reporting_info_list(
+        $object_type, $group_id, $time_basis = FALSE,
+        $time_range = FALSE, $start_date = FALSE,
+        $end_date = FALSE, $with_timeline = TRUE
+    )
     {
-        $this->_get_reporting_info_list_base($object_type, $group_id, $time_basis, $time_range, $start_date, $end_date, TRUE, FALSE);
+        $this->_get_reporting_info_list_base(
+            $object_type, $group_id, $time_basis, $time_range,
+            $start_date, $end_date, TRUE, FALSE
+        );
 
     }
 
@@ -327,9 +334,16 @@ class Group extends Baseline_api_controller
      * @return none  pushes to viewfile
      * @author Ken Auberry <kenneth.auberry@pnnl.gov>
      */
-    public function get_reporting_info_list_no_timeline($object_type, $group_id, $time_basis = FALSE, $time_range = FALSE, $start_date = FALSE, $end_date = FALSE)
+    public function get_reporting_info_list_no_timeline(
+        $object_type, $group_id, $time_basis = FALSE,
+        $time_range = FALSE, $start_date = FALSE,
+        $end_date = FALSE
+    )
     {
-        $this->_get_reporting_info_list_base($object_type, $group_id, $time_basis, $time_range, $start_date, $end_date, FALSE, FALSE);
+        $this->_get_reporting_info_list_base(
+            $object_type, $group_id, $time_basis, $time_range,
+            $start_date, $end_date, FALSE, FALSE
+        );
 
     }//end get_reporting_info_list_no_timeline()
 
@@ -349,13 +363,19 @@ class Group extends Baseline_api_controller
      * @method _get_reporting_info_list_base
      * @author Ken Auberry <kenneth.auberry@pnnl.gov>
      */
-    private function _get_reporting_info_list_base($object_type, $group_id, $time_basis, $time_range, $start_date = FALSE, $end_date = FALSE, $with_timeline = TRUE, $full_object = FALSE)
+    private function _get_reporting_info_list_base(
+        $object_type, $group_id, $time_basis, $time_range,
+        $start_date = FALSE, $end_date = FALSE, $with_timeline = TRUE,
+        $full_object = FALSE
+    )
     {
         $this->benchmark->mark('get_group_info_start');
         $group_info = $this->gm->get_group_info($group_id);
         $this->benchmark->mark('get_group_info_end');
+
         $item_list    = $group_info['item_list'];
         $options_list = $group_info['options_list'];
+        $available_time_range = $group_info['time_list'];
         if ($time_range && $time_range !== $options_list['time_range']) {
             $this->gm->change_group_option($group_id, 'time_range', $time_range);
         }
@@ -372,10 +392,7 @@ class Group extends Baseline_api_controller
         $this->page_data['object_type']            = $object_type;
         $this->page_data['group_id'] = $group_id;
 
-        $this->benchmark->mark('get_earliest_latest_start');
-        $available_time_range = $this->gm->earliest_latest_data_for_list($object_type, $object_id_list, $time_basis);
         $latest_data          = is_array($available_time_range) && array_key_exists('latest', $available_time_range) ? $available_time_range['latest'] : FALSE;
-        $this->benchmark->mark('get_earliest_latest_end');
 
         if (!$latest_data) {
             $this->page_data['results_message'] = 'No Data Available for this group of '.plural(ucwords($object_type));
@@ -437,15 +454,20 @@ class Group extends Baseline_api_controller
 
         extract($times);
 
-        $transaction_retrieval_func = "summarize_uploads_by_{$object_type}_list";
-        $transaction_info           = array();
-        $this->benchmark->mark("{$transaction_retrieval_func}_start");
-        $transaction_info = $this->summary->$transaction_retrieval_func($object_id_list, $start_date, $end_date, $with_timeline, $time_basis);
-        unset($transaction_info['transaction_list']);
+        // $transaction_retrieval_func = "summarize_uploads_by_{$object_type}_list";
+        // $transaction_info           = array();
+        // $this->benchmark->mark("{$transaction_retrieval_func}_start");
+        // $transaction_info = $this->summary->$transaction_retrieval_func(
+        //     $object_id_list, $start_date, $end_date, $with_timeline, $time_basis
+        // );
+        $transaction_info = $this->summary->summarize_uploads(
+            $object_type, $object_id_list, $start_date, $end_date, $with_timeline, $time_basis
+        );
+        // unset($transaction_info['transaction_list']);
         $this->page_data['transaction_info'] = $transaction_info;
         $this->page_data['times']            = $times;
         $this->page_data['include_timeline'] = $with_timeline;
-        $this->benchmark->mark("{$transaction_retrieval_func}_end");
+        // $this->benchmark->mark("{$transaction_retrieval_func}_end");
 
         if ($with_timeline) {
             $this->load->view('object_types/group_body_insert.html', $this->page_data);
@@ -476,8 +498,10 @@ class Group extends Baseline_api_controller
         $group_info = $this->gm->get_group_info($group_id);
 
         $object_list    = $group_info['item_list'];
-        $retrieval_func = "summarize_uploads_by_{$object_type}_list";
-        $results        = $this->summary->$retrieval_func($object_list, $start_date, $end_date, TRUE, $group_info['options_list']['time_basis']);
+        $results        = $this->summary->summarize_uploads(
+            $object_type, $object_list, $start_date, $end_date, TRUE,
+            $group_info['options_list']['time_basis']
+        );
         $downselect     = $results['day_graph']['by_date'];
         $return_array   = array(
                            'file_volumes'       => array_values($downselect['file_volume_array']),

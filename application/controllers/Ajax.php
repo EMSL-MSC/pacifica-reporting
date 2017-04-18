@@ -194,16 +194,16 @@ class Ajax extends Baseline_api_controller
 
             return;
         }
-        if ($this->input->post()) {
-            $option_type = $this->input->post('option_type');
-            $option_value = $this->input->post('option_value');
-        }
-        elseif ($this->input->is_ajax_request() || $this->input->raw_input_stream) {
+        if ($this->input->is_ajax_request() || $this->input->raw_input_stream) {
             $http_raw_post_data = file_get_contents('php://input');
             $post_info = json_decode($http_raw_post_data, TRUE);
             // $post_info = $post_info[0];
             $option_type = array_key_exists('option_type', $post_info) ? $post_info['option_type'] : FALSE;
             $option_value = array_key_exists('option_value', $post_info) ? $post_info['option_value'] : FALSE;
+        }
+        elseif ($this->input->post()) {
+            $option_type = $this->input->post('option_type');
+            $option_value = $this->input->post('option_value');
         }
         if (!$option_type || !$option_value) {
             $missing_types = array();
@@ -398,6 +398,7 @@ class Ajax extends Baseline_api_controller
         $this->page_data['object_type'] = $object_type;
         $this->page_data['filter_text'] = $filter;
         $this->page_data['my_objects'] = $my_objects[$object_type];
+        // var_dump($this->page_data);
         $this->page_data['js'] = '$(function(){ setup_search_checkboxes(); })';
         if (!empty($results['results'])) {
             $this->load->view("object_types/search_results/{$object_type}_results.html", $this->page_data);
