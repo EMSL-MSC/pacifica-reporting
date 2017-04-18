@@ -1,7 +1,57 @@
 version: '2'
 services:
-    reportingbackend:
-        container_name: reportingbackend
+# Nginx proxy pass frontends
+    proxyfrontend:
+        container_name: proxyfrontend
+        build:
+            context: .
+            dockerfile: Dockerfile.proxy
+        links:
+            - uploadstatus:statusbackend
+            - reporting:reportingbackend
+            - archiveinterface:archiveinterface
+            - proxyserver:proxyserver
+        ports:
+            - 80:80
+            - 443:443
+        environment:
+            UPLOAD_STATUS_ADDR: statusbackend
+            UPLOAD_STATUS_PORT: 80
+            REPORTING_ADDR: reportingbackend
+            REPORTING_PORT: 80
+            FILE_REDIRECT_ADDR: archiveinterface
+            FILE_REDIRECT_PORT: 8080
+            PROXY_ADDR: proxyserver
+            PROXY_PORT: 8180
+
+    archiveinterface:
+        image: pacifica/archiveinterface
+        container_name: archiveinterface
+        ports:
+            - 8080:8080
+        volumes:
+            # - /srv:/srv
+            - /Users/d3k857/Downloads/srv:/srv
+
+    proxyserver:
+        container_name: proxyserver
+        build:
+            context: ../proxy
+        links:
+            - metadataserver:metadata
+            - archiveinterface:archiveinterface
+        ports:
+            - 8180:8180
+        environment:
+            NGINX_ACCEL: 'True'
+            METADATA_PORT: tcp://metadata:8121
+            ARCHIVEI_PORT: tcp://archiveinterface:8080
+
+
+
+    # Reporting services
+    reporting:
+        container_name: reporting
         build:
             context: .
         volumes:
@@ -18,6 +68,7 @@ services:
             PREFSDB_USER: pacifica
             PREFSDB_PASSWORD: pacifica
             PREFSDB_DB_NAME: pacifica_reporting
+            SITE_NAME: reporting.local
 
     reportingprefsdb:
         container_name: reportingprefsdb
@@ -29,18 +80,46 @@ services:
         ports:
             - 55432:5432
 
-    reportingauth:
-        container_name: reportingauth
+
+# Upload status
+    uploadstatus:
+        container_name: uploadstatus
         build:
-            context: .
-            dockerfile: Dockerfile.auth
+            context: ../upload-status
+            dockerfile: Dockerfile.dev
+        volumes:
+            - ./:/var/www/html
         links:
-            - reportingbackend:backend
-        ports:
-            - 80:80
+            - metadataserver:metadata
+            - policyserver:policy
+            #- cartserver:cart
+            - uploadstatusdb:cartdb
+            - archiveinterface:archivei
         environment:
-            BACKEND_PORT_80_TCP_ADDR: backend
-            BACKEND_PORT_80_TCP_PORT: 80
+            METADATA_PORT: tcp://metadata:8121
+            POLICY_PORT: tcp://policy:8181
+            ARCHIVE_PORT: tcp://archivei:8080
+            CART_PORT: tcp://cart:8081
+            CARTDB_ADDR: cartdb
+            CARTDB_PORT: 5432
+            CARTDB_USER: pacifica
+            CARTDB_PASSWORD: pacifica
+            CARTDB_DB_NAME: pacifica_upload_status
+            CARTDB_DBDRIVER: postgre
+            CART_DOWNLOAD_PORT: tcp://cartng.emsl.pnl.gov:8443
+            FILE_DOWNLOAD_PORT: tcp://filesng.emsl.pnl.gov:8443
+            SITE_NAME: status.local
+
+    uploadstatusdb:
+        container_name: uploadstatusdb
+        image: postgres
+        environment:
+            POSTGRES_PASSWORD: pacifica
+            POSTGRES_DB: pacifica_upload_status
+            POSTGRES_USER: pacifica
+        ports:
+            - 45432:5432
+
 
     metadataserver:
         build:
@@ -49,12 +128,11 @@ services:
         container_name: metadataserver
         links:
             - metadatadb:postgres
-            - elasticmaster
-            - elasticlb
+            - elasticdb
         ports:
             - 8121:8121
         environment:
-            ELASTICDB_PORT: tcp://elasticmaster:9200
+            ELASTICDB_PORT: tcp://elasticdb:9200
             POSTGRES_ENV_POSTGRES_DB: pacifica_metadata
             POSTGRES_ENV_POSTGRES_USER: pacifica
             POSTGRES_PORT_5432_TCP_ADDR: postgres
@@ -74,28 +152,9 @@ services:
         environment:
             METADATA_PORT: tcp://metadata:8121
 
-    elasticmaster:
-        build:
-            context: ../metadata
-            dockerfile: docker-compose/Dockerfile.elastic
-        container_name: elasticmaster
-
-    elasticslave:
-        build:
-            context: ../metadata
-            dockerfile: docker-compose/Dockerfile.elastic
-        links:
-            - elasticmaster
-        environment:
-            UNICAST_HOST: elasticmaster
-            EXCLUDE_PORTS: 9300
-
-    elasticlb:
-        image: dockercloud/haproxy
-        links:
-            - elasticslave:elasticslave
-        volumes:
-            - /var/run/docker.sock:/var/run/docker.sock
+    elasticdb:
+        image: elasticsearch:2.4
+        container_name: elasticdb
         ports:
             - 9200:9200
 
@@ -108,7 +167,6 @@ services:
             POSTGRES_USER: pacifica
         ports:
             - 5432:5432
-
 
     # cartrabbit:
     #     image: rabbitmq
@@ -127,14 +185,6 @@ services:
     #     ports:
     #         - 3306:3306
 
-    # archiveinterface:
-    #     image: pacifica/archiveinterface
-    #     container_name: archiveinterface
-    #     ports:
-    #         - 8080:8080
-    #     volumes:
-    #         # - /srv:/srv
-    #         - /Users/d3k857/Downloads/srv:/srv
     #
     #
     # cartworkers:
