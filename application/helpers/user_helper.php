@@ -40,7 +40,7 @@ if(!defined('BASEPATH')) {
  */
 function get_user()
 {
-    $req_headers = apache_request_headers();
+    // $req_headers = apache_request_headers();
     $user = '(unknown)';
     $CI =& get_instance();
     $CI->load->library('PHPRequests');
@@ -49,9 +49,9 @@ function get_user()
         $user = str_replace('@PNL.GOV', '', $_SERVER["REMOTE_USER"]);
     } else if (isset($_SERVER["PHP_AUTH_USER"])) {
         $user = str_replace('@PNL.GOV', '', $_SERVER["PHP_AUTH_USER"]);
-    } else if (array_key_exists('X-Remote-User', $req_headers) && isset($req_headers['X-Remote-User'])) {
-        $user = $req_headers['X-Remote-User'];
-    }
+    // } else if (array_key_exists('X-Remote-User', $req_headers) && isset($req_headers['X-Remote-User'])) {
+    //     $user = $req_headers['X-Remote-User'];
+    // }
     $url_args_array = array(
        'network_id' => $user
     );
