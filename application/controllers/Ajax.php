@@ -95,7 +95,7 @@ class Ajax extends Baseline_api_controller
             $group_name = array_key_exists('group_name', $post_info) ? $post_info['group_name'] : FALSE;
             $group_info = $this->gm->make_new_group($object_type, $this->user_id, $group_name);
             if ($group_info && is_array($group_info)) {
-                send_json_array($group_info);
+                transmit_array_with_json_header($group_info);
             }
             else {
                 $this->output->set_status_header(500, "Could not make a new group called '{$group_name}'");
@@ -155,7 +155,7 @@ class Ajax extends Baseline_api_controller
 
             $new_group_info = $this->gm->change_group_name($group_id, $new_group_name);
             if ($new_group_info && is_array($new_group_info)) {
-                send_json_array($new_group_info);
+                transmit_array_with_json_header($new_group_info);
             }
             else {
                 $this->output->set_status_header(500, 'A database error occurred during the update process');
@@ -224,7 +224,7 @@ class Ajax extends Baseline_api_controller
 
         $success = $this->gm->change_group_option($group_id, $option_type, $option_value);
         if ($success && is_array($success)) {
-            send_json_array($success);
+            transmit_array_with_json_header($success);
         }
         else {
             $message = "Could not set options for group ID {$group_id}";
@@ -256,7 +256,7 @@ class Ajax extends Baseline_api_controller
         $group_info = $this->gm->get_group_info($group_id);
         if(empty($group_info)) {
             $this->output->set_status_header(404, "Group ID {$group_id} was not found");
-            send_json_array(array());
+            transmit_array_with_json_header(array());
             return;
         }
         $options_list = $group_info['options_list'];
