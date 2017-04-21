@@ -66,9 +66,9 @@ class System_setup_model extends CI_Model
      *
      *  @author Ken Auberry <kenneth.auberry@pnnl.gov>
      */
-     private function _check_and_create_database($db_name)
-     {
-        if($this->db->platform() != 'sqlite3'){
+    private function _check_and_create_database($db_name)
+    {
+        if($this->db->platform() != 'sqlite3') {
             if(!$this->dbutil->database_exists($db_name)) {
                 log_message('info', 'Attempting to create database structure...');
                 //db doesn't already exist, so make it
@@ -82,7 +82,7 @@ class System_setup_model extends CI_Model
         }else{
             log_message('info', 'DB Type is sqlite3, so we don\'t have to explicitly make the db file');
         }
-     }
+    }
 
     /**
      *  Configure the table structures in the database

@@ -54,13 +54,13 @@ function get_user()
     $query = Requests::get($query_url, array('Accept' => 'application/json'));
     $results_body = $query->body;
     $results_json = json_decode($results_body, TRUE);
-    if($query->status_code == 200){
-         if($results_json[0]['network_id'] == $user){
-             return strtolower($results_json[0]['person_id']);
-         }else{
-             return false;
-         }
+    if($query->status_code == 200) {
+        if($results_json[0]['network_id'] == $user) {
+            return strtolower($results_json[0]['person_id']);
+        }else{
+            return FALSE;
+        }
     }else{
-        return false;
+        return FALSE;
     }
 }
