@@ -124,10 +124,10 @@ class Ajax extends Baseline_api_controller
 
             return;
         }
-        if ($this->input->post()) {
-            $new_group_name = $this->input->post('group_name');
-        }
-        elseif ($this->input->is_ajax_request() || file_get_contents('php://input')) {
+        // if ($this->input->post()) {
+        //     $new_group_name = $this->input->post('group_name');
+        // }
+        if ($this->input->is_ajax_request() || file_get_contents('php://input')) {
             $http_raw_post_data = file_get_contents('php://input');
             $post_info = json_decode($http_raw_post_data, TRUE);
             if (array_key_exists('group_name', $post_info)) {
@@ -141,7 +141,7 @@ class Ajax extends Baseline_api_controller
         }
         if ($new_group_name) {
             //check for authorization
-            if ($this->user_id !== $group_info['person_id']) {
+            if ($this->user_id != $group_info['person_id']) {
                 $this->output->set_status_header(401, 'You are not allowed to alter this group');
 
                 return;
@@ -361,8 +361,8 @@ class Ajax extends Baseline_api_controller
 
             return;
         }
-        if ($this->user_id !== $group_info['person_id']) {
-            $this->output->set_status_header(401, "User {$this->eus_person_id} is not the owner of Group ID {$group_id}");
+        if ($this->user_id != $group_info['person_id']) {
+            $this->output->set_status_header(401, "User {$this->user_id} is not the owner of Group ID {$group_id}");
 
             return;
         }
