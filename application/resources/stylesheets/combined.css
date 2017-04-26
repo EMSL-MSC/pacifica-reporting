@@ -1,6 +1,4 @@
 
-/*stylesheet 2/12 | http://status.local/resources/stylesheets/local.css*/
-
 body {
     font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
     font-size: 13px;
@@ -111,7 +109,7 @@ button:hover, .buttons input[type="button"]:hover {
     width: auto !important;
 }
 
-div.form_container {
+.form_container {
     padding-top: 5px;
     width: 100%;
     position: relative;
