@@ -3,7 +3,6 @@ footer.short {
 }
 
 /* reporting object containers */
-
 .reporting_object_container .object_name a {
     font-size: 0.8em;
     text-decoration: none;
@@ -82,7 +81,6 @@ footer.short {
     margin-top: 5px;
     margin-left: 5px;
 }
-
 
 header.secondary .page_header {
     -webkit-box-sizing: content-box;
