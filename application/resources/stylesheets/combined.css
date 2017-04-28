@@ -35,13 +35,13 @@ body {
     font-style: italic;
 }
 
-.spinner {
+/*.spinner {
     width: 16px;
-    background-image: url("http://status.local/resources/images/spinner-16x16_green.gif");
+    background-image: url("/resources/images/spinner-16x16_green.gif");
     background-repeat: no-repeat;
     background-position: 0px 4px;
     height: 16px;
-}
+}*/
 
 .email {
     padding-top: 2pt;
@@ -164,7 +164,7 @@ button:hover, .buttons input[type="button"]:hover {
     padding-right: 16px;
     margin-left: 6px;
     vertical-align: middle;
-    background-image: url("http://status.local/resources/images/disclosure_sprite.png");
+    background-image: url("/resources/images/disclosure_sprite.png");
     background-repeat: no-repeat;
     background-size: 64px 16px;
     background-size: 64px 16px;
@@ -196,13 +196,13 @@ button:hover, .buttons input[type="button"]:hover {
 
 @media not all, only screen and (-webkit-min-device-pixel-ratio: 1.25), not all, only screen and (min-resolution: 1.25dppx) {
     .disclosure_button {
-        background-image: url("http://status.local/resources/images/disclosure_sprite@2x.png");
+        background-image: url("/resources/images/disclosure_sprite@2x.png");
     }
 }
 
 @media not all, only screen and (-webkit-min-device-pixel-ratio: 2.25), not all, only screen and (min-resolution: 2.25dppx) {
     .disclosure_button {
-        background-image: url("http://status.local/resources/images/disclosure_sprite@3x.png");
+        background-image: url("/resources/images/disclosure_sprite@3x.png");
     }
 }
 
@@ -213,9 +213,6 @@ button:hover, .buttons input[type="button"]:hover {
     right: auto;
     bottom: auto;
 }
-
-
-/*stylesheet 3/12 | http://status.local/resources/stylesheets/emsl_chrome.css*/
 
 .page_header {
     width: 100%;
@@ -481,9 +478,6 @@ footer a:hover {
     position: relative;
 }
 
-
-/*stylesheet 7/12 | http://status.local/resources/stylesheets/status_style.css*/
-
 .tree_holder {
     margin-top: 10px;
 }
@@ -526,8 +520,6 @@ ul.metadata_container li {
 .transaction_container {
     margin-bottom: 1em;
 }
-
-/*stylesheet 9/12 | http://status.local/resources/stylesheets/file_directory_styling.css*/
 
 ul.fancytree-container {
     font-family: inherit;

@@ -39,19 +39,6 @@ footer.short {
     border: 1px solid #ccc;
 }
 
-.reporting_object_container .object_footer {
-    font-size: 0.925em;
-    color: #4e4e4e;
-    font-weight: bold;
-    border: 1px solid #ccc;
-    background-color: #eee;
-    border-radius: 0 0 5px 5px;
-    padding: 3px 5px 3px 5px;
-    margin-top: -1px;
-    position: relative;
-    height: 3em;
-}
-
 .reporting_object_container .object_body_container {
     position: relative;
 }
@@ -190,9 +177,10 @@ header.secondary .page_header {
 }
 
 .group_search_bar_container {
-    /*color: #fefefe;*/
-    padding: 0 1em;
+    padding: 1em;
     margin-top: 0;
+    border-left: 1px solid #ccc;
+    border-right: 1px solid #ccc;
     font-weight: normal;
 }
 
@@ -266,7 +254,8 @@ header.secondary .page_header {
 */
 
 .search_results_display {
-    margin-top: 0.5em;
+    border-left: 1px solid #ccc;
+    border-right: 1px solid #ccc;
 }
 
 .search_results_display ul.search_results_list {
@@ -325,7 +314,9 @@ header.secondary .page_header {
 
 .edit_button {
     font-size: 0.95em;
+    padding: 1px 9px;
     border-radius: 2px;
+    margin-bottom: 5px;
     border: 1px solid #666;
     background-color: #ddd;
     font-weight: bold;
@@ -529,7 +520,6 @@ h1.underline {
     padding: 3px 5px 3px 5px;
     margin-top: -1px;
     position: relative;
-    height: 3em;
 }
 
 .reporting_object_container .object_body_container {
