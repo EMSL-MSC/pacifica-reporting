@@ -237,6 +237,7 @@ var load_new_group_timeline_data = function(timeline_obj, object_type, group_id,
         $('#loading_blocker_' + group_id).spin(false).hide();
         fv_data.setData(data.file_volumes, false);
         tx_data.setData(data.transaction_counts, false);
+        timeline_obj.xAxis[0].setExtremes(moment(start_date).startOf('day'),moment(end_date).endOf('day'), true, false);
         timeline_obj.redraw();
     });
 };
@@ -279,7 +280,7 @@ var load_group_results = function(object_type, group_id, item_list) {
     end_time = $('#end_time_' + group_id).val();
     var url_parts = [
         'group', 'get_reporting_info_list', object_type,
-        group_id, time_basis, time_range
+        group_id, time_basis, time_range, start_time, end_time
     ];
     var url = base_url + url_parts.join('/');
     // var url = base_url + 'group/get_reporting_info_list/' + object_type + '/' + group_id + '/' + time_basis + '/' + time_range;
