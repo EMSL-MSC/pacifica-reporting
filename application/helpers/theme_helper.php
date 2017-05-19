@@ -39,7 +39,7 @@ if (!defined('BASEPATH')) exit('No direct script access allowed');
 function load_scripts($common_collection, $page_specific_collection = FALSE)
 {
     $defaults = $common_collection;
-    if($page_specific_collection){
+    if($page_specific_collection) {
         $defaults = array_merge($defaults, $page_specific_collection);
     }
     $output_array = array();
@@ -65,7 +65,7 @@ function load_stylesheets($common_collection, $page_specific_collection = FALSE)
     $CI =& get_instance();
     $my_theme = $CI->config->item('theme_name');
     $defaults = $common_collection;
-    if($page_specific_collection){
+    if($page_specific_collection) {
         $defaults = array_merge($defaults, $page_specific_collection);
     }
     $theme_dir_array = array("resources", "stylesheets", "themes", $my_theme);
