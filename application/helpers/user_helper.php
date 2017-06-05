@@ -38,29 +38,29 @@ if(!defined('BASEPATH')) {
  *
  *  @author Ken Auberry <kenneth.auberry@pnnl.gov>
  */
- function get_user()
- {
-     $user = '(unknown)';
-     $CI =& get_instance();
-     $CI->load->library('PHPRequests');
-     $md_url = $CI->metadata_url_base;
-     if(isset($_SERVER["REMOTE_USER"])) {
-         $user = str_replace('@PNL.GOV', '', $_SERVER["REMOTE_USER"]);
-     } else if (isset($_SERVER["PHP_AUTH_USER"])) {
-         $user = str_replace('@PNL.GOV', '', $_SERVER["PHP_AUTH_USER"]);
-     }
-     $user = strtolower($user);
-     $url_args_array = array(
-         'network_id' => $user
-     );
-     $query_url = "{$md_url}/users?";
-     $query_url .= http_build_query($url_args_array, '', '&');
-     $query = Requests::get($query_url, array('Accept' => 'application/json'));
-     $results_body = $query->body;
-     $results_json = json_decode($results_body, TRUE);
-     if($query->status_code == 200) {
-         return strtolower($results_json[0]['_id']);
-     }else{
-         return FALSE;
-     }
- }
+function get_user()
+{
+    $user = '(unknown)';
+    $CI =& get_instance();
+    $CI->load->library('PHPRequests');
+    $md_url = $CI->metadata_url_base;
+    if(isset($_SERVER["REMOTE_USER"])) {
+        $user = str_replace('@PNL.GOV', '', $_SERVER["REMOTE_USER"]);
+    } else if (isset($_SERVER["PHP_AUTH_USER"])) {
+        $user = str_replace('@PNL.GOV', '', $_SERVER["PHP_AUTH_USER"]);
+    }
+    $user = strtolower($user);
+    $url_args_array = array(
+       'network_id' => $user
+    );
+    $query_url = "{$md_url}/users?";
+    $query_url .= http_build_query($url_args_array, '', '&');
+    $query = Requests::get($query_url, array('Accept' => 'application/json'));
+    $results_body = $query->body;
+    $results_json = json_decode($results_body, TRUE);
+    if($query->status_code == 200) {
+        return strtolower($results_json[0]['_id']);
+    }else{
+        return FALSE;
+    }
+}
