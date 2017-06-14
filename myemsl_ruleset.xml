@@ -21,8 +21,5 @@
     <rule ref="Generic.Functions.OpeningFunctionBraceBsdAllman"/>
     <rule ref="PEAR.WhiteSpace.ScopeClosingBrace"/>
     <rule ref="Generic.Functions.FunctionCallArgumentSpacing"/>
-    <rule ref="Squiz">
-        <exclude name="Commenting.DocCommentAlignmentSniff"/>
-    </rule>
 
 </ruleset>
