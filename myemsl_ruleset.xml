@@ -21,5 +21,8 @@
     <rule ref="Generic.Functions.OpeningFunctionBraceBsdAllman"/>
     <rule ref="PEAR.WhiteSpace.ScopeClosingBrace"/>
     <rule ref="Generic.Functions.FunctionCallArgumentSpacing"/>
+    <rule ref="Commenting.DocCommentAlignment.SpaceBeforeStar">
+        <severity>0</severity>
+    </rule>
 
 </ruleset>
