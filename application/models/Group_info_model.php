@@ -145,7 +145,7 @@ class Group_info_model extends CI_Model
             $today_minus_30 = new DateTime();
             $today_minus_30->modify("-30 days");
             $latest_obj   = new DateTime($latest);
-            if($today_minus_30 > $latest_obj){
+            if($today_minus_30 > $latest_obj) {
                 $today_minus_30 = clone($latest_obj);
                 $today_minus_30->modify("-30 days");
             }
