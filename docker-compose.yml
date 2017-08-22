@@ -127,18 +127,6 @@ services:
         ports:
             - 45432:5432
 
-  # mysql:
-  #   container_name: reporting_mysqldb
-  #   image: cagataygurturk/docker-ssh-tunnel
-  #   volumes:
-  #     - $HOME/.ssh/tunnel-config:/root/.ssh/config:ro
-  #     - $HOME/.ssh/tunnel_id_ecdsa:/root/.ssh/tunnel_id_ecdsa:ro
-  #   environment:
-  #     TUNNEL_HOST: mysql-tunnel
-  #     REMOTE_HOST: eusi.emsl.pnl.gov
-  #     LOCAL_PORT: 3306
-  #     REMOTE_PORT: 3306
-
 # Metadata and policy servers
   policyserver:
     container_name: reporting_policyserver
@@ -183,6 +171,7 @@ services:
     # image: pacifica/metadata
         build:
             context: ../metadata
+            dockerfile: Dockerfile
     container_name: reporting_metadataserver
         links:
             - metadatadb:postgres
@@ -197,9 +186,28 @@ services:
             POSTGRES_PORT_5432_TCP_PORT: 5432
             POSTGRES_ENV_POSTGRES_PASSWORD: pacifica
 
-  reportingprefsdb:
-    container_name: reporting_prefsdb
+    policyserver:
+        build:
+            context: ../policy
+            dockerfile: Dockerfile
+        container_name: reporting_policyserver
+        restart: unless-stopped
+        links:
+            - metadataserver:metadata
+        ports:
+            - 8181:8181
+        environment:
+            METADATA_PORT: tcp://metadata:8121
+
+    elasticdb:
+        image: elasticsearch:2.4
+        container_name: reporting_elasticdb
+        ports:
+            - 9200:9200
+
+    metadatadb:
         image: postgres
+        container_name: reporting_metadatadb
         environment:
             POSTGRES_PASSWORD: pacifica
       POSTGRES_DB: pacifica_reporting
