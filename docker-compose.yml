@@ -2,7 +2,7 @@ version: '2'
 services:
 # Nginx proxy pass frontends
     proxyfrontend:
-        container_name: proxyfrontend
+        container_name: reporting_proxyfrontend
         build:
             context: .
             dockerfile: Dockerfile.proxy
@@ -26,7 +26,7 @@ services:
 
     archiveinterface:
         image: pacifica/archiveinterface
-        container_name: archiveinterface
+        container_name: reporting_archiveinterface
         ports:
             - 8080:8080
         volumes:
@@ -34,7 +34,7 @@ services:
             - /Users/d3k857/Downloads/srv:/srv
 
     proxyserver:
-        container_name: proxyserver
+        container_name: reporting_proxyserver
         build:
             context: ../proxy
         links:
@@ -83,16 +83,15 @@ services:
 
 # Upload status
     uploadstatus:
-        container_name: uploadstatus
+        container_name: reporting_uploadstatus
         build:
             context: ../upload-status
             dockerfile: Dockerfile.dev
         volumes:
-            - ./:/var/www/html
+            - ../upload-status/:/var/www/html
         links:
             - metadataserver:metadata
             - policyserver:policy
-            #- cartserver:cart
             - uploadstatusdb:cartdb
             - archiveinterface:archivei
         environment:
@@ -111,7 +110,7 @@ services:
             SITE_NAME: status.local
 
     uploadstatusdb:
-        container_name: uploadstatusdb
+        container_name: reporting_uploadstatusdb
         image: postgres
         environment:
             POSTGRES_PASSWORD: pacifica
@@ -125,7 +124,7 @@ services:
         build:
             context: ../metadata
             dockerfile: Dockerfile
-        container_name: metadataserver
+        container_name: reporting_metadataserver
         links:
             - metadatadb:postgres
             - elasticdb
@@ -143,7 +142,7 @@ services:
         build:
             context: ../policy
             dockerfile: Dockerfile
-        container_name: policyserver
+        container_name: reporting_policyserver
         restart: unless-stopped
         links:
             - metadataserver:metadata
@@ -154,13 +153,13 @@ services:
 
     elasticdb:
         image: elasticsearch:2.4
-        container_name: elasticdb
+        container_name: reporting_elasticdb
         ports:
             - 9200:9200
 
     metadatadb:
         image: postgres
-        container_name: metadatadb
+        container_name: reporting_metadatadb
         environment:
             POSTGRES_PASSWORD: pacifica
             POSTGRES_DB: pacifica_metadata
