@@ -66,6 +66,7 @@ class Ajax extends Baseline_api_controller
         // $this->load->model('Reporting_model', 'rep');
         $this->load->model('Group_info_model', 'gm');
         $this->load->model('Myemsl_model', 'myemsl');
+        $this->load->model('Search_model', 'search');
         // $this->load->model('Summary_model', 'summary');
         // $this->load->library('EUS', '', 'eus');
         // $this->load->helper(array('network','file_info','inflector','time','item','search_term','cookie'));
@@ -411,6 +412,12 @@ class Ajax extends Baseline_api_controller
         $this->page_data['my_objects'] = $my_objects[$object_type];
         $this->page_data['js'] = $js;
         $this->load->view("object_types/search_results/{$object_type}_results.html", $this->page_data);
+    }
+
+    public function metadata_item_search($object_type, $search_term){
+        $results = $this->search->retrieve_metadata_with_search_terms($object_type, $search_term);
+        header("Content-type: application/json");
+        print($results);
     }
 
 }
