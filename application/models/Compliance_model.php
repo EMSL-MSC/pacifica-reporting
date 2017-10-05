@@ -496,25 +496,4 @@ class Compliance_model extends CI_Model
         return $result;
     }
 
-    public function retrieve_metadata_with_search_terms($object_type, $search_term)
-    {
-        if(!in_array($object_type, $this->accepted_object_types)){
-            format_array_for_select2(array());
-        }
-        // $object_url_component = plural(strtolower($object_type));
-        $search_terms = parse_search_term($search_term);
-        if(is_array($search_terms)) {
-            $search_term_string = implode('+', $search_terms);
-        }else{
-            $search_term_string = $search_terms;
-        }
-        $metadata_url = "{$this->metadata_url_base}/{$object_type}info/search/";
-        $metadata_url .= $search_term_string;
-
-        $query = Requests::get(
-            $metadata_url,
-            array("Content-Type" => $this->content_type)
-        );
-        return $query->body;
-    }
 }

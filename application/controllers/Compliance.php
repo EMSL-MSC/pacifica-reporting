@@ -56,7 +56,7 @@
         // $this->load->model('Summary_api_model', 'summary');
         $this->load->model('Compliance_model', 'compliance');
         $this->load->helper(
-            ['network', 'theme', 'search_term', 'calendar', 'form']
+            ['network', 'theme', 'search_term', 'form']
         );
         $this->accepted_object_types = array('instrument', 'user', 'proposal');
         sort($this->accepted_object_types);
