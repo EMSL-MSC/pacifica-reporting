@@ -28,6 +28,12 @@
     /*border: 1px solid green*/
 }
 
+.export_csv_button {
+    position:absolute;
+    right:10px;
+    bottom: 0;
+}
+
 .timeline_week_container:first-of-type {
     border-radius: 0;
     border-top-left-radius: 4px;

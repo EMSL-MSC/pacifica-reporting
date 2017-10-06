@@ -371,7 +371,7 @@ class Compliance_model extends CI_Model
         if($transactions_list_query->status_code == 200){
             $transactions_list = json_decode($transactions_list_query->body, TRUE);
             foreach($transactions_list as $transaction_id => $trans_info){
-                $my_group_id = $this->instrument_group_cache[$trans_info['instrument_id']];
+                $my_group_id = $this->get_group_id($trans_info['instrument_id']);
                 $proposal_id = strval($trans_info['proposal_id']);
                 $stats_template = array(
                     'booking_count' => 0,

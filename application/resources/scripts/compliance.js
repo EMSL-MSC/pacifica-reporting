@@ -33,6 +33,7 @@ $(function(){
 
 var load_compliance_report = function(destination_object, month, year){
     $('#compliance_loading_screen').show();
+    $('.time_period_options').disable();
     $('#report_loading_status').spin();
     destination_object.empty();
 
@@ -46,12 +47,29 @@ var load_compliance_report = function(destination_object, month, year){
     var jqxhr = $.get(report_url, function(data){
         destination_object.append(data);
         $('#report_loading_status').spin(false);
+        $( document ).tooltip({
+            content: function () {
+                return $(this).prop('title');
+            }
+        });
+        if($('#export_csv_button').length == 0){
+            $('#search_term_container').append('<input type="button" value="Export as CSV" class="search_button export_csv_button" id="export_csv_button"/>');
+            $('#export_csv_button').click(function(){
+                var csv_url = report_url + "/csv";
+                location.href= csv_url;
+            });
+        }
         $('#compliance_loading_screen').fadeOut();
+        $('.time_period_options').enable();
+
     }, 'html')
     .fail(function(v1, v2, v3){
         alert("failed");
     });
 };
+
+var export_report_as_csv = function(element, csv_url){};
+
 
 var generate_year_select_options = function(parent_obj, min_date, max_date, selected_year){
     var today = new Date();

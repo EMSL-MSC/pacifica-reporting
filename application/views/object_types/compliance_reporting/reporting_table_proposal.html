@@ -10,10 +10,10 @@
   <tbody>
   <?php foreach($results_collection as $proposal_id => $booking_info): ?>
     <?php foreach($booking_info as $inst_group_id => $info): ?>
-      <?php $inst_list = "Instruments Scheduled: <br />"; ?>
+      <?php $inst_list = "Instruments Scheduled: <br /><br />"; ?>
       <?php foreach($info['instruments_scheduled'] as $inst_id): ?>
         <?php $inst_name = $this->compliance->get_instrument_name($inst_id); ?>
-        <?php $inst_list .=  "[Instrument: <?= $inst_id ?>]: <?= $inst_name ?>" ?>
+        <?php $inst_list .=  "[Instrument: {$inst_id}]: {$inst_name}<br /><br />" ?>
       <?php endforeach; ?>
     <tr>
       <?php $color_class = $info['file_count'] > 0 ? " green" : " yellow"; ?>
