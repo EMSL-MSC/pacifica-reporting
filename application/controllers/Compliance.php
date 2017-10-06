@@ -92,6 +92,8 @@
     public function index($report_type = 'proposal')
     {
         $this->page_data['page_header'] = "Compliance Reporting";
+        $valid_report_types = array('proposal', 'instrument');
+        $report_type = !in_array($report_type, $valid_report_types) ? 'proposal' : $report_type;
         $this->page_data['script_uris'] = load_scripts($this->page_data['script_uris']);
         $this->page_data['css_uris'] = load_stylesheets($this->page_data['css_uris']);
         $earliest_latest = $this->compliance->earliest_latest_booking_periods();
@@ -101,14 +103,17 @@
         $this->load->view("data_compliance_report_view.html", $this->page_data);
     }
 
-    public function get_report($object_type, $start_time, $end_time){
+    public function get_report($object_type, $start_time, $end_time, $output_type = 'screen'){
         if(!in_array($object_type, array('instrument', 'proposal'))){
             return false;
         }
+        $valid_output_types = array('screen', 'csv');
+        $output_type = !in_array($output_type, $valid_output_types) ? 'screen' : $output_type;
+
         $t_first_day = new DateTime('first day of this month');
         $t_last_day = new DateTime('last day of this month');
 
-        header('Content-Type: application/json');
+        // header('Content-Type: application/json');
         $start_time_obj = strtotime($start_time) ? new DateTime($start_time) : $t_first_day;
         $end_time_obj = strtotime($end_time) ? new DateTime($end_time) : $t_last_day;
         $eus_booking_records
@@ -131,7 +136,30 @@
         );
 
         // print(json_encode($page_data));
+        if($output_type == 'csv'){
+            $filename = "Compliance_report_by_proposal_".$start_time_obj->format('Y-m').".csv";
+            header('Content-Type: text/csv');
+            header('Content-disposition: attachment; filename="'.$filename.'"');
+            $export_data = array();
+            $handle = fopen('php://output', 'w');
+            $field_names = array(
+                "Proposal ID","Instrument Group","Number of Bookings","Data File Count"
+            );
+            fputcsv($handle, $field_names);
+            foreach($mappings as $proposal_id => $entry){
+                foreach($entry as $inst_group_id => $info){
+                    $data = array(
+                        $proposal_id, $group_name_lookup[$inst_group_id],
+                        $info['booking_count'], $info['file_count']
+                    );
+                    fputcsv($handle, $data);
+                }
+            }
+            fclose($handle);
+            // $this->load->view('object_types/compliance_reporting/reporting_table_proposal_csv.html', $page_data);
+        }else{
+            $this->load->view('object_types/compliance_reporting/reporting_table_proposal.html', $page_data);
+        }
 
-        $this->load->view('object_types/compliance_reporting/reporting_table_proposal.html', $page_data);
     }
  }
