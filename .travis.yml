@@ -5,7 +5,7 @@ env:
   - CI_ENV=unit_testing CI_ROOTED=true
 before_install:
   - sudo apt-get update -qq
-  - sudo apt-get search codesniffer
+  - sudo apt-cache search codesniffer
   - sudo apt-get install -qq php-codesniffer=2.9.1
 install:
 # - pyrus install pear/PHP_CodeSniffer-2.9.1
