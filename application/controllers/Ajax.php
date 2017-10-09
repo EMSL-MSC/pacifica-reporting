@@ -414,10 +414,4 @@ class Ajax extends Baseline_api_controller
         $this->load->view("object_types/search_results/{$object_type}_results.html", $this->page_data);
     }
 
-    public function metadata_item_search($object_type, $search_term){
-        $results = $this->search->retrieve_metadata_with_search_terms($object_type, $search_term);
-        header("Content-type: application/json");
-        print($results);
-    }
-
 }

@@ -58,9 +58,19 @@ class Search_model extends CI_Model
         $this->content_type = "application/json";
     }
 
+    /**
+     * Aggregator function to streamline pulling data from the metadata system
+     *
+     * @param string $object_type type of object to query for
+     * @param string $search_term string for keyword search
+     *
+     * @return string JSON document with search results
+     * 
+     * @author Ken Auberry <kenneth.auberry@pnnl.gov>
+     */
     public function retrieve_metadata_with_search_terms($object_type, $search_term)
     {
-        if(!in_array($object_type, $this->accepted_object_types)){
+        if(!in_array($object_type, $this->accepted_object_types)) {
             format_array_for_select2(array());
         }
         // $object_url_component = plural(strtolower($object_type));

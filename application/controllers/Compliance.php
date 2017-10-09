@@ -44,14 +44,15 @@
   * @see    https://github.com/EMSL-MSC/pacifica-reporting
   * @access public
   */
- class Compliance extends Baseline_api_controller
- {
-     /**
-      * [__construct description]
-      * @author Ken Auberry <kenneth.auberry@pnnl.gov>
-      */
-     public function __construct()
-     {
+class Compliance extends Baseline_api_controller
+{
+    /**
+     * [__construct description]
+     *
+     * @author Ken Auberry <kenneth.auberry@pnnl.gov>
+     */
+    public function __construct()
+    {
         parent::__construct();
         // $this->load->model('Summary_api_model', 'summary');
         $this->load->model('Compliance_model', 'compliance');
@@ -61,19 +62,19 @@
         $this->accepted_object_types = array('instrument', 'user', 'proposal');
         sort($this->accepted_object_types);
         $this->page_data['script_uris'] = array(
-            '/resources/scripts/spinner/spin.min.js',
-            '/resources/scripts/spinner/jquery.spin.js',
-            '/resources/scripts/select2-4/dist/js/select2.js',
-            '/resources/scripts/moment.min.js',
-            '/resources/scripts/js-cookie/src/js.cookie.js',
-            '/project_resources/scripts/compliance.js'
+           '/resources/scripts/spinner/spin.min.js',
+           '/resources/scripts/spinner/jquery.spin.js',
+           '/resources/scripts/select2-4/dist/js/select2.js',
+           '/resources/scripts/moment.min.js',
+           '/resources/scripts/js-cookie/src/js.cookie.js',
+           '/project_resources/scripts/compliance.js'
 
         );
         $this->page_data['css_uris'] = array(
-            '/resources/scripts/select2-4/dist/css/select2.css',
-            '/project_resources/stylesheets/combined.css',
-            '/project_resources/stylesheets/selector.css',
-            '/project_resources/stylesheets/compliance.css'
+           '/resources/scripts/select2-4/dist/css/select2.css',
+           '/project_resources/stylesheets/combined.css',
+           '/project_resources/stylesheets/selector.css',
+           '/project_resources/stylesheets/compliance.css'
         );
         $this->page_data['load_prototype'] = FALSE;
         $this->page_data['load_jquery'] = TRUE;
@@ -82,6 +83,10 @@
     }
 
     /**
+     *  Grabs the base-level call to this controller and loads up
+     *  the compliance report default page
+     *
+     * @param string $report_type The object type (proposal or instrument) to anchor the report with\
      *
      * @method index
      *
@@ -103,9 +108,22 @@
         $this->load->view("data_compliance_report_view.html", $this->page_data);
     }
 
-    public function get_report($object_type, $start_time, $end_time, $output_type = 'screen'){
-        if(!in_array($object_type, array('instrument', 'proposal'))){
-            return false;
+    /**
+     * Ajax catcher to generate the guts of the actual compliance report
+     *
+     * @param string $object_type The object type (proposal or instrument) to anchor the report with
+     * @param string $start_time  [description] earliest date to grab
+     * @param string $end_time    [description] latest date to grab
+     * @param string $output_type should the output go to screen or csv file
+     * 
+     * @return none
+     *
+     * @author Ken Auberry <kenneth.auberry@pnnl.gov>
+     */
+    public function get_report($object_type, $start_time, $end_time, $output_type = 'screen')
+    {
+        if(!in_array($object_type, array('instrument', 'proposal'))) {
+            return FALSE;
         }
         $valid_output_types = array('screen', 'csv');
         $output_type = !in_array($output_type, $valid_output_types) ? 'screen' : $output_type;
@@ -136,7 +154,7 @@
         );
 
         // print(json_encode($page_data));
-        if($output_type == 'csv'){
+        if($output_type == 'csv') {
             $filename = "Compliance_report_by_proposal_".$start_time_obj->format('Y-m').".csv";
             header('Content-Type: text/csv');
             header('Content-disposition: attachment; filename="'.$filename.'"');
@@ -162,4 +180,4 @@
         }
 
     }
- }
+}
