@@ -3,13 +3,9 @@ php:
   - "5.6"
 env:
   - CI_ENV=unit_testing CI_ROOTED=true
-before_install:
-  - sudo apt-get update -qq
-  - sudo apt-cache show php-codesniffer
-  - sudo apt-get install -qq php-codesniffer=2.9.1
 install:
 # - pyrus install pear/PHP_CodeSniffer-2.9.1
-# - composer require squizlabs/php_codesniffer=*
+- composer require squizlabs/php_codesniffer:2.9.1
 - composer require codeclimate/php-test-reporter --dev
 - phpenv rehash
 script:
