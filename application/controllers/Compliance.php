@@ -115,7 +115,7 @@ class Compliance extends Baseline_api_controller
      * @param string $start_time  [description] earliest date to grab
      * @param string $end_time    [description] latest date to grab
      * @param string $output_type should the output go to screen or csv file
-     * 
+     *
      * @return none
      *
      * @author Ken Auberry <kenneth.auberry@pnnl.gov>
@@ -137,8 +137,6 @@ class Compliance extends Baseline_api_controller
         $eus_booking_records
             = $this->compliance->retrieve_active_proposal_list_from_eus($start_time_obj, $end_time_obj);
 
-        // print(json_encode($eus_booking_records['by_proposal']));
-        // exit();
         $group_name_lookup = $this->compliance->get_group_name_lookup();
         $mappings = $this->compliance->cross_reference_bookings_and_data($object_type, $eus_booking_records, $start_time_obj, $end_time_obj);
         ksort($mappings);
