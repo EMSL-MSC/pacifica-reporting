@@ -320,7 +320,7 @@ class Compliance_model extends CI_Model
         if($query->status_code == 200 && $query->body != '[]') {
             $results = json_decode($query->body, TRUE);
             $instrument_entry = array_shift($results);
-            $instrument_name = $instrument_entry['name'];
+            $instrument_name = $instrument_entry['name_short'];
             $this->instrument_cache[$instrument_id] = $instrument_name;
         }
         return $instrument_name;

@@ -159,13 +159,16 @@ class Compliance extends Baseline_api_controller
             $export_data = array();
             $handle = fopen('php://output', 'w');
             $field_names = array(
-                "Proposal ID","Instrument Group","Number of Bookings","Data File Count"
+                "proposal_id","instrument_id","group","instrument_name",
+                "number_of_bookings","data_file_count"
             );
             fputcsv($handle, $field_names);
             foreach($mappings as $proposal_id => $entry){
-                foreach($entry as $inst_group_id => $info){
+                foreach($entry as $instrument_id => $info){
                     $data = array(
-                        $proposal_id, $group_name_lookup[$inst_group_id],
+                        $proposal_id, $instrument_id,
+                        $group_name_lookup[$info['instrument_group_id']],
+                        $this->compliance->get_instrument_name($instrument_id),
                         $info['booking_count'], $info['file_count']
                     );
                     fputcsv($handle, $data);
