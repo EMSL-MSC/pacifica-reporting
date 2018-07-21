@@ -94,7 +94,7 @@ class System_setup_model extends CI_Model
      *
      * @author Ken Auberry <kenneth.auberry@pnnl.gov>
      */
-    private function table_exists($table_name)
+    private function _table_exists($table_name)
     {
         $query = $this->db->query("SELECT table_name FROM information_schema.tables WHERE table_schema = 'public' AND table_name = '{$table_name}';");
         return $query->num_rows() == 1;
@@ -257,7 +257,7 @@ class System_setup_model extends CI_Model
         );
 
         foreach($db_create_object['tables'] as $table_name => $table_def){
-            if(!$this->table_exists($table_name)) {
+            if(!$this->_table_exists($table_name)) {
                 $this->dbforge->add_field($table_def);
                 if(array_key_exists($table_name, $db_create_object['keys'])) {
                     foreach($db_create_object['keys'][$table_name] as $key){
