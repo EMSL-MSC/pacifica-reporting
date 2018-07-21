@@ -84,13 +84,12 @@ class System_setup_model extends CI_Model
             log_message('info', 'DB Type is sqlite3, so we don\'t have to explicitly make the db file');
         }
     }
-
     /**
-     * Replacement for malfunctioning CI database util
+     *  Replacement for malfunctioning CI database util
      *
-     * @param  string $table_name [description]
+     * @param string $table_name [description]
      *
-     * @return bool does the table in question exist?
+     * @return bool  does the table in question exist?
      *
      * @author Ken Auberry <kenneth.auberry@pnnl.gov>
      */
