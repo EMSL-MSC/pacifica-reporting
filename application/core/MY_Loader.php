@@ -1,6 +1,7 @@
 <?php
 
-class MY_Loader extends CI_Loader {
+class MY_Loader extends CI_Loader
+{
     /**
     * Database Loader
     *
@@ -12,28 +13,29 @@ class MY_Loader extends CI_Loader {
     */
 
 
-    public function database( $params = '', $return = false, $query_builder = null ) {
-        $ci =& get_instance( );
+    public function database($params = '', $return = false, $query_builder = null)
+    {
+        $ci =& get_instance();
 
-        if ( $return === false && $query_builder === null && isset( $ci->db ) && is_object( $ci->db ) && !empty( $ci->db->conn_id) ) {
+        if ($return === false && $query_builder === null && isset($ci->db) && is_object($ci->db) && !empty($ci->db->conn_id)) {
             return false;
         }
 
-        require_once( BASEPATH . 'database/DB.php' );
+        require_once(BASEPATH . 'database/DB.php');
 
-        $db =& DB( $params, $query_builder );
+        $db =& DB($params, $query_builder);
 
-        $driver = config_item( 'subclass_prefix' ) . 'DB_' . $db->dbdriver . '_driver';
+        $driver = config_item('subclass_prefix') . 'DB_' . $db->dbdriver . '_driver';
         $file = APPPATH . 'libraries/' . $driver . '.php';
 
-        if ( file_exists( $file ) === true && is_file( $file ) === true ) {
-            require_once( $file );
+        if (file_exists($file) === true && is_file($file) === true) {
+            require_once($file);
 
-            $dbo = new $driver( get_object_vars( $db ) );
+            $dbo = new $driver(get_object_vars($db));
             $db = & $dbo;
         }
 
-        if ( $return === true ) {
+        if ($return === true) {
             return $db;
         }
 

@@ -85,8 +85,8 @@ class Ajax extends Baseline_api_controller
     {
         if ($this->input->is_ajax_request() || file_get_contents('php://input')) {
             $http_raw_post_data = file_get_contents('php://input');
-            $post_info = json_decode($http_raw_post_data, TRUE);
-            $group_name = array_key_exists('group_name', $post_info) ? $post_info['group_name'] : FALSE;
+            $post_info = json_decode($http_raw_post_data, true);
+            $group_name = array_key_exists('group_name', $post_info) ? $post_info['group_name'] : false;
             $group_info = $this->gm->make_new_group($object_type, $this->user_id, $group_name);
             if ($group_info && is_array($group_info)) {
                 transmit_array_with_json_header($group_info);
@@ -242,7 +242,7 @@ class Ajax extends Baseline_api_controller
     public function get_group_container($object_type, $group_id, $time_range = false, $start_date = false, $end_date = false, $time_basis = false)
     {
         $group_info = $this->gm->get_group_info($group_id);
-        if(empty($group_info)) {
+        if (empty($group_info)) {
             $this->output->set_status_header(404, "Group ID {$group_id} was not found");
             transmit_array_with_json_header(array());
             return;
