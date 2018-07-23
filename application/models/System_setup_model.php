@@ -272,7 +272,7 @@ class System_setup_model extends CI_Model
                 }
             }
         }
-        if(file_exists($this->phpfpm_log_dir)){
+        if (file_exists($this->phpfpm_log_dir)) {
             touch($this->phpfpm_log_dir."/db_create_completed.txt");
         }
     }
