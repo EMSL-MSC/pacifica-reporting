@@ -132,7 +132,7 @@ class Group extends Baseline_api_controller
      * @return none  sends output to *reporting_view.html*
      */
     public function view(
-        $object_type,
+        $object_type = false,
         $time_range = false,
         $start_date = false,
         $end_date = false,
