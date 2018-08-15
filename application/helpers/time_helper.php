@@ -444,12 +444,13 @@ function fix_time_range($time_range, $start_date, $end_date, $valid_date_range =
  * @since 1.0
  */
 
-function verbose_date_range($start_date = '',$end_date = '') {
+function verbose_date_range($start_date = '', $end_date = '')
+{
 
     $date_range = '';
 
     // If only one date, or dates are the same set to FULL verbose date
-    if ( empty($start_date) || empty($end_date) || $start_date->format('FjY') == $end_date->format('FjY') ) { // FjY == accounts for same day, different time
+    if (empty($start_date) || empty($end_date) || $start_date->format('FjY') == $end_date->format('FjY')) { // FjY == accounts for same day, different time
         $start_date_pretty = $start_date->format('F jS, Y');
         $end_date_pretty = $end_date->format('F jS, Y');
     } else {
@@ -458,26 +459,26 @@ function verbose_date_range($start_date = '',$end_date = '') {
         $end_date_pretty = $end_date->format('jS, Y');
 
         // If years differ add suffix and year to start_date
-        if ($start_date->format('Y') != $end_date->format('Y') ) {
+        if ($start_date->format('Y') != $end_date->format('Y')) {
             $start_date_pretty .= $start_date->format('S, Y');
         }
 
         // If months differ add suffix and year to end_date
-        if ( $start_date->format('F') != $end_date->format('F')) {
+        if ($start_date->format('F') != $end_date->format('F')) {
             $end_date_pretty = $end_date->format('F ').$end_date_pretty;
         }
     }
 
     // build date_range return string
-    if( ! empty( $start_date ) ) {
+    if (! empty($start_date)) {
           $date_range .= $start_date_pretty;
     }
 
     // check if there is an end date and append if not identical
-    if( ! empty( $end_date ) ) {
-        if( $end_date_pretty != $start_date_pretty ) {
+    if (! empty($end_date)) {
+        if ($end_date_pretty != $start_date_pretty) {
               $date_range .= ' - ' . $end_date_pretty;
-          }
-     }
+        }
+    }
     return $date_range;
 }
