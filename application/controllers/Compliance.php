@@ -101,6 +101,7 @@ class Compliance extends Baseline_api_controller
         $report_type = !in_array($report_type, $valid_report_types) ? 'proposal' : $report_type;
         $this->page_data['script_uris'] = load_scripts($this->page_data['script_uris']);
         $this->page_data['css_uris'] = load_stylesheets($this->page_data['css_uris']);
+        
         $earliest_latest = $this->compliance->earliest_latest_booking_periods();
         $js = "var earliest_available = '{$earliest_latest['earliest']}'; var latest_available = '{$earliest_latest['latest']}'";
         $this->page_data['js'] = $js;
@@ -122,7 +123,7 @@ class Compliance extends Baseline_api_controller
      */
     public function get_report($object_type, $start_time, $end_time, $output_type = 'screen')
     {
-        if(!in_array($object_type, array('instrument', 'proposal'))) {
+        if (!in_array($object_type, array('instrument', 'proposal'))) {
             return false;
         }
         $valid_output_types = array('screen', 'csv');
@@ -149,7 +150,7 @@ class Compliance extends Baseline_api_controller
             'end_date' => $end_time_obj->format('Y-m-d')
         );
 
-        if($output_type == 'csv') {
+        if ($output_type == 'csv') {
             $filename = "Compliance_report_by_proposal_".$start_time_obj->format('Y-m').".csv";
             header('Content-Type: text/csv');
             header('Content-disposition: attachment; filename="'.$filename.'"');
@@ -160,8 +161,8 @@ class Compliance extends Baseline_api_controller
                 "number_of_bookings","data_file_count"
             );
             fputcsv($handle, $field_names);
-            foreach($mappings as $proposal_id => $entry){
-                foreach($entry as $instrument_id => $info){
+            foreach ($mappings as $proposal_id => $entry) {
+                foreach ($entry as $instrument_id => $info) {
                     $data = array(
                         $proposal_id, $instrument_id,
                         $group_name_lookup[$info['instrument_group_id']],
@@ -172,7 +173,7 @@ class Compliance extends Baseline_api_controller
                 }
             }
             fclose($handle);
-        }else{
+        } else {
             $this->load->view('object_types/compliance_reporting/reporting_table_proposal.html', $page_data);
         }
     }
