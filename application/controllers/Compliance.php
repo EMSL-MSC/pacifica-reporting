@@ -172,10 +172,10 @@ class Compliance extends Baseline_api_controller
                 }
             }
             foreach ($eus_booking_records['unbooked_proposals'] as $prop_entry) {
-              $data = [
+                $data = [
                 $prop_entry['proposal_id'], null, null, null, 0, 0
-              ];
-              fputcsv($handle, $data);
+                ];
+                fputcsv($handle, $data);
             }
             fclose($handle);
             exit();
