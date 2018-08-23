@@ -530,21 +530,21 @@ class Compliance_model extends CI_Model
         $instrument_group_cache = $this->compliance->get_group_id_cache();
         $group_name_lookup = $this->get_group_name_lookup();
         $booking_results = [];
-        foreach($mapping_data as $proposal_id => $booking_info) {
+        foreach ($mapping_data as $proposal_id => $booking_info) {
             $proposal_file_count = 0;
-            $code_yellow = FALSE;
+            $code_yellow = false;
             // pre-scan for proposal-level coloring
-            foreach($booking_info as $instrument_id => $info) {
-                $code_yellow = empty($info['file_count']) || $code_yellow ? TRUE : FALSE;
+            foreach ($booking_info as $instrument_id => $info) {
+                $code_yellow = empty($info['file_count']) || $code_yellow ? true : false;
                 $proposal_file_count += $info['file_count'];
             }
 
-            foreach($booking_info as $instrument_id => $info) {
+            foreach ($booking_info as $instrument_id => $info) {
                 $inst_color_class = $info['file_count'] > 0 ? "green" : "red";
                 $proposal_color_class = "yellow";
-                if($code_yellow && $proposal_file_count <= 0) {
+                if ($code_yellow && $proposal_file_count <= 0) {
                     $proposal_color_class = "red";
-                }elseif(!$code_yellow && $proposal_file_count > 0) {
+                } elseif (!$code_yellow && $proposal_file_count > 0) {
                     $proposal_color_class = "green";
                 }
                 $booking_results[] = [
