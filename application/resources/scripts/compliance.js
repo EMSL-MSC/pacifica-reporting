@@ -142,7 +142,7 @@ var load_compliance_report = function(destination_object, month, year){
         .complete(function(){
             $("#compliance_loading_screen").fadeOut();
             $(".time_period_options").enable();
-        });
+    });
 };
 
 var generate_year_select_options = function(parent_obj, min_date, max_date, selected_year){
