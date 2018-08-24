@@ -118,20 +118,26 @@ class Compliance_model extends CI_Model
 
         //get booking stats
         $booking_stats_columns = [
-            'COUNT(`BOOKING_STATS_ID`) as booking_count',
-            '`RESOURCE_ID` as instrument_id',
-            '`PROPOSAL_ID` as proposal_id',
-            'MIN(`MONTH`) as query_month',
-            'MIN(`DATE_START`) as date_start',
-            'MAX(`DATE_FINISH`) as date_finish'
+            'COUNT(bs.`BOOKING_STATS_ID`) as booking_count',
+            'bs.`RESOURCE_ID` as instrument_id',
+            'bs.`PROPOSAL_ID` as proposal_id',
+            'MIN(bs.`MONTH`) as query_month',
+            'MIN(bs.`DATE_START`) as date_start',
+            'MAX(bs.`DATE_FINISH`) as date_finish',
+            'users.`NAME_FM` as proposal_pi'
         ];
 
-        $booking_stats_query = $this->eusDB->select($booking_stats_columns)->from("ERS_BOOKING_STATS")
-            ->where('NOT ISNULL(`PROPOSAL_ID`)')
-            ->group_by(array('PROPOSAL_ID', 'RESOURCE_ID'))
-            ->having('MIN(`MONTH`)', $first_of_month->format('Y-m-d'))
-            ->order_by('PROPOSAL_ID, RESOURCE_ID')
+        $booking_stats_query = $this->eusDB->select($booking_stats_columns)->from("ERS_BOOKING_STATS bs")
+            ->join("(SELECT PERSON_ID, PROPOSAL_ID FROM UP_PROPOSAL_MEMBERS WHERE PROPOSAL_AUTHOR_SW = 'Y') pm", 'bs.`PROPOSAL_ID` = pm.`PROPOSAL_ID`')
+            ->join('UP_USERS users', 'users.`PERSON_ID` = pm.`PERSON_ID`')
+            ->where('NOT ISNULL(bs.`PROPOSAL_ID`)')
+            ->group_by(array('bs.`PROPOSAL_ID`', 'bs.`RESOURCE_ID`'))
+            ->having('MIN(bs.`MONTH`)', $first_of_month->format('Y-m-d'))
+            ->order_by('bs.`PROPOSAL_ID`, bs.`RESOURCE_ID`')
             ->get();
+
+            // echo $this->eusDB->last_query();
+            // exit();
 
         $usage = array(
             'by_instrument' => [],
@@ -157,13 +163,13 @@ class Compliance_model extends CI_Model
                 'proposal_id' => $row->proposal_id,
                 'date_start' => $record_start_date,
                 'date_finish' => $record_end_date,
+                'proposal_pi' => $row->proposal_pi,
                 'transactions_list' => array(),
                 'file_count' => 0
             );
             $inst_group_comp[] = $group_id;
             $usage['by_proposal'][$row->proposal_id][$inst_id] = $entry;
         }
-
         $ungrouped = $usage['by_proposal'];
         foreach ($ungrouped as $proposal_id => $inst_entries) {
             $new_entry = array();
@@ -189,10 +195,9 @@ class Compliance_model extends CI_Model
             'prop.`PROPOSAL_ID` as proposal_id',
             'IFNULL(REPLACE(LOWER(`prop`.`PROPOSAL_TYPE`),\'_\', \' \'), \'standard\') as `proposal_type`',
             'prop.`TITLE` as title',
-            'prop.`LAST_CHANGE_DATE` as last_change_date',
             'prop.`ACTUAL_START_DATE` as actual_start_date',
             'prop.`ACTUAL_END_DATE` as actual_end_date',
-            'prop.`CLOSED_DATE` as closed_date'
+            'users.`NAME_FM` as proposal_pi'
         ];
 
         $excluded_proposal_types = [
@@ -201,6 +206,8 @@ class Compliance_model extends CI_Model
 
         $excluded_proposal_types = array_map('strtolower', $excluded_proposal_types);
         $prop_query = $this->eusDB->select($proposal_columns)->from('UP_PROPOSALS prop')
+            ->join("(SELECT PERSON_ID, PROPOSAL_ID FROM UP_PROPOSAL_MEMBERS WHERE PROPOSAL_AUTHOR_SW = 'Y') pm", 'prop.`PROPOSAL_ID` = pm.`PROPOSAL_ID`')
+            ->join('UP_USERS users', 'users.`PERSON_ID` = pm.`PERSON_ID`')
             ->where_not_in('prop.`PROPOSAL_ID`', array_keys($usage['by_proposal']))
             ->group_start()
                 ->where_not_in('prop.`PROPOSAL_TYPE`', $excluded_proposal_types)
@@ -538,7 +545,6 @@ class Compliance_model extends CI_Model
                 $code_yellow = empty($info['file_count']) || $code_yellow ? true : false;
                 $proposal_file_count += $info['file_count'];
             }
-
             foreach ($booking_info as $instrument_id => $info) {
                 $inst_color_class = $info['file_count'] > 0 ? "green" : "red";
                 $proposal_color_class = "yellow";
@@ -552,6 +558,7 @@ class Compliance_model extends CI_Model
                     'proposal_title' => $this->get_proposal_name($proposal_id),
                     'instrument_id' => $instrument_id,
                     'instrument_group' => $group_name_lookup[$instrument_group_cache[$instrument_id]],
+                    'proposal_pi' => $info['proposal_pi'],
                     'instrument_name' => $this->get_instrument_name($instrument_id),
                     'booking_count' => $info['booking_count'],
                     'file_count' => $info['file_count'],
