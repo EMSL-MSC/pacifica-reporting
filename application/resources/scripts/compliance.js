@@ -95,12 +95,15 @@ var load_compliance_report = function(destination_object, month, year){
                     headercss: "compliance_table_header"
                 },
                 {
+                    name: "project_type", title: "Project Type", width: "15%"
+                },
+                {
                     name: "proposal_pi", title: "Principal Investigator",
-                    headercss: "compliance_table_header", width: "20%"
+                    headercss: "compliance_table_header", width: "15%"
                 },
                 {
                     name: "instrument_group", title: "Instrument", type: "text", headercss: "compliance_table_header",
-                    width: "45%",
+                    width: "40%",
                     cellRenderer: function(value, item) {
                         return $("<td>", {
                             "class": "instrument_group_container",
@@ -133,8 +136,8 @@ var load_compliance_report = function(destination_object, month, year){
             paging: false,
             data: response.no_booking_results,
             fields: [
-                { name: "proposal_type", title: "Proposal Type", type: "text" },
                 { name: "proposal_id", title: "Proposal ID", type: "text" },
+                { name: "project_type", title: "Project Type", type: "text" },
                 { name: "proposal_pi", title: "Principal Investigator", type: "text" },
                 { name: "actual_start_date", title: "Actual Start Date", type: "complianceDateField" },
                 { name: "actual_end_date", title: "Actual End Date", type: "complianceDateField" },

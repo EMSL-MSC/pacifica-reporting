@@ -116,11 +116,18 @@ class Compliance_model extends CI_Model
         $first_of_month = $start_date_obj->modify('first day of this month');
         $end_of_month = $end_date_obj->modify('last day of this month');
 
+        $excluded_proposal_types = [
+            'resource_owner'
+        ];
+
+        $excluded_proposal_types = array_map('strtolower', ['resource_owner']);
+
         //get booking stats
         $booking_stats_columns = [
             'COUNT(bs.`BOOKING_STATS_ID`) as booking_count',
             'bs.`RESOURCE_ID` as instrument_id',
             'bs.`PROPOSAL_ID` as proposal_id',
+            'IFNULL( REPLACE ( `up`.`PROPOSAL_TYPE`, \'_\', \' \' ), IFNULL( uct.CALL_TYPE, \'N/A\' ) ) AS project_type',
             'MIN(bs.`MONTH`) as query_month',
             'MIN(bs.`DATE_START`) as date_start',
             'MAX(bs.`DATE_FINISH`) as date_finish',
@@ -128,9 +135,16 @@ class Compliance_model extends CI_Model
         ];
 
         $booking_stats_query = $this->eusDB->select($booking_stats_columns)->from("ERS_BOOKING_STATS bs")
+            ->join('UP_PROPOSALS up', 'up.PROPOSAL_ID = bs.PROPOSAL_ID')
+            ->join('UP_CALLS uc', 'up.CALL_ID = uc.CALL_ID', 'left')
+            ->join('UP_CALL_TYPES uct', 'uc.CALL_TYPE_ID = uct.CALL_TYPE_ID', 'left')
             ->join("(SELECT PERSON_ID, PROPOSAL_ID FROM UP_PROPOSAL_MEMBERS WHERE PROPOSAL_AUTHOR_SW = 'Y') pm", 'bs.`PROPOSAL_ID` = pm.`PROPOSAL_ID`')
             ->join('UP_USERS users', 'users.`PERSON_ID` = pm.`PERSON_ID`')
             ->where('NOT ISNULL(bs.`PROPOSAL_ID`)')
+            ->group_start()
+                ->where_not_in('up.`PROPOSAL_TYPE`', $excluded_proposal_types)
+                ->or_where('up.`PROPOSAL_TYPE` IS NULL')
+            ->group_end()
             ->group_by(array('bs.`PROPOSAL_ID`', 'bs.`RESOURCE_ID`'))
             ->having('MIN(bs.`MONTH`)', $first_of_month->format('Y-m-d'))
             ->order_by('bs.`PROPOSAL_ID`, bs.`RESOURCE_ID`')
@@ -161,6 +175,7 @@ class Compliance_model extends CI_Model
                 'instrument_id' => $inst_id,
                 'instrument_group_id' => $group_id,
                 'proposal_id' => $row->proposal_id,
+                'project_type' => strpos($row->project_type, 'EMSL') === false ? ucwords(strtolower($row->project_type), " ") : $row->project_type,
                 'date_start' => $record_start_date,
                 'date_finish' => $record_end_date,
                 'proposal_pi' => $row->proposal_pi,
@@ -193,21 +208,18 @@ class Compliance_model extends CI_Model
         //get active proposals for MONTH
         $proposal_columns = [
             'prop.`PROPOSAL_ID` as proposal_id',
-            'IFNULL(REPLACE(LOWER(`prop`.`PROPOSAL_TYPE`),\'_\', \' \'), \'standard\') as `proposal_type`',
+            'IFNULL( REPLACE ( `prop`.`PROPOSAL_TYPE`, \'_\', \' \' ), IFNULL( uct.CALL_TYPE, \'N/A\' ) ) AS project_type',
             'prop.`TITLE` as title',
             'prop.`ACTUAL_START_DATE` as actual_start_date',
             'prop.`ACTUAL_END_DATE` as actual_end_date',
             'users.`NAME_FM` as proposal_pi'
         ];
 
-        $excluded_proposal_types = [
-            'resource_owner'
-        ];
-
-        $excluded_proposal_types = array_map('strtolower', $excluded_proposal_types);
         $prop_query = $this->eusDB->select($proposal_columns)->from('UP_PROPOSALS prop')
             ->join("(SELECT PERSON_ID, PROPOSAL_ID FROM UP_PROPOSAL_MEMBERS WHERE PROPOSAL_AUTHOR_SW = 'Y') pm", 'prop.`PROPOSAL_ID` = pm.`PROPOSAL_ID`')
             ->join('UP_USERS users', 'users.`PERSON_ID` = pm.`PERSON_ID`')
+            ->join('UP_CALLS uc', 'prop.CALL_ID = uc.CALL_ID', 'left')
+            ->join('UP_CALL_TYPES uct', 'uc.CALL_TYPE_ID = uct.CALL_TYPE_ID', 'left')
             ->where_not_in('prop.`PROPOSAL_ID`', array_keys($usage['by_proposal']))
             ->group_start()
                 ->where_not_in('prop.`PROPOSAL_TYPE`', $excluded_proposal_types)
@@ -556,6 +568,7 @@ class Compliance_model extends CI_Model
                 $booking_results[] = [
                     'proposal_id' => $proposal_id,
                     'proposal_title' => $this->get_proposal_name($proposal_id),
+                    'project_type' => $info['project_type'],
                     'instrument_id' => $instrument_id,
                     'instrument_group' => $group_name_lookup[$instrument_group_cache[$instrument_id]],
                     'proposal_pi' => $info['proposal_pi'],
@@ -568,5 +581,16 @@ class Compliance_model extends CI_Model
             }
         }
         return $booking_results;
+    }
+
+    public function format_no_bookings_for_jsgrid($no_booking_data)
+    {
+        $pt_array = [];
+        foreach( $no_booking_data as $entry ){
+            $pt = $entry['project_type'];
+            $entry['project_type'] = strpos($pt, 'EMSL') === false ? ucwords(strtolower($pt), " ") : $pt;
+            $pt_array[] = $entry;
+        }
+        return $pt_array;
     }
 }
