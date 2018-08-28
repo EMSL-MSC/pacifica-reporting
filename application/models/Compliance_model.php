@@ -586,7 +586,7 @@ class Compliance_model extends CI_Model
     public function format_no_bookings_for_jsgrid($no_booking_data)
     {
         $pt_array = [];
-        foreach( $no_booking_data as $entry ){
+        foreach ($no_booking_data as $entry) {
             $pt = $entry['project_type'];
             $entry['project_type'] = strpos($pt, 'EMSL') === false ? ucwords(strtolower($pt), " ") : $pt;
             $pt_array[] = $entry;
