@@ -116,12 +116,6 @@ class Compliance_model extends CI_Model
         $first_of_month = $start_date_obj->modify('first day of this month');
         $end_of_month = $end_date_obj->modify('last day of this month');
 
-        $excluded_proposal_types = [
-            'resource_owner'
-        ];
-
-        $excluded_proposal_types = array_map('strtolower', ['resource_owner']);
-
         //get booking stats
         $booking_stats_columns = [
             'COUNT(bs.`BOOKING_STATS_ID`) as booking_count',
@@ -205,6 +199,21 @@ class Compliance_model extends CI_Model
             $usage['by_proposal'][$proposal_id][$inst_id] = $new_entry;
         }
 
+        $usage['instrument_group_compilation'] = array_unique($inst_group_comp);
+        // $usage['unbooked_proposals'] = $prop_query->result_array();
+        return $usage;
+    }
+
+    public function get_unbooked_proposals($start_date_obj, $end_date_obj)
+    {
+        $excluded_proposal_types = [
+            'resource_owner'
+        ];
+        // get month boundaries
+        $first_of_month = $start_date_obj->modify('first day of this month');
+        $end_of_month = $end_date_obj->modify('last day of this month');
+
+        $excluded_proposal_types = array_map('strtolower', ['resource_owner']);
         //get active proposals for MONTH
         $proposal_columns = [
             'prop.`PROPOSAL_ID` as proposal_id',
@@ -220,7 +229,7 @@ class Compliance_model extends CI_Model
             ->join('UP_USERS users', 'users.`PERSON_ID` = pm.`PERSON_ID`')
             ->join('UP_CALLS uc', 'prop.CALL_ID = uc.CALL_ID', 'left')
             ->join('UP_CALL_TYPES uct', 'uc.CALL_TYPE_ID = uct.CALL_TYPE_ID', 'left')
-            ->where_not_in('prop.`PROPOSAL_ID`', array_keys($usage['by_proposal']))
+            // ->where_not_in('prop.`PROPOSAL_ID`', array_keys($usage['by_proposal']))
             ->group_start()
                 ->where_not_in('prop.`PROPOSAL_TYPE`', $excluded_proposal_types)
                 ->or_where('prop.`PROPOSAL_TYPE` IS NULL')
@@ -245,9 +254,8 @@ class Compliance_model extends CI_Model
         // echo $this->eusDB->last_query();
         // exit();
 
-        $usage['instrument_group_compilation'] = array_unique($inst_group_comp);
-        $usage['unbooked_proposals'] = $prop_query->result_array();
-        return $usage;
+        return $prop_query->result_array();
+
     }
 
     /**

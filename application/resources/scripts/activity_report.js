@@ -1,47 +1,65 @@
 $(function(){
     //setup the date picker
     generate_year_select_options(
-        $("#tp_year_selector"), earliest_available, latest_available,
-        parseInt(Cookies.get("selected_year"), 10));
+        $("#start_year_selector"), earliest_available, latest_available,
+        parseInt(Cookies.get("selected_start_year"), 10));
     generate_month_select_options(
-        $("#tp_month_selector"), earliest_available, latest_available,
-        parseInt(Cookies.get("selected_year"), 10), parseInt(Cookies.get("selected_month"), 10));
+        $("#start_month_selector"), earliest_available, latest_available,
+        parseInt(Cookies.get("selected_start_year"), 10), parseInt(Cookies.get("selected_start_month"), 10));
 
-    $("#tp_year_selector").select2({minimumResultsForSearch: -1});
-    $("#tp_month_selector").select2({minimumResultsForSearch: -1});
+    generate_year_select_options(
+        $("#end_year_selector"), earliest_available, latest_available,
+        parseInt(Cookies.get("selected_end_year"), 10));
+    generate_month_select_options(
+        $("#end_month_selector"), earliest_available, latest_available,
+        parseInt(Cookies.get("selected_end_year"), 10), parseInt(Cookies.get("selected_end_month"), 10));
 
-    $("#tp_year_selector").on("change", function(event){
+
+
+    $("#start_year_selector").select2({minimumResultsForSearch: -1});
+    $("#start_month_selector").select2({minimumResultsForSearch: -1});
+    $("#end_year_selector").select2({minimumResultsForSearch: -1});
+    $("#end_month_selector").select2({minimumResultsForSearch: -1});
+
+    $(".year_selector").on("change", function(event){
         var el = $(event.target);
-        Cookies.set("selected_year", el.val());
+        var selector_type = el.parents("div").hasClass("start") ? "start" : "end";
+        var month_selector = el.parents("div").find(".month_selector");
+        Cookies.set("selected_" + selector_type + "_year", el.val());
         generate_month_select_options(
-            $("#tp_month_selector"), earliest_available, latest_available,
-            parseInt(Cookies.get("selected_year"), 10), parseInt(Cookies.get("selected_month"), 10));
+            month_selector, earliest_available, latest_available,
+            parseInt(Cookies.get("selected_" + selector_type + "_year"), 10),
+            parseInt(Cookies.get("selected_" + selector_type + "_month"), 10)
+        );
     });
-    $("#tp_month_selector").on("change", function(event){
+    $(".month_selector").on("change", function(event){
         var el = $(event.target);
-        Cookies.set("selected_month", el.val());
+        var selector_type = el.parents("div").hasClass("start") ? "start" : "end";
+        Cookies.set("selected_" + selector_type + "_month", el.val());
     });
 
     $("#generate_report_button").click(function(){
-        load_compliance_report(
+        load_activity_report(
             $("#search_results_display"),
-            $("#tp_month_selector").val(),
-            $("#tp_year_selector").val()
+            $("#start_month_selector").val(),
+            $("#start_year_selector").val(),
+            $("#end_month_selector").val(),
+            $("#end_year_selector").val()
         );
     });
 
 
 });
 
-var load_compliance_report = function(destination_object, month, year){
+var load_activity_report = function(destination_object, start_month, start_year, end_month, end_year){
     $("#compliance_loading_screen").show();
     $(".time_period_options").disable();
     $("#report_loading_status").spin();
 
-    var start_date = moment().year(year).month(month - 1).date(1).hour(0).minute(0).seconds(0);
-    var end_date = moment(start_date);
+    var start_date = moment().year(start_year).month(start_month - 1).date(1).hour(0).minute(0).seconds(0);
+    var end_date = moment().year(end_year).month(end_month - 1).date(1).hour(0).minute(0).seconds(0);
     end_date.add(1, "months").subtract(1, "days");
-    var report_url = "/compliance/get_booking_report/proposal/";
+    var report_url = "/compliance/get_activity_report/";
     report_url += start_date.format("YYYY-MM-DD") + "/";
     report_url += end_date.format("YYYY-MM-DD");
     report_url += "/json";
