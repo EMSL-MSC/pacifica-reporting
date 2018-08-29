@@ -48,17 +48,62 @@ $(function(){
         );
     });
 
+    $(".tp_selector").on("change", function(event) { check_date_range(event); });
+    check_date_range();
+
 
 });
+
+var check_date_range = function(event) {
+    var set_all = typeof event === "undefined";
+    var event_el = typeof event === "undefined" ? $("#start_month_selector") : $(event.target);
+    var selector_type = event_el.parents(".start") ? "Starting" : "Ending";
+    var position_type = event_el.parents(".start") ? "earlier" : "later";
+    var other_selector_type = event_el.parents(".start") ? "Ending" : "Starting";
+    var error_indicator = set_all ? $(".year_month_container >.tp_selector") : event_el.parents(".year_month_container").find(".tp_selector");
+    //need to check on date range validity on every change event
+    var start_container = $(".time_period_options > .start");
+    var end_container = $(".time_period_options > .end");
+    var start_month = start_container.find(".month_selector");
+    var start_year = start_container.find(".year_selector");
+    var start_period = moment(start_year.val() + "-" + start_month.val().padStart(2, "0")).utc().startOf("month");
+
+    var end_month = end_container.find(".month_selector");
+    var end_year = end_container.find(".year_selector");
+    var end_period = moment(end_year.val() + "-" + end_month.val().padStart(2, "0")).utc().endOf("month");
+
+    var report_button = $("#generate_report_button");
+
+    // now let's check if the date range holds up
+    var isValidRange = (end_period - start_period) > 0;
+    if (!isValidRange) {
+        // we've got an inappropriate range, so let's highlight the fact
+        // and disable the report generation search_button
+        report_button.disable();
+        $(".time_period_options .error_message").text(
+            selector_type + " month must be " + position_type + " than " + other_selector_type + " month"
+        );
+        $(".time_period_options .error_message").show();
+        error_indicator.addClass("has-error");
+
+    }else{
+        report_button.enable();
+        $(".time_period_options .error_message").text();
+        $(".time_period_options .error_message").hide();
+        $(".year_month_container >.tp_selector").removeClass("has-error");
+    }
+
+};
 
 var load_activity_report = function(destination_object, start_month, start_year, end_month, end_year){
     $("#compliance_loading_screen").show();
     $(".time_period_options").disable();
     $("#report_loading_status").spin();
+    start_month = start_month.padStart(2, "0");
+    end_month = end_month.padStart(2, "0");
 
-    var start_date = moment().year(start_year).month(start_month - 1).date(1).hour(0).minute(0).seconds(0);
-    var end_date = moment().year(end_year).month(end_month - 1).date(1).hour(0).minute(0).seconds(0);
-    end_date.add(1, "months").subtract(1, "days");
+    var start_date = moment(start_year + "-" + start_month).utc().startOf("month");
+    var end_date = moment(end_year + "-" + end_month).utc().endOf("month");
     var report_url = "/compliance/get_activity_report/";
     report_url += start_date.format("YYYY-MM-DD") + "/";
     report_url += end_date.format("YYYY-MM-DD");
@@ -66,82 +111,20 @@ var load_activity_report = function(destination_object, start_month, start_year,
 
     $.get(report_url, function(response) {
         $(".search_results_display").show();
-        $(".booking_results_header").show();
-        $("#booking_results_display").jsGrid({
-            height: "auto",
-            width: "100%",
-            sorting: true,
-            paging: false,
-            data: response.booking_results,
-            fields: [
-                {
-                    name: "proposal_id", title: "Proposal ID", width: "8%",
-                    cellRenderer: function(value, item) {
-                        return $("<td>", {
-                            "class": "proposal_id_container " + item.proposal_color_class,
-                            "text": value
-                        });
-                    },
-                    headercss: "compliance_table_header"
-                },
-                {
-                    name: "instrument_id", title: "Instrument ID", width: "9%",
-                    cellRenderer: function(value, item) {
-                        return $("<td>", {
-                            "class": "instrument_id_container " + item.instrument_color_class,
-                            "text": value
-                        });
-                    },
-                    headercss: "compliance_table_header"
-                },
-                {
-                    name: "project_type", title: "Project Type", width: "15%"
-                },
-                {
-                    name: "proposal_pi", title: "Principal Investigator",
-                    headercss: "compliance_table_header", width: "15%"
-                },
-                {
-                    name: "instrument_group", title: "Instrument", type: "text", headercss: "compliance_table_header",
-                    width: "40%",
-                    cellRenderer: function(value, item) {
-                        return $("<td>", {
-                            "class": "instrument_group_container",
-                        })
-                            .append($("<span>", {
-                                "class": "instrument_group",
-                                "text": item.instrument_group
-                            }))
-                            .append($("<p>", {
-                                "class": "instrument_name",
-                                "text": item.instrument_name
-                            }));
-                    }
-                },
-                {
-                    name: "booking_count", title: "Number of Bookings", type: "number",
-                    headercss: "compliance_table_header", width: "10%", align: "center"
-                },
-                {
-                    name: "file_count", title: "Data File Count", type: "number",
-                    headercss: "compliance_table_header", width: "10%", align: "center"
-                }
-            ]
-        });
         $(".no_booking_results_header").show();
         $("#no_booking_results_display").jsGrid({
             height: "auto",
             width: "100%",
             sorting: true,
             paging: false,
-            data: response.no_booking_results,
+            data: response,
             fields: [
                 { name: "proposal_id", title: "Proposal ID", type: "text" },
                 { name: "project_type", title: "Project Type", type: "text" },
                 { name: "proposal_pi", title: "Principal Investigator", type: "text" },
                 { name: "actual_start_date", title: "Actual Start Date", type: "complianceDateField" },
                 { name: "actual_end_date", title: "Actual End Date", type: "complianceDateField" },
-                // { name: "closed_date", title: "Closing Date", type: "complianceDateField" },
+                { name: "closed_date", title: "Closing Date", type: "complianceDateField" },
                 // { name: "last_change_date", title: "Last Updated", type: "complianceDateField" }
             ]
         });

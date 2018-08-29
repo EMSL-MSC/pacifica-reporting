@@ -127,6 +127,10 @@ class Compliance_model extends CI_Model
             'MAX(bs.`DATE_FINISH`) as date_finish',
             'users.`NAME_FM` as proposal_pi'
         ];
+        $excluded_proposal_types = [
+            'resource_owner'
+        ];
+
 
         $booking_stats_query = $this->eusDB->select($booking_stats_columns)->from("ERS_BOOKING_STATS bs")
             ->join('UP_PROPOSALS up', 'up.PROPOSAL_ID = bs.PROPOSAL_ID')
@@ -204,7 +208,7 @@ class Compliance_model extends CI_Model
         return $usage;
     }
 
-    public function get_unbooked_proposals($start_date_obj, $end_date_obj)
+    public function get_unbooked_proposals($start_date_obj, $end_date_obj, $exclusion_list = [])
     {
         $excluded_proposal_types = [
             'resource_owner'
@@ -221,6 +225,7 @@ class Compliance_model extends CI_Model
             'prop.`TITLE` as title',
             'prop.`ACTUAL_START_DATE` as actual_start_date',
             'prop.`ACTUAL_END_DATE` as actual_end_date',
+            'prop.`CLOSED_DATE as closed_date',
             'users.`NAME_FM` as proposal_pi'
         ];
 
@@ -229,7 +234,7 @@ class Compliance_model extends CI_Model
             ->join('UP_USERS users', 'users.`PERSON_ID` = pm.`PERSON_ID`')
             ->join('UP_CALLS uc', 'prop.CALL_ID = uc.CALL_ID', 'left')
             ->join('UP_CALL_TYPES uct', 'uc.CALL_TYPE_ID = uct.CALL_TYPE_ID', 'left')
-            // ->where_not_in('prop.`PROPOSAL_ID`', array_keys($usage['by_proposal']))
+            ->where_not_in('prop.`PROPOSAL_ID`', $exclusion_list)
             ->group_start()
                 ->where_not_in('prop.`PROPOSAL_TYPE`', $excluded_proposal_types)
                 ->or_where('prop.`PROPOSAL_TYPE` IS NULL')
