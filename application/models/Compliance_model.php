@@ -260,7 +260,6 @@ class Compliance_model extends CI_Model
         // exit();
 
         return $prop_query->result_array();
-
     }
 
     /**

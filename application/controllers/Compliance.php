@@ -214,7 +214,7 @@ class Compliance extends Baseline_api_controller
     public function get_activity_report($start_time, $end_time)
     {
         // $valid_output_types = array('screen', 'csv', 'json');
-        $requested_type = $this->input->get_request_header('Accept', TRUE);
+        $requested_type = $this->input->get_request_header('Accept', true);
         $valid_requested_types = [
             "text/csv" => "csv",
             "text/json" => "json",
@@ -242,7 +242,7 @@ class Compliance extends Baseline_api_controller
             'end_date' => $end_time_obj->format('Y-m-d')
         ];
 
-        if($output_type == 'csv') {
+        if ($output_type == 'csv') {
             $filename = "Proposal_activity_report_".$start_time_obj->format('Y-m')."-".$end_time_obj->format('Y-m').".csv";
             header('Content-Type: application/octet-stream');
             header('Content-disposition: attachment; filename="'.$filename.'"');
@@ -267,7 +267,7 @@ class Compliance extends Baseline_api_controller
             }
             fclose($handle);
             exit();
-        }elseif ($output_type = 'json') {
+        } elseif ($output_type = 'json') {
             $no_booking_results = $this->compliance->format_no_bookings_for_jsgrid($eus_records);
             header("Content-Type: text/json");
             print(json_encode($no_booking_results));
