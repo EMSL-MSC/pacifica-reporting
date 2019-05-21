@@ -151,7 +151,7 @@ class Myemsl_model extends CI_Model
     {
         $acceptable_object_types = array(
             'instrument' => 'instruments',
-            'proposal' => 'proposals',
+            'project' => 'projects',
             'user' => 'users'
         );
         $results_json = array(
@@ -177,6 +177,7 @@ class Myemsl_model extends CI_Model
            'user' => $this->user_id
         );
         $query_url .= http_build_query($url_args_array, '', '&');
+        echo $query_url;
         $query = Requests::get($query_url, array('Accept' => 'application/json'));
         $results_body = $query->body;
         if ($query->status_code == 200) {
