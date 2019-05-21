@@ -49,6 +49,7 @@ function get_user()
     } else if (isset($_SERVER["PHP_AUTH_USER"])) {
         $user = str_replace('@PNL.GOV', '', $_SERVER["PHP_AUTH_USER"]);
     }
+
     $user = strtolower($user);
     $url_args_array = array(
        'network_id' => $user
