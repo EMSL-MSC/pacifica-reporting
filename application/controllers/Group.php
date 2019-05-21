@@ -400,7 +400,7 @@ class Group extends Baseline_api_controller
         $group_info = $this->gm->get_group_info($group_id);
         $this->benchmark->mark('get_group_info_end');
 
-        if (!empty($group_info)) {
+        if (!empty($group_info) || !$group_info['time_list']['earliest'] || !$group_info['time_list']['latest']) {
             $item_list    = $group_info['item_list'];
             $options_list = $group_info['options_list'];
             $available_time_range = $group_info['time_list'];
@@ -417,10 +417,10 @@ class Group extends Baseline_api_controller
             $this->page_data['object_id_list']         = $object_id_list;
             $this->page_data["{$object_type}_id_list"] = $object_id_list;
 
-            $latest_data          = is_array($available_time_range) && array_key_exists('latest', $available_time_range) ? $available_time_range['latest'] : false;
+            $latest_data = is_array($available_time_range) && array_key_exists('latest', $available_time_range) ? $available_time_range['latest'] : false;
         }
 
-        $this->page_data['object_type']            = $object_type;
+        $this->page_data['object_type'] = $object_type;
         $this->page_data['group_id'] = $group_id;
         if (!$latest_data || empty($group_info)) {
             $this->page_data['results_message'] = 'No Data Available for this group of '.plural(ucwords($object_type));
@@ -554,7 +554,7 @@ class Group extends Baseline_api_controller
      * that formats it into a json object for return through AJAX
      *
      * @param string $project_name_fragment the search term to use
-     * @param string $active                 active/inactive project switch (active/inactive)
+     * @param string $active                active/inactive project switch (active/inactive)
      *
      * @uses EUS::get_projects_by_name to get project list from the EUS Database clone
      *

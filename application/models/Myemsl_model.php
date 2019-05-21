@@ -173,11 +173,10 @@ class Myemsl_model extends CI_Model
         $policy_url = "{$this->policy_url_base}/status";
         $query_url = "{$policy_url}/{$acceptable_object_types[$object_type]}/search/";
         $query_url .= "{$search_term_string}?";
-        $url_args_array = array(
-           'user' => $this->user_id
-        );
-        $query_url .= http_build_query($url_args_array, '', '&');
-        echo $query_url;
+        // $url_args_array = array(
+        //    'user' => $this->user_id
+        // );
+        // $query_url .= http_build_query($url_args_array, '', '&');
         $query = Requests::get($query_url, array('Accept' => 'application/json'));
         $results_body = $query->body;
         if ($query->status_code == 200) {
