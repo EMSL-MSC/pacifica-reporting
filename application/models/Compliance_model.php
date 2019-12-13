@@ -120,8 +120,8 @@ class Compliance_model extends CI_Model
         $booking_stats_columns = [
             'COUNT(bs.`BOOKING_STATS_ID`) as booking_count',
             'bs.`RESOURCE_ID` as instrument_id',
-            'bs.`PROJECT_ID` as project_id',
-            'IFNULL( REPLACE ( `up`.`PROJECT_TYPE`, \'_\', \' \' ), IFNULL( uct.CALL_TYPE, \'N/A\' ) ) AS project_type',
+            'bs.`PROPOSAL_ID` as project_id',
+            'IFNULL( REPLACE ( `up`.`PROPOSAL_TYPE`, \'_\', \' \' ), IFNULL( uct.CALL_TYPE, \'N/A\' ) ) AS project_type',
             'MIN(bs.`MONTH`) as query_month',
             'MIN(bs.`DATE_START`) as date_start',
             'MAX(bs.`DATE_FINISH`) as date_finish',
@@ -133,19 +133,19 @@ class Compliance_model extends CI_Model
 
 
         $booking_stats_query = $this->eusDB->select($booking_stats_columns)->from("ERS_BOOKING_STATS bs")
-            ->join('UP_PROJECTS up', 'up.PROJECT_ID = bs.PROJECT_ID')
+            ->join('UP_PROPOSALS up', 'up.PROPOSAL_ID = bs.PROPOSAL_ID')
             ->join('UP_CALLS uc', 'up.CALL_ID = uc.CALL_ID', 'left')
             ->join('UP_CALL_TYPES uct', 'uc.CALL_TYPE_ID = uct.CALL_TYPE_ID', 'left')
-            ->join("(SELECT PERSON_ID, PROJECT_ID FROM UP_PROJECT_MEMBERS WHERE PROJECT_AUTHOR_SW = 'Y') pm", 'bs.`PROJECT_ID` = pm.`PROJECT_ID`')
+            ->join("(SELECT PERSON_ID, PROPOSAL_ID FROM UP_PROPOSAL_MEMBERS WHERE PROPOSAL_AUTHOR_SW = 'Y') pm", 'bs.`PROPOSAL_ID` = pm.`PROPOSAL_ID`')
             ->join('UP_USERS users', 'users.`PERSON_ID` = pm.`PERSON_ID`')
-            ->where('NOT ISNULL(bs.`PROJECT_ID`)')
+            ->where('NOT ISNULL(bs.`PROPOSAL_ID`)')
             ->group_start()
-                ->where_not_in('up.`PROJECT_TYPE`', $excluded_project_types)
-                ->or_where('up.`PROJECT_TYPE` IS NULL')
+                ->where_not_in('up.`PROPOSAL_TYPE`', $excluded_project_types)
+                ->or_where('up.`PROPOSAL_TYPE` IS NULL')
             ->group_end()
-            ->group_by(array('bs.`PROJECT_ID`', 'bs.`RESOURCE_ID`'))
+            ->group_by(array('bs.`PROPOSAL_ID`', 'bs.`RESOURCE_ID`'))
             ->having('MIN(bs.`MONTH`)', $first_of_month->format('Y-m-d'))
-            ->order_by('bs.`PROJECT_ID`, bs.`RESOURCE_ID`')
+            ->order_by('bs.`PROPOSAL_ID`, bs.`RESOURCE_ID`')
             ->get();
 
             // echo $this->eusDB->last_query();
@@ -220,8 +220,8 @@ class Compliance_model extends CI_Model
         $excluded_project_types = array_map('strtolower', ['resource_owner']);
         //get active projects for MONTH
         $project_columns = [
-            'prop.`PROJECT_ID` as project_id',
-            'IFNULL( REPLACE ( `prop`.`PROJECT_TYPE`, \'_\', \' \' ), IFNULL( uct.CALL_TYPE, \'N/A\' ) ) AS project_type',
+            'prop.`PROPOSAL_ID` as project_id',
+            'IFNULL( REPLACE ( `prop`.`PROPOSAL_TYPE`, \'_\', \' \' ), IFNULL( uct.CALL_TYPE, \'N/A\' ) ) AS project_type',
             'prop.`TITLE` as title',
             'prop.`ACTUAL_START_DATE` as actual_start_date',
             'prop.`ACTUAL_END_DATE` as actual_end_date',
@@ -229,15 +229,15 @@ class Compliance_model extends CI_Model
             'users.`NAME_FM` as project_pi'
         ];
 
-        $prop_query = $this->eusDB->select($project_columns)->from('UP_PROJECTS prop')
-            ->join("(SELECT PERSON_ID, PROJECT_ID FROM UP_PROJECT_MEMBERS WHERE PROJECT_AUTHOR_SW = 'Y') pm", 'prop.`PROJECT_ID` = pm.`PROJECT_ID`')
+        $prop_query = $this->eusDB->select($project_columns)->from('UP_PROPOSALS prop')
+            ->join("(SELECT PERSON_ID, PROPOSAL_ID FROM UP_PROPOSAL_MEMBERS WHERE PROPOSAL_AUTHOR_SW = 'Y') pm", 'prop.`PROPOSAL_ID` = pm.`PROPOSAL_ID`')
             ->join('UP_USERS users', 'users.`PERSON_ID` = pm.`PERSON_ID`')
             ->join('UP_CALLS uc', 'prop.CALL_ID = uc.CALL_ID', 'left')
             ->join('UP_CALL_TYPES uct', 'uc.CALL_TYPE_ID = uct.CALL_TYPE_ID', 'left')
-            ->where_not_in('prop.`PROJECT_ID`', $exclusion_list)
+            ->where_not_in('prop.`PROPOSAL_ID`', $exclusion_list)
             ->group_start()
-                ->where_not_in('prop.`PROJECT_TYPE`', $excluded_project_types)
-                ->or_where('prop.`PROJECT_TYPE` IS NULL')
+                ->where_not_in('prop.`PROPOSAL_TYPE`', $excluded_project_types)
+                ->or_where('prop.`PROPOSAL_TYPE` IS NULL')
             ->group_end()
             ->where('prop.`WITHDRAWN_DATE` IS NULL')
             ->where('prop.`DENIED_DATE` IS NULL')
@@ -253,7 +253,7 @@ class Compliance_model extends CI_Model
                 ->or_where('prop.`CLOSED_DATE` >=', $first_of_month->format('Y-m-d'))
                 ->or_where('prop.`CLOSED_DATE` IS NULL')
             ->group_end()
-            ->order_by('prop.`PROJECT_TYPE`, (prop.`PROJECT_ID` * 1) DESC')
+            ->order_by('prop.`PROPOSAL_TYPE`, (prop.`PROPOSAL_ID` * 1) DESC')
             ->get();
 
         // echo $this->eusDB->last_query();
