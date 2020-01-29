@@ -515,16 +515,15 @@ class Compliance_model extends CI_Model
                     if (isset($transaction_summary[$project_id][$instrument_id])) {
                         $transaction_record = $transaction_summary[$project_id][$instrument_id];
                         $booking_record['upload_count'] = $transaction_record['transaction_count'];
-                    }else{
+                    } else {
                         $booking_record['upload_count'] = 0;
                     }
                     $eus_objects[$project_id][$instrument_id] = $booking_record;
                 }
             }
-        } elseif($transaction_summary_query->status_code / 100 == 4) {
+        } elseif ($transaction_summary_query->status_code / 100 == 4) {
             //Some kind of input error
-
-        } elseif($transaction_summary_query->status_code / 100 == 5) {
+        } elseif ($transaction_summary_query->status_code / 100 == 5) {
             //Some kind of server side error
         }
 

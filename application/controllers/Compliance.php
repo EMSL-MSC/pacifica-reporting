@@ -150,7 +150,8 @@ class Compliance extends Baseline_api_controller
      *
      * @author Ken Auberry <kenneth.auberry@pnnl.gov>
      */
-    public function get_booking_report($object_type, $start_time, $end_time) {
+    public function get_booking_report($object_type, $start_time, $end_time)
+    {
         $requested_type = $this->input->get_request_header('Accept', true);
         $valid_requested_types = [
             "text/csv" => "csv",
