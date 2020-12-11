@@ -164,6 +164,7 @@ class Compliance extends Baseline_api_controller
         $eus_booking_records
             = $this->compliance->retrieve_active_project_list_from_eus($start_time_obj, $end_time_obj);
 
+
         $mappings = $this->compliance->cross_reference_bookings_and_data($object_type, $eus_booking_records, clone $start_time_obj, clone $end_time_obj);
         ksort($mappings);
 
@@ -175,16 +176,17 @@ class Compliance extends Baseline_api_controller
             $export_data = array();
             $handle = fopen('php://output', 'w');
             $field_names = array(
-                "project_id","instrument_id","instrument_name",
-                "number_of_bookings","number_of_uploads"
+                "Project ID", "Instrument ID", "Project Type",
+                "Principal Investigator", "Instrument", "Booked By",
+                "Number of Bookings", "Data Uploads Count"
             );
             fputcsv($handle, $field_names);
             foreach ($mappings as $project_id => $entry) {
                 foreach ($entry as $instrument_id => $info) {
                     $data = [
-                        $project_id, $instrument_id,
-                        $this->compliance->get_instrument_name($instrument_id),
-                        $info['booking_count'], $info['upload_count']
+                        $project_id, $instrument_id, $info['project_type'],
+                        $info['project_pi'], $this->compliance->get_instrument_name($instrument_id),
+                        $info['booked_by'], $info['booking_count'], $info['upload_count']
                     ];
                     fputcsv($handle, $data);
                 }
