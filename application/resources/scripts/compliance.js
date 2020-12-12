@@ -172,17 +172,6 @@ var load_compliance_report = function(destination_object, month, year){
         });
 
     });
-    booking_report_return.done(function(){
-        // if($("#export_csv_button").length == 0){
-        //     $("#search_term_container").append("<input type=\"button\" value=\"Export as CSV\" class=\"search_button export_csv_button\" id=\"export_csv_button\"/>");
-        // }
-        // $("#export_csv_button").off("click").on("click", function(){
-        //     var csv_url = generate_report_url();
-        //     csv_url += "/csv";
-        //     location.href= csv_url;
-        // });
-
-    });
     booking_report_return.always(function(){
         $(".time_period_options select, .time_period_options input").enable();
         if($("#booking_results_error").text().length > 0){
