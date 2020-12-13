@@ -125,7 +125,8 @@ class Compliance_model extends CI_Model
             'bs.`MONTH` as query_month',
             'bs.`DATE_START` as date_start',
             'bs.`DATE_FINISH` as date_finish',
-            'users.`NAME_FM` as project_pi'
+            'users.`NAME_FM` as project_pi',
+            'booking_user.`PREFERRED_NAME_FM` as booked_by'
         ];
         $excluded_project_types = [
             'resource_owner'
@@ -137,6 +138,7 @@ class Compliance_model extends CI_Model
             ->join('UP_CALLS uc', 'up.CALL_ID = uc.CALL_ID', 'left')
             ->join('UP_CALL_TYPES uct', 'uc.CALL_TYPE_ID = uct.CALL_TYPE_ID', 'left')
             ->join("(SELECT PERSON_ID, PROPOSAL_ID FROM UP_PROPOSAL_MEMBERS WHERE PROPOSAL_AUTHOR_SW = 'Y') pm", 'bs.`PROPOSAL_ID` = pm.`PROPOSAL_ID`')
+            ->join('PNNL_EMPLOYEE booking_user', 'booking_user.`EMPLID` = bs.`BOOKED_BY_ID`', 'left')
             ->join('UP_USERS users', 'users.`PERSON_ID` = pm.`PERSON_ID`')
             ->where('NOT ISNULL(bs.`PROPOSAL_ID`)')
             ->group_start()
@@ -200,6 +202,7 @@ class Compliance_model extends CI_Model
                     'date_start' => '',
                     'date_finish' => '',
                     'project_pi' => '',
+                    'booked_by' => '',
                     'upload_count' => 0
                 ];
                 $inst_group_comp[] = $group_id;
@@ -215,6 +218,7 @@ class Compliance_model extends CI_Model
 
                     $entry['booking_count'] += 1;
                     $entry['project_pi'] = $row->project_pi;
+                    $entry['booked_by'] = $row->booked_by != null ? $row->booked_by : "Not Specified";
                     $entry['project_type'] = strpos($row->project_type, 'EMSL') === false ? ucwords(strtolower($row->project_type), " ") : $row->project_type;
                     $entry['date_start'] = $record_start_date < $entry['date_start'] ? $record_start_date : $entry['date_start'];
                     $entry['date_finish'] = $record_end_date > $entry['date_finish'] ? $record_end_date : $entry['date_finish'];
@@ -569,6 +573,7 @@ class Compliance_model extends CI_Model
     {
         $instrument_group_cache = $this->compliance->get_group_id_cache();
         $group_name_lookup = $this->get_group_name_lookup();
+
         $booking_results = [];
         foreach ($mapping_data as $project_id => $booking_info) {
             $project_upload_count = 0;
@@ -596,6 +601,7 @@ class Compliance_model extends CI_Model
                     'instrument_id' => $instrument_id,
                     'instrument_group' => $instrument_group,
                     'project_pi' => $info['project_pi'],
+                    'booked_by' => $info['booked_by'],
                     'instrument_name' => $this->get_instrument_name($instrument_id),
                     'booking_count' => $info['booking_count'],
                     'upload_count' => $info['upload_count'],

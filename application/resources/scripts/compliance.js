@@ -22,6 +22,17 @@ $(function(){
         Cookies.set("selected_month", el.val());
     });
 
+    $(".time_period_options select").on("change", function(event){
+        if($("#export_csv_button").length == 0){
+            $("#time_period_selector").append("<input type=\"button\" value=\"Export as CSV\" class=\"search_button export_csv_button\" id=\"export_csv_button\"/>");
+        }
+        $("#export_csv_button").off("click").on("click", function(){
+            var csv_url = generate_report_url();
+            csv_url += "/csv";
+            location.href= csv_url;
+        }).show();
+    });
+
     $("#generate_report_button").click(function(){
         load_compliance_report(
             $("#search_results_display"),
@@ -29,26 +40,33 @@ $(function(){
             $("#tp_year_selector").val()
         );
     });
-
+    $("#tp_month_selector").change();
     $.ajaxSetup({timeout:30000});
 
 
 });
 
-var load_compliance_report = function(destination_object, month, year){
-    $("#compliance_loading_screen").show();
-    $("#booking_results_error").hide();
-    $("#search_results_display").fadeOut();
-    $("#booking_results_display").empty();
-    $(".time_period_options").disable();
-    $("#report_loading_status").spin();
-
+var generate_report_url = function(event){
+    var month = $("#tp_month_selector").val();
+    var year = $("#tp_year_selector").val();
     var start_date = moment().year(year).month(month - 1).date(1).hour(0).minute(0).seconds(0);
     var end_date = moment(start_date);
     end_date.add(1, "months").subtract(1, "days");
     var report_url = "/compliance/get_booking_report/project/";
     report_url += start_date.format("YYYY-MM-DD") + "/";
     report_url += end_date.format("YYYY-MM-DD");
+    return report_url;
+};
+
+var load_compliance_report = function(destination_object, month, year){
+    $("#compliance_loading_screen").show();
+    $("#booking_results_error").hide();
+    $("#search_results_display").fadeOut();
+    $("#booking_results_display").empty();
+    $(".time_period_options select, .time_period_options input").disable();
+    $("#report_loading_status").spin();
+
+    report_url = generate_report_url();
     report_url += "/json";
 
     var booking_report_return = $.get(report_url, function(response) {
@@ -111,15 +129,19 @@ var load_compliance_report = function(destination_object, month, year){
                     }
                 },
                 {
-                    name: "project_type", title: "Project Type", type: "text", width: "15%"
+                    name: "project_type", title: "Project Type", type: "text", width: "14%"
                 },
                 {
                     name: "project_pi", title: "Principal Investigator",
-                    type: "text", headercss: "compliance_table_header", width: "15%"
+                    type: "text", headercss: "compliance_table_header", width: "12%"
                 },
                 {
-                    name: "instrument_name", title: "Instrument", type: "text", headercss: "compliance_table_header",
-                    width: "40%"
+                    name: "instrument_name", title: "Instrument", type: "text",
+                    headercss: "compliance_table_header", width: "25%"
+                },
+                {
+                    name: "booked_by", title: "Booked By", type: "text",
+                    headercss: "compliance_table_header", width: "12%"
                 },
                 {
                     name: "booking_count", title: "Number of Bookings",
@@ -150,17 +172,8 @@ var load_compliance_report = function(destination_object, month, year){
         });
 
     });
-    booking_report_return.done(function(){
-        if($("#export_csv_button").length == 0){
-            $("#search_term_container").append("<input type=\"button\" value=\"Export as CSV\" class=\"search_button export_csv_button\" id=\"export_csv_button\"/>");
-            $("#export_csv_button").click(function(){
-                var csv_url = report_url.replace("/json", "/csv");
-                location.href= csv_url;
-            });
-        }
-    });
     booking_report_return.always(function(){
-        $(".time_period_options").enable();
+        $(".time_period_options select, .time_period_options input").enable();
         if($("#booking_results_error").text().length > 0){
             $("#compliance_loading_screen").hide();
             $("#booking_results_error").slideDown("400");
